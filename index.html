@@ -127,7 +127,7 @@ button{cursor:pointer}
 .bl-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
 .bl-stage svg{height:100%;max-height:100%;width:auto;max-width:100%;overflow:visible}
 #blBody{transition:transform .18s cubic-bezier(.3,1.6,.5,1)}
-#blHandle{transition:transform .12s}
+#blHandle{transition:transform .05s linear}
 #blHandle.down{transform:translateY(30px)}
 .bl-wob{animation:blwob .5s ease-in-out infinite}
 @keyframes blwob{25%{rotate:-1.5deg}75%{rotate:1.5deg}}
@@ -152,7 +152,7 @@ button{cursor:pointer}
 /* 점수표 */
 body.res-open .screen .sc-wrap{visibility:hidden}
 .sc-wrap{flex:none;max-height:28%;overflow:auto;border-radius:14px}
-#arBoard{max-height:24%}
+#arBoard,#blBoard,#tmBoard{height:24%;max-height:24%}
 .sc-wrap.card{max-height:none;padding:8px 10px}
 .sc{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
 .sc th{font-size:11px;font-weight:700;color:var(--mute);padding:4px 4px;text-align:center;position:sticky;top:0;background:var(--bg)}
@@ -1168,30 +1168,44 @@ function startTimer(){
 /* ── 풍선 불기 ── */
 function startBalloon(){
   show('balloon');
-  const n=S.n, limit=10+Math.floor(Math.random()*36), per=Array(n).fill(0);
-  let cur=0, count=0, mine=0, done=false;
-  const body=$('#blBody'), bits=$('#blBits'), handle=$('#blHandle');
+  // 펌프 버튼을 꾹 누르고 있는 동안 바람이 들어감. 손을 떼면 멈춤.
+  const n=S.n, limit=4+Math.random()*12, per=Array(n).fill(0), RATE=1;
+  let cur=0, air=0, mine=0, done=false, holding=false, raf=0, last=0, hiss=null, creakT=0, stroke=0;
+  const body=$('#blBody'), bits=$('#blBits'), handle=$('#blHandle'), btn=$('#blPump');
   body.style.display=''; $('#blString').style.display=''; bits.innerHTML=''; body.classList.remove('bl-wob');
-  const size=()=>.42+Math.min(count,50)*.02;
+  btn.textContent='꾹 눌러서 불기'; btn.style.touchAction='none'; btn.style.userSelect='none'; btn.style.webkitUserSelect='none';
+  const size=()=>.42+Math.min(air,18)*.058;
+  const sec=v=>v.toFixed(1)+'초';
+  const table=lose=>mkTable(['이름','분 시간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),sec(per[i])],lose:i===lose,color:PAL[i][0]})));
   function paint(){ body.style.transform='scale('+size()+')'; $('#blTurn .dot').style.background=PAL[cur][0]; $('#blTurn b').textContent=nameOf(cur);
-    $('#blInfo').textContent= mine?('차례 · 이번에 '+mine+'번 넣음'):'차례 · 한 번 이상 펌프'; $('#blPass').disabled=!mine||done; $('#blPump').disabled=done;
-    body.classList.toggle('bl-wob', count>limit*.7);
-    $('#blBoard').innerHTML=mkTable(['이름','넣은 펌프'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],color:PAL[i][0]}))); }
-  function sPump(){ const a=audio(); if(!a) return; noiseBurst(a,.18,'lowpass',900,.7,.5); tone(a,180,320,.16,'sine',.06); if(Math.random()<.4) tone(a,600+count*12,900+count*12,.08,'triangle',.03,.1); }
-  function pop(){ done=true; body.style.display='none'; $('#blString').style.display='none';
+    $('#blInfo').textContent= mine>0?('차례 · 이번에 '+sec(mine)):'차례 · 펌프를 꾹 눌러요'; $('#blPass').disabled=mine<.3||done||holding; btn.disabled=done;
+    body.classList.toggle('bl-wob', air>limit*.65); $('#blBoard').innerHTML=table(); }
+  function hissOn(){ const a=audio(); if(!a||hiss) return; const len=a.sampleRate*2, buf=a.createBuffer(1,len,a.sampleRate), ch=buf.getChannelData(0); for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
+    const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); src.buffer=buf; src.loop=true; f.type='bandpass'; f.Q.value=1.2; f.frequency.value=700; g.gain.setValueAtTime(0,a.currentTime); g.gain.linearRampToValueAtTime(.28,a.currentTime+.08);
+    src.connect(f).connect(g).connect(a.destination); src.start(); hiss={src,f,g,a}; }
+  function hissOff(){ if(!hiss) return; const {src,g,a}=hiss; g.gain.cancelScheduledValues(a.currentTime); g.gain.setValueAtTime(g.gain.value,a.currentTime); g.gain.linearRampToValueAtTime(0,a.currentTime+.08); src.stop(a.currentTime+.1); hiss=null; }
+  function pop(){ done=true; holding=false; hissOff(); cancelAnimationFrame(raf); body.style.display='none'; $('#blString').style.display='none';
     let h=''; for(let k=0;k<14;k++){ const a=k/14*Math.PI*2, d=60+Math.random()*80; h+='<path class="pfx" style="--dx:'+Math.round(Math.cos(a)*d)+'px;--dy:'+Math.round(Math.sin(a)*d)+'px" d="M'+(150+Math.cos(a)*20)+' '+(140+Math.sin(a)*20)+' l10 -6 l4 12 z" fill="#FF4D63" stroke="#7A0E1E" stroke-width="1.5"></path>'; }
     h+='<text x="150" y="150" text-anchor="middle" font-family="Jua, sans-serif" font-size="60" fill="#FFD447" stroke="#14162B" stroke-width="6" paint-order="stroke">빵!</text>';
     bits.innerHTML=h; const a=audio(); if(a){ noiseBurst(a,.25,'highpass',800,.5,1.4); tone(a,160,60,.2,'sine',.6); } buzz([300,60,200]);
-    $('#blBoard').innerHTML=mkTable(['이름','넣은 펌프'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],lose:i===cur,color:PAL[i][0]})));
-    $('#blPump').disabled=true; $('#blPass').disabled=true;
-    setTimeout(()=>result({name:nameOf(cur), color:PAL[cur][0], sub:'풍선을 터뜨렸어요 ('+count+'번째 펌프)', n, table:mkTable(['이름','넣은 펌프'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],lose:i===cur,color:PAL[i][0]})))}),1100); }
-  $('#blPump').onclick=()=>{ if(done) return; audio(); count++; mine++; per[cur]++;
-    handle.classList.add('down'); setTimeout(()=>handle.classList.remove('down'),130); sPump(); buzz(15);
-    if(count>=limit){ body.style.transform='scale('+(size()+.08)+')'; setTimeout(pop,140); return; }
-    paint(); };
-  $('#blPass').onclick=()=>{ if(!mine||done) return; cur=(cur+1)%n; mine=0; beep(600,.06,'triangle',.06); paint(); };
-  paint();
-  cleanup=null;
+    $('#blBoard').innerHTML=table(cur); btn.disabled=true; $('#blPass').disabled=true;
+    setTimeout(()=>result({name:nameOf(cur), color:PAL[cur][0], sub:'풍선을 터뜨렸어요 (총 '+sec(air)+' 불었어요)', n, table:table(cur)}),1100); }
+  function loop(t){ const dt=Math.min(.05,(t-(last||t))/1000)||.016; last=t;
+    if(holding&&!done){ air+=dt*RATE; mine+=dt*RATE; per[cur]+=dt*RATE; stroke+=dt*5;
+      handle.style.transform='translateY('+(15+15*Math.sin(stroke*Math.PI*2))+'px)';
+      if(hiss){ hiss.f.frequency.value=600+air*70; }
+      if(Math.floor(stroke)!==Math.floor(stroke-dt*5)) buzz(12);
+      creakT-=dt; if(air>limit*.55&&creakT<=0){ creakT=.25+Math.random()*.5; const a=audio(); if(a) tone(a,300+air*40,200+air*30,.12,'sawtooth',.03); }
+      if(air>=limit){ pop(); return; }
+      paint(); }
+    raf=requestAnimationFrame(loop); }
+  const down=e=>{ if(done) return; e.preventDefault(); audio(); holding=true; try{ btn.setPointerCapture(e.pointerId); }catch(_){} hissOn(); };
+  const up=()=>{ if(!holding) return; holding=false; hissOff(); handle.style.transform=''; paint(); };
+  btn.onclick=null; btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('lostpointercapture',up);
+  btn.oncontextmenu=e=>e.preventDefault();
+  $('#blPass').onclick=()=>{ if(mine<.3||done) return; cur=(cur+1)%n; mine=0; beep(600,.06,'triangle',.06); paint(); };
+  paint(); raf=requestAnimationFrame(loop);
+  cleanup=()=>{ cancelAnimationFrame(raf); hissOff(); btn.removeEventListener('pointerdown',down); btn.removeEventListener('pointerup',up); btn.removeEventListener('pointercancel',up); btn.removeEventListener('lostpointercapture',up); btn.textContent='펌프!'; };
 }
 
 /* ── 숫자 폭탄 (업다운) ── */
@@ -1463,7 +1477,7 @@ function startArchery(){
   const rnd=(a,b)=>a+Math.random()*(b-a);
   let scale=1, raf=0, last=0, clock=0;
   let phase='setup', players=[...Array(S.n).keys()], cur=0, shotNo=0, scores=players.map(()=>[]), tie=null;
-  let aimT=0, ph=[0,0,0,0], wind=0, windA=0, stuck=[], fly=null, pop=null, shake=0, string=0, msg='';
+  let lastLeft=-1, msgFlash='', aimT=0, ph=[0,0,0,0], wind=0, windA=0, stuck=[], fly=null, pop=null, shake=0, string=0, msg='';
   // 풍경 고정 요소
   const grass=[...Array(90)].map(()=>[rnd(0,360),rnd(285,372),rnd(4,10)]);
   const clouds=[[60,60,1],[250,40,.8],[320,95,.6]];
@@ -1503,7 +1517,7 @@ function startArchery(){
     $('#arWindTxt').textContent= wind===0?'바람 없음':(wind+' m/s');
     $('#arWind').setAttribute('aria-label', wind===0?'바람 없음':'바람 '+DIRS[Math.round(windA/(Math.PI/4))%8]+' '+wind+' m/s');
     $('#arWindArrow').style.transform='rotate('+windA+'rad)'; $('#arWindArrow').style.opacity=wind===0?.3:1;
-    phase='aim'; $('#arShoot').hidden=false; $('#arShoot').disabled=false; setTurn();
+    phase='aim'; lastLeft=-1; msgFlash=''; $('#arShoot').hidden=false; $('#arShoot').disabled=false; setTurn();
   }
   function aimPos(){ const a=(36+Math.min(40,aimT*7))*K, t=clock; // 오래 들고 있을수록 손이 더 떨림
     return [TX+a*(Math.sin(t*1.7+ph[0])*.7+Math.sin(t*3.6+ph[1])*.35), TY+a*(Math.sin(t*1.45+ph[2])*.7+Math.sin(t*3.9+ph[3])*.3)]; }
@@ -1577,7 +1591,8 @@ function startArchery(){
     ctx.restore();
   }
   function drawReticle(){
-    const [x,y]=aimPos();
+    const [x,y]=aimPos(), rem=Math.max(0,1-aimT/10);
+    ctx.strokeStyle=rem<.3?'#FF5C7A':'#FFD447'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(x,y,20,-Math.PI/2,-Math.PI/2+rem*Math.PI*2); ctx.stroke();
     ctx.strokeStyle='rgba(20,30,20,.85)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,16,0,7); ctx.stroke();
     ctx.strokeStyle='#7CFF8A'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.arc(x,y,14,0,7); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(x-24,y); ctx.lineTo(x-8,y); ctx.moveTo(x+8,y); ctx.lineTo(x+24,y); ctx.moveTo(x,y-24); ctx.lineTo(x,y-8); ctx.moveTo(x,y+8); ctx.lineTo(x,y+24); ctx.stroke();
@@ -1610,6 +1625,7 @@ function startArchery(){
     ctx.save(); ctx.translate(x,y); ctx.rotate(clock*14); ctx.translate(-x,-y); drawNock(x,y,k,fly.col,false); ctx.restore();
   }
   function drawPop(){
+    if(msgFlash&&pop){ ctx.save(); ctx.globalAlpha=Math.max(0,1-pop.t/1.1); ctx.font='18px Jua, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=5; ctx.strokeStyle='#14162B'; ctx.fillStyle='#FF5C7A'; ctx.strokeText(msgFlash,180,30); ctx.fillText(msgFlash,180,30); ctx.restore(); }
     if(!pop) return; const t=pop.t, al=Math.max(0,1-t/1.1);
     ctx.save(); ctx.globalAlpha=al; ctx.font=(pop.gold?34:28)+'px Jua, sans-serif'; ctx.textAlign='center';
     ctx.lineWidth=6; ctx.strokeStyle='#14162B'; ctx.fillStyle=pop.gold?'#FFD447':'#FFFFFF';
@@ -1622,7 +1638,7 @@ function startArchery(){
     ctx.fillText(phase==='setup'?'한 사람당 몇 발 쏠지 고르세요':msg,180,H-112);
   }
   function loop(t){ const dt=Math.min(.033,(t-(last||t))/1000)||.016; last=t; clock+=dt;
-    if(phase==='aim') aimT+=dt; if(string>0) string=Math.max(0,string-dt*2.2); if(shake>0) shake=Math.max(0,shake-dt);
+    if(phase==='aim'){ aimT+=dt; const left=Math.max(0,Math.ceil(10-aimT)); if(left!==lastLeft){ lastLeft=left; $('#arShot').textContent=(tie?'동점 결승 · ':'')+(shotNo+1)+' / '+perTurn()+'발 · '+left+'초'; if(left<=3&&left>0) beep(1000,.05,'square',.05); } if(aimT>=10){ msgFlash='시간 초과! 자동 발사'; shoot(); } } if(string>0) string=Math.max(0,string-dt*2.2); if(shake>0) shake=Math.max(0,shake-dt);
     if(fly){ fly.t+=dt; if(fly.t>=fly.dur) hit(); } if(pop){ pop.t+=dt; if(pop.t>1.2) pop=null; }
     drawScene(); drawTarget(); if(phase==='aim') drawReticle(); drawFly(); drawBow(); drawPop(); drawMsg();
     raf=requestAnimationFrame(loop); }
