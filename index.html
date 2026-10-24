@@ -56,6 +56,11 @@ button{cursor:pointer}
 .names .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .names input{flex:1;min-width:0;width:100%;border:none;background:transparent;font-size:14px;font-weight:700;padding:0;outline:none}
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;flex:1;min-height:0}
+/* 게임 / 복권 탭 */
+.tabs{display:flex;gap:8px;flex:none}
+.tab{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);background:var(--card);color:var(--mute);font-weight:900;font-size:15px}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.panel{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
 /* 12개 넘으면 옆으로 넘기는 페이지 */
 .pager{flex:1;min-height:0;display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
 .pager::-webkit-scrollbar{display:none}
@@ -311,10 +316,12 @@ button{cursor:pointer}
     </button>
   </div>
 
-  <div class="sec-row game-h">
-    <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg></span>게임</span>
+  <div class="tabs" role="tablist" aria-label="메뉴">
+    <button class="tab" role="tab" id="tabGame" aria-selected="true" aria-controls="panelGame"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg>게임</button>
+    <button class="tab" role="tab" id="tabLotto" aria-selected="false" aria-controls="panelLotto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"></path><path d="M9 7v10" stroke-dasharray="2 2"></path></svg>복권</button>
   </div>
-  <div class="games">
+  <div class="panel" id="panelGame" role="tabpanel" aria-labelledby="tabGame">
+  <div class="games" data-tab="game">
     <button class="game hot" data-game="finger">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v6"></path><path d="M13 10.5V9a2 2 0 0 1 4 0v4"></path><path d="M9 11.5V10a2 2 0 0 0-4 0v4a8 8 0 0 0 8 8h1a6 6 0 0 0 6-6v-3a2 2 0 0 0-3-1.7"></path></svg>
@@ -381,12 +388,17 @@ button{cursor:pointer}
       </span>
       <span><b>숫자 폭탄</b></span>
     </button>
+  </div>
+  </div>
+  <div class="panel" id="panelLotto" role="tabpanel" aria-labelledby="tabLotto" hidden>
+  <div class="games" data-tab="lotto">
     <button class="game" data-game="lotto">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="7.5"></circle><circle cx="9.5" cy="8.5" r="1.8" fill="#FBC400" stroke="none"></circle><circle cx="14" cy="11.5" r="1.8" fill="#FF7272" stroke="none"></circle><circle cx="11" cy="13" r="1.8" fill="#69C8F2" stroke="none"></circle><path d="M12 17.5V21M8 21h8"></path></svg>
       </span>
       <span><b>로또 추첨기</b></span>
     </button>
+  </div>
   </div>
 </section>
 
@@ -1857,13 +1869,16 @@ $('#resHome').onclick=()=>{ show('home'); renderHome(); };
 $('#resAgain').onclick=()=>{ hideResult(); start(S.game); };
 
 // 메인 게임 카드: 12개씩 한 페이지, 넘치면 좌우로 넘김
-(function(){ const src=$('#home .games'), cards=[...src.children], PER=12, pages=Math.ceil(cards.length/PER);
+$$('#home .games').forEach(src=>{ const cards=[...src.children], PER=12, pages=Math.max(1,Math.ceil(cards.length/PER));
   const pager=document.createElement('div'); pager.className='pager';
   for(let k=0;k<pages;k++){ const pg=document.createElement('div'); pg.className='games'; cards.slice(k*PER,(k+1)*PER).forEach(c=>pg.appendChild(c)); pager.appendChild(pg); }
   src.replaceWith(pager);
   if(pages>1){ const dots=document.createElement('div'); dots.className='pg-dots'; dots.innerHTML=[...Array(pages)].map((_,k)=>'<i class="'+(k?'':'on')+'"></i>').join(''); pager.after(dots);
     pager.addEventListener('scroll',()=>{ const k=Math.round(pager.scrollLeft/pager.clientWidth); [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===k)); },{passive:true}); }
-})();
+});
+function setTab(t){ const g=t==='game'; $('#tabGame').setAttribute('aria-selected',g); $('#tabLotto').setAttribute('aria-selected',!g); $('#panelGame').hidden=!g; $('#panelLotto').hidden=g; try{ localStorage.setItem('dokbakTab',t); }catch(e){} }
+$('#tabGame').onclick=()=>setTab('game'); $('#tabLotto').onclick=()=>setTab('lotto');
+try{ if(localStorage.getItem('dokbakTab')==='lotto') setTab('lotto'); }catch(e){}
 load(); renderHome(); show('home');
 })();
 </script>
