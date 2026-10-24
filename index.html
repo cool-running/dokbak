@@ -86,6 +86,20 @@ button{cursor:pointer}
 .pbtn{margin-left:auto;height:40px;padding:0 12px;border-radius:12px;border:1px solid #2A4870;background:#172440;color:#6FD3FF;display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:14px;flex:none}
 #peopleSheet .sheet{max-height:92%;overflow-y:auto}
 
+/* 결과 오버레이 */
+.res-top{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:calc(8px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px));pointer-events:none}
+.res-card{pointer-events:auto;width:100%;max-width:440px;max-height:56vh;display:flex;flex-direction:column;gap:10px;padding:14px 14px 10px;border-radius:22px;background:#171A33;border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.45);animation:resdown .35s cubic-bezier(.2,1.2,.4,1)}
+@keyframes resdown{from{transform:translateY(-40px);opacity:0}}
+.res-head{display:flex;align-items:center;gap:12px}
+.res-dot{width:46px;height:46px;border-radius:50%;border:6px solid;flex:none}
+.res-name{font-size:30px;line-height:1.1;color:var(--fg)}
+.res-name em{font-style:normal;color:var(--red)}
+.res-sub{font-size:13px}
+.res-card .sc-wrap{max-height:none;flex:1;min-height:0}
+.res-card .sc th{background:#14162B}
+.res-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(11,12,24,.92) 40%)}
+.res-bar .row2{width:100%;max-width:440px}
+
 /* 점수표 */
 .sc-wrap{flex:none;max-height:34%;overflow:auto;border-radius:14px}
 .sc-wrap.card{max-height:none;padding:8px 10px}
@@ -103,6 +117,11 @@ button{cursor:pointer}
 .sc tr.lose td{background:rgba(255,92,122,.16)}
 .sc tr.lose td.tot{color:var(--red)}
 .sc td.tb{color:#B79CFF}
+
+.dc-guide{flex:none;text-align:left;font-size:12px;line-height:1.55;color:var(--mute);padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.dc-guide b{color:var(--accent);margin-right:6px}
+.dc-guide em{font-style:normal;color:var(--red);font-weight:700}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
 
 /* 양궁 */
 .ar-info{display:flex;gap:8px;flex:none}
@@ -170,7 +189,7 @@ button{cursor:pointer}
 
 /* 돌림판 */
 .wheel-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
-.wheel-wrap canvas{max-width:100%;height:auto}
+.wheel-wrap canvas{max-width:100%;height:auto;touch-action:none;cursor:grab}
 .pin{position:absolute;top:calc(50% - var(--wr) - 6px);left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid var(--accent);filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
 
 /* 사다리 */
@@ -273,6 +292,13 @@ button{cursor:pointer}
       </span>
       <span><b>사다리</b><small>숨은 독박 1칸</small></span>
     </button>
+    <button class="game wide" data-game="dice">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8" width="10" height="10" rx="2.5"></rect><rect x="11.5" y="4" width="10" height="10" rx="2.5" transform="rotate(12 16.5 9)"></rect><circle cx="5.5" cy="11" r="1" fill="#6FD3FF"></circle><circle cx="9.5" cy="15" r="1" fill="#6FD3FF"></circle><circle cx="16.5" cy="9" r="1" fill="#6FD3FF"></circle></svg>
+        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
+      </span>
+      <span><b>주사위 테이블</b><small>투명 돔을 눌러 주사위 2개 · 합계로 독박</small></span>
+    </button>
     <button class="game wide" data-game="archery">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="13" cy="11" r="8"></circle><circle cx="13" cy="11" r="4.5"></circle><circle cx="13" cy="11" r="1.2" fill="#FF5C7A"></circle><path d="M2 22l10-10M2 22v-4M2 22h4"></path></svg>
@@ -329,10 +355,11 @@ button{cursor:pointer}
     <div class="disp" style="font-size:24px">돌림판</div>
     <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
+  <div class="seg" role="group" aria-label="돌림판 방식" id="wMode" style="flex:none;grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="hit">걸리면 독박</button><button data-m="out">걸리면 빠지기</button></div>
   <div class="wheel-wrap" id="wWrap">
     <canvas id="wCanvas" width="680" height="680" aria-label="참가자 돌림판"></canvas>
-    <div class="pin" aria-hidden="true"></div>
   </div>
+  <div class="mute" style="text-align:center;font-size:13px;flex:none" id="wHint">손가락으로 휙 돌리거나 버튼을 눌러요</div>
   <button class="btn" id="spin">돌리기</button>
 </section>
 
@@ -387,6 +414,20 @@ button{cursor:pointer}
   <button class="btn" id="bStart">시작</button>
 </section>
 
+<!-- 주사위 테이블 -->
+<section class="screen fixed" id="dice" hidden>
+  <div class="top">
+    <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+    <div class="disp" style="font-size:24px">주사위 테이블</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
+  </div>
+  <div class="seg" role="group" aria-label="게임 방식" id="dcMode" style="flex:none;grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="jokbo">족보 게임</button><button data-m="sum">합계 게임</button></div>
+  <div class="seg" role="group" aria-label="독박 규칙" id="dcRule" style="flex:none;grid-template-columns:repeat(2,minmax(0,1fr))"><button data-r="low">낮으면 독박</button><button data-r="high">높으면 독박</button></div>
+  <div class="dc-guide" id="dcGuide"><b>족보 순위</b> 66땡 &gt; 55땡 &gt; 44땡 &gt; 33땡 &gt; 22땡 &gt; 11땡 &gt; 65 &gt; 64 &gt; … &gt; 31 &gt; 21<br><span>땡이 가장 높고, 그다음은 큰 수가 앞인 숫자 순이에요 · <em>가장 낮은 족보가 독박</em></span></div>
+  <div class="mb-wrap" id="dcWrap"><canvas id="dcCanvas" aria-label="원형 테이블과 주사위"></canvas></div>
+  <div class="mute" style="text-align:center;font-size:14px;flex:none" id="dcMsg">자기 칸의 투명 돔을 눌러 주사위를 굴려요</div>
+</section>
+
 <!-- 양궁 -->
 <section class="screen fixed" id="archery" hidden>
   <div class="top">
@@ -425,6 +466,7 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">악어 이빨</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
   <div class="play-wrap">
     <svg id="crSvg" viewBox="0 0 360 430" role="img" aria-label="악어 입 속 이빨">
@@ -481,6 +523,7 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">해적 통</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
   <div class="play-wrap">
     <svg id="prSvg" viewBox="0 0 360 512" role="img" aria-label="해적이 숨은 나무통">
@@ -536,37 +579,17 @@ button{cursor:pointer}
 </section>
 
 <!-- 결과 -->
-<section class="screen" id="result" hidden>
-  <div class="win-head">
-    <div class="disp big">당첨!</div>
-    <div class="win-swatch" id="rSwatch"></div>
-    <div class="disp win-name" id="rName">2번</div>
-    <div class="mute" style="font-size:14px" id="rSub"></div>
-  </div>
-
-  <div class="sc-wrap card" id="rTable" hidden></div>
-
-  <div class="card" style="display:flex;flex-direction:column;gap:12px">
-    <label for="rAmt" style="font-size:14px;font-weight:700">전체 금액</label>
-    <input id="rAmt" class="amt-in" type="text" inputmode="numeric" placeholder="금액을 넣으면 바로 나눠요" autocomplete="off">
-    <div class="seg" role="group" aria-label="나누는 방식">
-      <button data-rule="all">독박 전액</button>
-      <button data-rule="double">독박 2배</button>
-      <button data-rule="half">독박 절반</button>
-    </div>
-    <div class="split" id="rSplit"></div>
-    <div class="note" id="rNote">100원 단위로 맞추고, 남는 돈은 독박이 내요</div>
-  </div>
-
-  <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
-    <button class="btn ghost" id="rShare">결과 복사·공유</button>
-    <div class="row2">
-      <button class="btn ghost" id="rHome">다른 게임</button>
-      <button class="btn" id="rAgain">한 번 더</button>
-    </div>
-  </div>
-</section>
+<!-- 결과는 게임 화면 위에 띄움 -->
 </div>
+
+<!-- 결과: 위쪽 카드 + 아래 버튼 -->
+<div class="res-top" id="resTop" hidden>
+  <div class="res-card" role="status" aria-live="polite">
+    <div class="res-head"><span class="res-dot" id="resDot"></span><div style="min-width:0"><div class="disp res-name" id="resName">2번 독박!</div><div class="mute res-sub" id="resSub"></div></div></div>
+    <div class="sc-wrap" id="resTable"></div>
+  </div>
+</div>
+<div class="res-bar" id="resBar" hidden><div class="row2"><button class="btn ghost" id="resHome">다른 게임</button><button class="btn" id="resAgain">한 번 더</button></div></div>
 
 <!-- 참여 방식 시트 -->
 <div class="scrim" id="modeSheet" hidden>
@@ -660,13 +683,10 @@ function buzz(p){ if(!S.vib) return; try{ navigator.vibrate && navigator.vibrate
 
 /* 화면 전환 */
 let cleanup = null;
-function show(id){ if(cleanup){ cleanup(); cleanup=null; } $$('.screen').forEach(s=>s.hidden = s.id!==id); window.scrollTo(0,0); }
+function show(id){ if(cleanup){ cleanup(); cleanup=null; } hideResult(); $$('.screen').forEach(s=>s.hidden = s.id!==id); window.scrollTo(0,0); }
 let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2200); }
 
 /* 금액 입력 */
-function parseAmt(v){ return parseInt(String(v).replace(/[^0-9]/g,''),10)||0; }
-function bindAmt(el){ el.addEventListener('input',()=>{ S.amount = Math.min(parseAmt(el.value), 99999999); el.value = S.amount? S.amount.toLocaleString('ko-KR') : ''; if(el.id==='rAmt') renderSplit(); }); }
-bindAmt($('#rAmt'));
 
 /* 홈 */
 function renderHome(){
@@ -684,7 +704,7 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel'||g==='marble'||g==='archery') openPeople(); } });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else start(g); });
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
 function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
 function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
@@ -695,7 +715,7 @@ $$('.pbtn').forEach(b=>b.onclick=openPeople);
 /* 참여 방식 시트 */
 let modeGame=null;
 function openMode(g){ modeGame=g; $('#mTitle').textContent = g==='bomb'?'폭탄 돌리기':'사다리'; $('#mOneSub').textContent = g==='bomb'?'폰을 넘기다 터지면 독박':'한 화면에서 이름 눌러 타기'; $('#modeSheet').hidden=false; $('#mOne').focus(); }
-$('#mOne').onclick=()=>{ $('#modeSheet').hidden=true; start(modeGame); openPeople(); };
+$('#mOne').onclick=()=>{ $('#modeSheet').hidden=true; start(modeGame); };
 $('#mRoom').onclick=()=>toast('방 만들기는 다음 업데이트에서 열려요');
 $('#mCancel').onclick=()=>$('#modeSheet').hidden=true;
 $('#modeSheet').onclick=e=>{ if(e.target.id==='modeSheet') $('#modeSheet').hidden=true; };
@@ -709,7 +729,7 @@ $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
-function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery})[g](); }
+function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice})[g](); }
 
 /* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
@@ -766,7 +786,7 @@ function startFinger(){
     banner.textContent=wp.no+'번 폭탄이 터졌어요!';
     boomSound(); buzz([300,80,300]);
     const n=ids.length;
-    setTimeout(()=>result({name:wp.no+'번 폭탄', color:PAL[wp.c][0], sub:n+'개 중 '+PAL[wp.c][1]+' 폭탄이 펑!', n}),1700);
+    setTimeout(()=>result({name:wp.no+'번 폭탄', color:PAL[wp.c][0], sub:n+'개 중 '+PAL[wp.c][1]+' 폭탄이 펑!', n, table:mkTable(['폭탄','색','결과'],[...pts.values()].sort((a,b)=>a.no-b.no).map(p=>({cells:[p.no+'번 폭탄',PAL[p.c][1],p===wp?'펑!':'안전'],lose:p===wp,color:PAL[p.c][0]})))}),1700);
   }
   const ts=e=>{ e.preventDefault(); for(const t of e.changedTouches) add('t'+t.identifier,t.clientX,t.clientY); update(); };
   const tm=e=>{ e.preventDefault(); for(const t of e.changedTouches) move('t'+t.identifier,t.clientX,t.clientY); };
@@ -779,43 +799,118 @@ function startFinger(){
 }
 
 /* ── 돌림판 ── */
-let wRot=0;
+let wRot=0, wMode='hit';
 function startWheel(){
   show('wheel');
-  const cv=$('#wCanvas'), ctx=cv.getContext('2d'), n=S.n, A=Math.PI*2/n;
+  const cv=$('#wCanvas'), ctx=cv.getContext('2d'), n=S.n, TAU=Math.PI*2;
+  let act=[...Array(n).keys()], A=TAU/act.length, outOrder=[], finalPick=false, finalRule=null;
+  const mb=$$('#wMode button'); mb[0].textContent='걸리면 독박'; mb[1].textContent='걸리면 빠지기';
+  const paintMode=()=>$$('#wMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===wMode));
+  $$('#wMode button').forEach(b=>b.onclick=()=>{
+    if(spinning) return;
+    if(finalPick){ finalRule=b.dataset.m; mb.forEach(x=>x.setAttribute('aria-pressed',x===b)); $('#spin').disabled=false;
+      $('#wHint').textContent= finalRule==='hit' ? '마지막 판 · 걸린 사람이 독박' : '마지막 판 · 걸린 사람은 빠지고 남은 사람이 독박'; return; }
+    if(outOrder.length) return; wMode=b.dataset.m; paintMode(); hintIdle(); }); paintMode(); $('#wMode').style.opacity=1;
+  const hintIdle=()=>$('#wHint').textContent= wMode==='out' ? (act.length+'명 남음 · 걸린 사람은 빠지고 마지막 1명이 독박') : '손가락으로 휙 돌리거나 버튼을 눌러요';
+  const CX=340, CY=362, R=292;
   $('#spin').disabled=false;
-  let spinning=false, raf=0;
-  function size(){ const w=$('#wWrap'); const s=Math.min(w.clientWidth, w.clientHeight-20, 400); cv.style.width=s+'px'; cv.style.height=s+'px'; w.style.setProperty('--wr',(s/2)+'px'); }
-  function draw(rot){
-    const R=340, c=340; ctx.clearRect(0,0,680,680);
-    for(let i=0;i<n;i++){
-      const a0=rot+i*A-Math.PI/2;
-      ctx.beginPath(); ctx.moveTo(c,c); ctx.arc(c,c,R-6,a0,a0+A); ctx.closePath();
-      ctx.fillStyle=PAL[i][0]; ctx.fill(); ctx.lineWidth=6; ctx.strokeStyle='#14162B'; ctx.stroke();
-      ctx.save(); ctx.translate(c,c); ctx.rotate(a0+A/2); ctx.textAlign='right'; ctx.textBaseline='middle';
-      ctx.fillStyle='#14162B'; ctx.font=(n>7?34:42)+'px Jua, "Noto Sans KR", sans-serif'; ctx.fillText(nameOf(i),R-40,0); ctx.restore();
+  let raf=0, last=0, vel=0, spinning=false, dragging=false, done=false, lastAng=0, samples=[], lastSeg=null;
+  let defl=0, deflV=0, stillT=0;
+  function size(){ const w=$('#wWrap'); const s=Math.min(w.clientWidth, w.clientHeight-10, 420); cv.style.width=s+'px'; cv.style.height=s+'px'; }
+  const segAt=r=>Math.floor(((((-r)%TAU)+TAU)%TAU)/A);
+  // 소리: 핀이 화살표를 칠 때 딱딱
+  function sTick(v){ const a=audio(); if(!a) return; const vol=Math.min(.7,.18+Math.abs(v)*.035); noiseBurst(a,.022,'highpass',2400,.8,vol); tone(a,1900,1100,.025,'square',vol*.06); }
+  function draw(){
+    ctx.clearRect(0,0,680,680);
+    // 그림자 + 테두리
+    ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.arc(CX+6,CY+12,R+24,0,TAU); ctx.fill();
+    const rim=ctx.createLinearGradient(0,CY-R,0,CY+R); rim.addColorStop(0,'#F4D58A'); rim.addColorStop(.5,'#C89235'); rim.addColorStop(1,'#8A5A1A');
+    ctx.fillStyle=rim; ctx.beginPath(); ctx.arc(CX,CY,R+24,0,TAU); ctx.fill();
+    ctx.fillStyle='#14162B'; ctx.beginPath(); ctx.arc(CX,CY,R+4,0,TAU); ctx.fill();
+    // 칸
+    for(let j=0;j<act.length;j++){
+      const i=act[j], a0=wRot+j*A-Math.PI/2;
+      const g=ctx.createRadialGradient(CX,CY,30,CX,CY,R); g.addColorStop(0,PAL[i][0]); g.addColorStop(1,PAL[i][0]+'CC');
+      ctx.beginPath(); ctx.moveTo(CX,CY); ctx.arc(CX,CY,R,a0,a0+A); ctx.closePath(); ctx.fillStyle=g; ctx.fill();
+      ctx.lineWidth=5; ctx.strokeStyle='rgba(20,22,43,.85)'; ctx.stroke();
+      ctx.save(); ctx.translate(CX,CY); ctx.rotate(a0+A/2); ctx.textAlign='right'; ctx.textBaseline='middle';
+      ctx.fillStyle='#14162B'; ctx.font=(act.length>7?32:40)+'px Jua, "Noto Sans KR", sans-serif'; ctx.fillText(nameOf(i),R-34,0); ctx.restore();
     }
-    ctx.beginPath(); ctx.arc(c,c,46,0,Math.PI*2); ctx.fillStyle='#14162B'; ctx.fill(); ctx.lineWidth=6; ctx.strokeStyle='#34375A'; ctx.stroke();
+    // 반짝임
+    const sh=ctx.createLinearGradient(CX-R,CY-R,CX+R,CY+R); sh.addColorStop(0,'rgba(255,255,255,.22)'); sh.addColorStop(.5,'rgba(255,255,255,0)');
+    ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(CX,CY,R,0,TAU); ctx.fill();
+    // 테두리 핀 (칸 경계마다)
+    for(let j=0;j<act.length;j++){ const a=wRot+j*A-Math.PI/2, x=CX+Math.cos(a)*(R+12), y=CY+Math.sin(a)*(R+12);
+      ctx.fillStyle='#FFF8EA'; ctx.beginPath(); ctx.arc(x,y,8,0,TAU); ctx.fill(); ctx.strokeStyle='#5A3A10'; ctx.lineWidth=3; ctx.stroke(); }
+    // 가운데 축
+    const hub=ctx.createRadialGradient(CX-10,CY-10,4,CX,CY,44); hub.addColorStop(0,'#FFE58A'); hub.addColorStop(1,'#B07A22');
+    ctx.fillStyle=hub; ctx.beginPath(); ctx.arc(CX,CY,42,0,TAU); ctx.fill(); ctx.strokeStyle='#5A3A10'; ctx.lineWidth=5; ctx.stroke();
+    ctx.fillStyle='#14162B'; ctx.beginPath(); ctx.arc(CX,CY,12,0,TAU); ctx.fill();
+    // 화살표 (위에 매달려 핀에 걸리면 튕김)
+    ctx.save(); ctx.translate(CX,22); ctx.rotate(defl);
+    ctx.fillStyle='rgba(0,0,0,.3)'; ctx.beginPath(); ctx.moveTo(-24,6); ctx.lineTo(28,6); ctx.lineTo(4,92); ctx.closePath(); ctx.fill();
+    const pg=ctx.createLinearGradient(-26,0,26,0); pg.addColorStop(0,'#FF6B5E'); pg.addColorStop(1,'#C21C17');
+    ctx.fillStyle=pg; ctx.strokeStyle='#5A0E0A'; ctx.lineWidth=4; ctx.lineJoin='round';
+    ctx.beginPath(); ctx.moveTo(-26,0); ctx.quadraticCurveTo(0,-18,26,0); ctx.lineTo(0,86); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#FFE58A'; ctx.beginPath(); ctx.arc(0,4,9,0,TAU); ctx.fill(); ctx.stroke();
+    ctx.restore();
   }
-  size(); draw(wRot);
-  const onR=()=>{ size(); }; window.addEventListener('resize',onR);
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!spinning) draw(wRot); });
-  $('#spin').onclick=()=>{
-    if(spinning) return; spinning=true; $('#spin').disabled=true; audio();
-    const k=Math.floor(Math.random()*n), jit=.15+Math.random()*.7;
-    const want=-(k+jit)*A, cur=wRot, TAU=Math.PI*2;
-    const delta=TAU*6+(((want-cur)%TAU)+TAU)%TAU;
-    const t0=performance.now(), dur=4300; let lastSeg=-1;
-    const step=now=>{
-      const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3);
-      wRot=cur+delta*e; draw(wRot);
-      const seg=Math.floor(((((-wRot)%TAU)+TAU)%TAU)/A); if(seg!==lastSeg){ lastSeg=seg; beep(900,.03,'square',.03); }
-      if(t<1) raf=requestAnimationFrame(step);
-      else { spinning=false; fanfare(); buzz([80,60,200]); setTimeout(()=>result({name:nameOf(k), color:PAL[k][0], sub:'돌림판이 골랐어요', n}),900); }
-    };
-    raf=requestAnimationFrame(step);
+  function finish(){
+    done=true; spinning=false; const k=act[segAt(wRot)];
+    if(wMode==='hit' || act.length<=2){
+      // 걸리면 독박 / 빠지기 마지막 판: 2명 남았으면 걸린 사람이 빠지고 남은 사람이 독박
+      const other=act.find(i=>i!==k), lastHit = wMode==='out' && finalRule==='hit';
+      let L=k; if(wMode==='out' && !lastHit){ outOrder.push(k); L=other; }
+      fanfare(); buzz([80,60,200]);
+      const tb = wMode==='out'
+        ? mkTable(['이름','결과'],[...outOrder.map((i,o)=>({cells:[esc(nameOf(i)),(o+1)+'번째 탈출'],color:PAL[i][0]})),...(lastHit?[{cells:[esc(nameOf(other)),'마지막 생존'],color:PAL[other][0]}]:[]),{cells:[esc(nameOf(L)),'독박'],lose:true,color:PAL[L][0]}])
+        : mkTable(['이름','결과'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),i===k?'독박':'통과'],lose:i===k,color:PAL[i][0]})));
+      setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:wMode==='out'?(lastHit?'마지막 판에서 걸렸어요':'끝까지 남았어요'):'돌림판이 골랐어요', n, table:tb}),700);
+      return;
+    }
+    // 걸리면 빠지기: 걸린 사람 빼고 다시
+    outOrder.push(k); beep(880,.1,'triangle',.08); beep(1320,.12,'triangle',.06); buzz(60);
+    $('#wHint').textContent=nameOf(k)+' 탈출! 남은 '+(act.length-1)+'명';
+    setTimeout(()=>{ act=act.filter(i=>i!==k); A=TAU/act.length; done=false; lastSeg=null; vel=0;
+      if(act.length===2){ finalPick=true; finalRule=null; mb[0].textContent='마지막: 걸리면 독박'; mb[1].textContent='마지막: 걸리면 빠지기'; mb.forEach(x=>x.setAttribute('aria-pressed','false'));
+        $('#wMode').style.opacity=1; $('#spin').disabled=true; $('#wHint').textContent='2명 남았어요 · 마지막 판 규칙을 골라주세요'; beep(660,.1,'triangle',.07); return; }
+      $('#spin').disabled=false; $('#wMode').style.opacity=.5; hintIdle(); },1300);
+  }
+
+  function loop(t){
+    const dt=Math.min(.033,(t-(last||t))/1000)||.016; last=t;
+    if(spinning && !dragging){
+      const sg=Math.sign(vel); vel-=sg*(.5+.11*Math.abs(vel))*dt; if(Math.sign(vel)!==sg) vel=0;
+      wRot+=vel*dt;
+      const seg=segAt(wRot);
+      if(lastSeg!==null && seg!==lastSeg){
+        sTick(vel); buzz(8);
+        defl=Math.max(-.7,Math.min(.7,-Math.sign(vel)*(.28+Math.abs(vel)*.03))); deflV=0;
+        if(Math.abs(vel)<.55){ vel=-vel*.35; wRot+=vel*dt*2; } else vel-=Math.sign(vel)*.05;
+      }
+      lastSeg=segAt(wRot);
+      if(Math.abs(vel)<.02){ stillT+=dt; if(stillT>.35 && !done) finish(); } else stillT=0;
+    }
+    // 화살표 스프링
+    deflV+=(-90*defl-9*deflV)*dt; defl+=deflV*dt;
+    draw(); raf=requestAnimationFrame(loop);
+  }
+  // 손으로 돌리기
+  const angOf=e=>{ const r=cv.getBoundingClientRect(), x=(e.clientX-r.left)*680/r.width, y=(e.clientY-r.top)*680/r.height; return Math.atan2(y-CY,x-CX); };
+  const pd=e=>{ if(spinning||done||(finalPick&&!finalRule)) return; $('#wMode').style.opacity=.5; audio(); dragging=true; cv.setPointerCapture(e.pointerId); lastAng=angOf(e); samples=[]; lastSeg=segAt(wRot); cv.style.cursor='grabbing'; };
+  const pm=e=>{ if(!dragging) return; const a=angOf(e); let d=a-lastAng; if(d>Math.PI) d-=TAU; if(d<-Math.PI) d+=TAU; wRot+=d; lastAng=a; const now=performance.now(); samples.push([now,d]); samples=samples.filter(x=>now-x[0]<110);
+    const seg=segAt(wRot); if(seg!==lastSeg){ sTick(2); defl=-Math.sign(d)*.3; lastSeg=seg; } };
+  const pu=()=>{ if(!dragging) return; dragging=false; cv.style.cursor='grab';
+    const now=performance.now(), rec=samples.filter(x=>now-x[0]<110), dsum=rec.reduce((a,x)=>a+x[1],0), span=rec.length?Math.max(.03,(now-rec[0][0])/1000):1;
+    const v=dsum/span;
+    if(Math.abs(v)<3){ $('#wHint').textContent='조금 더 세게 휙 돌려주세요'; return; }
+    vel=Math.max(-28,Math.min(28,v)); spinning=true; $('#spin').disabled=true; $('#wHint').textContent='돌아가는 중…';
   };
-  cleanup=()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize',onR); };
+  cv.addEventListener('pointerdown',pd); cv.addEventListener('pointermove',pm); cv.addEventListener('pointerup',pu); cv.addEventListener('pointercancel',pu);
+  $('#spin').onclick=()=>{ if(spinning||done||(finalPick&&!finalRule)) return; audio(); $('#wMode').style.opacity=.5; lastSeg=segAt(wRot); vel=15+Math.random()*7; spinning=true; $('#spin').disabled=true; $('#wHint').textContent='돌아가는 중…'; };
+  hintIdle(); size(); const onR=()=>size(); window.addEventListener('resize',onR);
+  raf=requestAnimationFrame(loop);
+  cleanup=()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize',onR); cv.removeEventListener('pointerdown',pd); cv.removeEventListener('pointermove',pm); cv.removeEventListener('pointerup',pu); cv.removeEventListener('pointercancel',pu); };
 }
 
 /* ── 사다리 ── */
@@ -858,7 +953,7 @@ function startLadder(){
   function run(s){
     if(done.has(s)) return; done.add(s); top.children[s].disabled=true; audio(); beep(520,.06,'sine');
     const end=paint(s,true);
-    timers.push(setTimeout(()=>{ reveal(end); if(end===loser){ fanfare(); buzz([80,60,200]); top.querySelectorAll('button').forEach(b=>b.disabled=true); timers.push(setTimeout(()=>result({name:nameOf(s), color:PAL[s][0], sub:'사다리 끝에 독박이 있었어요', n}),1100)); } else beep(880,.08,'triangle'); },1650));
+    timers.push(setTimeout(()=>{ reveal(end); if(end===loser){ fanfare(); buzz([80,60,200]); top.querySelectorAll('button').forEach(b=>b.disabled=true); timers.push(setTimeout(()=>result({name:nameOf(s), color:PAL[s][0], sub:'사다리 끝에 독박이 있었어요', n, table:mkTable(['이름','도착','결과'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),(ends[i]+1)+'번 칸',ends[i]===loser?'독박':'통과'],lose:ends[i]===loser,color:PAL[i][0]})))}),1100)); } else beep(880,.08,'triangle'); },1650));
   }
   $('#ladNew').onclick=()=>{ build(); beep(600); };
   $('#ladAll').onclick=()=>{ const s=ends.indexOf(loser); if(!done.has(s)) run(s); };
@@ -886,7 +981,7 @@ function startBomb(){
     running=false; clearInterval(bar); $('#bBar').style.width='100%';
     boomSound(); buzz([400,80,400]);
     const f=document.createElement('div'); f.className='flash'; f.textContent='펑!'; document.body.appendChild(f);
-    setTimeout(()=>{ f.remove(); result({name:'폭탄 든 사람', color:'#FF5C7A', sub:passes+'번 넘긴 끝에 펑!', n:S.n}); },1400);
+    setTimeout(()=>{ f.remove(); result({name:'폭탄 든 사람', color:'#FF5C7A', sub:passes+'번 넘긴 끝에 펑!', n:S.n, table:mkTable(['기록','값'],[{cells:['넘긴 횟수',passes+'번']}])}); },1400);
   }
   $('#bStart').onclick=()=>{
     audio(); running=true; passes=0; t0=performance.now(); total=12+Math.random()*28;
@@ -905,6 +1000,129 @@ function startBomb(){
 let turn=0;
 function setTurn(id){ const el=$(id), i=turn%S.n; el.querySelector('.dot').style.background=PAL[i][0]; el.querySelector('b').textContent=nameOf(i); }
 function bindPress(el,fn){ el.addEventListener('click',fn); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } }); }
+
+/* ── 주사위 테이블 ── */
+let dcRule='low', dcMode='jokbo';
+// 족보: 66>55>44>33>22>11(땡) 다음은 큰 수가 앞인 두 자리 숫자 순 (65>64>…>21)
+const dcScore=d=>dcMode==='sum'?d[0]+d[1]:(d[0]===d[1]?100+d[0]:Math.max(d[0],d[1])*10+Math.min(d[0],d[1]));
+const dcLabel=d=>dcMode==='sum'?String(d[0]+d[1]):(d[0]===d[1]?d[0]+''+d[1]+'땡':Math.max(d[0],d[1])+''+Math.min(d[0],d[1]));
+function startDice(){
+  show('dice');
+  const W=360, H=360, CX=180, CY=180, RT=166, cv=$('#dcCanvas'), ctx=cv.getContext('2d'), wrap=$('#dcWrap');
+  const n=S.n, rnd=(a,b)=>a+Math.random()*(b-a);
+  let scale=1, raf=0, last=0, clock=0, phase='play', tieSet=null, rolls=0;
+  const span=2*Math.PI/n, off=-Math.PI/2-span/2;
+  const domeR=Math.min(66, RT*.56*Math.sin(Math.PI/n)*.92+ (n<=2?30:0));
+  const seats=[...Array(n)].map((_,i)=>{ const a=off+span*(i+.5), r=n<=2?RT*.5:RT*.56; return {i,a,x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r,d:[1,1],sum:null,t:-1,spin:[0,0],hist:[]}; });
+  function fit(){ const w=wrap.clientWidth, h=wrap.clientHeight; scale=Math.min(w/W,h/H); const dpr=window.devicePixelRatio||1;
+    cv.style.width=(W*scale)+'px'; cv.style.height=(H*scale)+'px'; cv.width=Math.round(W*scale*dpr); cv.height=Math.round(H*scale*dpr); ctx.setTransform(scale*dpr,0,0,scale*dpr,0,0); }
+  const rollable=st=>phase==='play' && st.t<0 && (st.sum===null) && (!tieSet||tieSet.includes(st.i));
+  function paintRule(){ const jk=dcMode==='jokbo';
+    $$('#dcRule button').forEach(b=>{ b.disabled=jk; b.setAttribute('aria-pressed',!jk&&b.dataset.r===dcRule); });
+    $$('#dcMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===dcMode)); $('#dcGuide').hidden=!jk; }
+  $$('#dcRule button').forEach(b=>b.onclick=()=>{ if(rolls>0) return; dcRule=b.dataset.r; paintRule(); });
+  $$('#dcMode button').forEach(b=>b.onclick=()=>{ if(rolls>0) return; dcMode=b.dataset.m; paintRule(); });
+  paintRule(); $('#dcRule').style.opacity=1; $('#dcMode').style.opacity=1;
+  $('#dcMsg').textContent='자기 칸의 투명 돔을 눌러 주사위를 굴려요';
+  // 소리
+  function sPop(){ const a=audio(); if(!a) return; tone(a,220,90,.12,'sine',.35); noiseBurst(a,.03,'highpass',3000,.7,.3); }
+  function sClack(){ const a=audio(); if(!a) return; noiseBurst(a,.03,'bandpass',rnd(2200,3400),3,.5); tone(a,rnd(900,1300),700,.03,'square',.03); }
+  function roll(st){
+    if(!rollable(st)) return; audio(); rolls++; $('#dcRule').style.opacity=.5; $('#dcMode').style.opacity=.5;
+    st.t=0; st.d=[1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)]; st.spin=[rnd(-1,1)*9,rnd(-1,1)*9]; st.show=[1,1];
+    sPop(); buzz(25); [90,210,330,470,640].forEach(ms=>setTimeout(sClack,ms));
+  }
+  function settle(st){
+    st.sum=dcScore(st.d); st.lab=dcLabel(st.d); st.hist.push(st.d.slice()); buzz(15);
+    const group=tieSet||seats.map(x=>x.i);
+    if(group.every(i=>seats[i].sum!==null)) decide(group);
+  }
+  function decide(group){
+    const rule=dcMode==='jokbo'?'low':dcRule, vals=group.map(i=>seats[i].sum), worst=rule==='low'?Math.min(...vals):Math.max(...vals);
+    const losers=group.filter(i=>seats[i].sum===worst);
+    if(losers.length>1){
+      phase='wait'; $('#dcMsg').textContent='동점! '+losers.map(nameOf).join(', ')+' 다시 굴려요';
+      setTimeout(()=>{ tieSet=losers; losers.forEach(i=>{ seats[i].sum=null; seats[i].t=-1; }); phase='play'; beep(700,.08,'triangle',.07); },1300);
+      return;
+    }
+    const L=losers[0]; phase='done'; $('#dcMsg').textContent=nameOf(L)+' 독박!'; seats[L].lose=true; boomSound(); buzz([200,60,300]);
+    let tb='<table class="sc"><thead><tr><th scope="col" style="text-align:left">이름</th><th scope="col">주사위</th><th scope="col">'+(dcMode==='sum'?'합계':'족보')+'</th></tr></thead><tbody>';
+    for(const st of seats){ tb+='<tr class="'+(st.i===L?'lose':'')+'"><td class="nm"><i style="background:'+PAL[st.i][0]+'"></i>'+esc(nameOf(st.i))+'</td><td>'+st.hist.map(h=>h[0]+'+'+h[1]).join(' → ')+'</td><td class="tot">'+st.hist.map(h=>dcLabel(h)).join(' → ')+'</td></tr>'; }
+    tb+='</tbody></table>';
+    setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:dcMode==='sum'?('주사위 합 '+seats[L].lab+' · '+(dcRule==='low'?'낮으면':'높으면')+' 독박'):('족보 '+seats[L].lab+' · 가장 낮은 족보'), n, table:tb}),1500);
+  }
+  // 그리기
+  function pip(x,y,s,v,red){ const P={1:[[0,0]],2:[[-1,-1],[1,1]],3:[[-1,-1],[0,0],[1,1]],4:[[-1,-1],[1,-1],[-1,1],[1,1]],5:[[-1,-1],[1,-1],[0,0],[-1,1],[1,1]],6:[[-1,-1],[1,-1],[-1,0],[1,0],[-1,1],[1,1]]}[v];
+    ctx.fillStyle=(v===1)?'#D7261E':'#1A1A1E'; for(const [a,b] of P){ ctx.beginPath(); ctx.arc(x+a*s*.27,y+b*s*.27,s*(v===1?.13:.09),0,7); ctx.fill(); } }
+  function die(x,y,s,rot,v,lift){
+    ctx.save(); ctx.translate(x,y);
+    ctx.fillStyle='rgba(0,0,0,'+(.35-lift*.15)+')'; ctx.beginPath(); ctx.ellipse(lift*6,s*.45+lift*8,s*.55*(1-lift*.2),s*.2,0,0,7); ctx.fill();
+    ctx.translate(0,-lift*10); ctx.rotate(rot); const k=1+lift*.22; ctx.scale(k,k);
+    const g=ctx.createLinearGradient(-s/2,-s/2,s/2,s/2); g.addColorStop(0,'#FFFFFF'); g.addColorStop(1,'#D9D6CE');
+    ctx.fillStyle=g; ctx.strokeStyle='#8A877F'; ctx.lineWidth=1.2; const r=s*.2;
+    ctx.beginPath(); ctx.roundRect?ctx.roundRect(-s/2,-s/2,s,s,r):ctx.rect(-s/2,-s/2,s,s); ctx.fill(); ctx.stroke();
+    pip(0,0,s,v); ctx.restore();
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // 테이블 (나무 테두리 + 펠트)
+    ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(CX+4,CY+8,RT+10,RT+10,0,0,7); ctx.fill();
+    const wood=ctx.createRadialGradient(CX-40,CY-40,20,CX,CY,RT+12); wood.addColorStop(0,'#A8703C'); wood.addColorStop(1,'#5E3A1C');
+    ctx.fillStyle=wood; ctx.beginPath(); ctx.arc(CX,CY,RT+10,0,7); ctx.fill();
+    const felt=ctx.createRadialGradient(CX,CY,10,CX,CY,RT); felt.addColorStop(0,'#1F7A4D'); felt.addColorStop(1,'#11502F');
+    ctx.fillStyle=felt; ctx.beginPath(); ctx.arc(CX,CY,RT,0,7); ctx.fill();
+    // 자리 나누기 (색 띠 + 구분선)
+    for(const st of seats){ const a0=off+span*st.i, a1=a0+span;
+      const on=rollable(st), lose=st.lose;
+      ctx.fillStyle=lose?'rgba(255,92,122,.35)':(PAL[st.i][0]+(on?'33':'1A')); ctx.beginPath(); ctx.moveTo(CX,CY); ctx.arc(CX,CY,RT,a0,a1); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle=PAL[st.i][0]; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(CX,CY,RT-3,a0+.02,a1-.02); ctx.stroke(); }
+    if(n>1){ ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.lineWidth=2; for(let i=0;i<n;i++){ const a=off+span*i; ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(CX+Math.cos(a)*RT,CY+Math.sin(a)*RT); ctx.stroke(); } }
+    ctx.fillStyle='#0E3D24'; ctx.beginPath(); ctx.arc(CX,CY,10,0,7); ctx.fill();
+    // 각 자리의 돔 + 주사위
+    for(const st of seats){
+      const t=st.t, R=domeR, s=R*.6;
+      let press=1, lift=0;
+      if(t>=0){ press = t<.12 ? 1-.08*Math.sin(t/.12*Math.PI) : 1; const tt=Math.min(1,t/.9); lift=Math.abs(Math.sin(tt*Math.PI*3))*(1-tt); }
+      ctx.save(); ctx.translate(st.x,st.y); ctx.scale(press,press);
+      // 받침
+      ctx.fillStyle='#2A2A2E'; ctx.beginPath(); ctx.arc(0,0,R+5,0,7); ctx.fill();
+      ctx.fillStyle='#E9E5DA'; ctx.beginPath(); ctx.arc(0,0,R,0,7); ctx.fill();
+      // 주사위 2개
+      const spinning=t>=0&&t<.85;
+      for(let k=0;k<2;k++){
+        const v=spinning?(1+Math.floor((clock*14+k*3+st.i)%6)):st.d[k];
+        const rot=t>=0?st.spin[k]*(1-Math.min(1,t/.9))*(1-Math.min(1,t/.9))+k*.2-.1:(k*.2-.1);
+        const dx=(k?1:-1)*s*.62 + (t>=0? Math.sin(t*20+k)*(1-Math.min(1,t))*s*.25 : 0);
+        die(dx,0,s,rot,v,lift*(k?0.8:1));
+      }
+      // 투명 돔
+      const glass=ctx.createRadialGradient(-R*.35,-R*.4,R*.1,0,0,R*1.05);
+      glass.addColorStop(0,'rgba(255,255,255,.55)'); glass.addColorStop(.35,'rgba(255,255,255,.12)'); glass.addColorStop(.85,'rgba(180,220,255,.10)'); glass.addColorStop(1,'rgba(255,255,255,.45)');
+      ctx.fillStyle=glass; ctx.beginPath(); ctx.arc(0,0,R,0,7); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=2; ctx.stroke();
+      ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=R*.08; ctx.lineCap='round'; ctx.beginPath(); ctx.arc(0,0,R*.78,Math.PI*1.1,Math.PI*1.38); ctx.stroke();
+      ctx.restore();
+      // 이름 + 합계
+      const lr=n<=2?RT*.5+domeR+20:RT*.56+domeR+16, lx=CX+Math.cos(st.a)*Math.min(lr,RT-22), ly=CY+Math.sin(st.a)*Math.min(lr,RT-22);
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='bold 13px "Noto Sans KR", sans-serif';
+      const lab=nameOf(st.i)+(st.sum!==null?' · '+st.lab:''), tw=ctx.measureText(lab).width+16;
+      ctx.fillStyle='rgba(14,16,30,.85)'; ctx.beginPath(); ctx.roundRect?ctx.roundRect(lx-tw/2,ly-11,tw,22,11):ctx.rect(lx-tw/2,ly-11,tw,22); ctx.fill();
+      ctx.strokeStyle=PAL[st.i][0]; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle='#FFFFFF'; ctx.fillText(lab,lx,ly+1);
+      if(rollable(st) && Math.sin(clock*5)>0){ ctx.strokeStyle='#FFD447'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(st.x,st.y,domeR+9,0,7); ctx.stroke(); }
+      ctx.textBaseline='alphabetic';
+    }
+  }
+  function loop(tm){ const dt=Math.min(.033,(tm-(last||tm))/1000)||.016; last=tm; clock+=dt;
+    for(const st of seats){ if(st.t>=0){ st.t+=dt; if(st.t>=1.05){ st.t=-1; settle(st); } } }
+    draw(); raf=requestAnimationFrame(loop); }
+  cv.onclick=e=>{ const r=cv.getBoundingClientRect(), x=(e.clientX-r.left)/scale, y=(e.clientY-r.top)/scale;
+    let best=null, bd=1e9; for(const st of seats){ const d=Math.hypot(x-st.x,y-st.y); if(d<bd){ bd=d; best=st; } }
+    if(Math.hypot(x-CX,y-CY)<=RT+10 && best) roll(best); };
+  fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  raf=requestAnimationFrame(loop);
+  cleanup=()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize',onR); cv.onclick=null; };
+}
 
 /* ── 양궁 ── */
 let arShots=3;
@@ -1172,7 +1390,7 @@ function startMarble(){
     const el=document.createElement('span'); el.innerHTML='<i style="background:'+PAL[b.i][0]+'"></i>'+k+'. '+esc(nameOf(b.i)); rankEl.appendChild(el);
     if(k===n-1){ const rest=balls.find(x=>!x.done); if(rest) rest.last=true; }
     if(k===n && !ended){ ended=true; el.classList.add('last'); boomSound(); buzz([200,60,300]);
-      setTimeout(()=>result({name:nameOf(b.i), color:PAL[b.i][0], sub:n+'명 중 꼴찌로 들어왔어요', n}),1500); }
+      setTimeout(()=>result({name:nameOf(b.i), color:PAL[b.i][0], sub:n+'명 중 꼴찌로 들어왔어요', n, table:mkTable(['이름','순위'],finished.map((f,k)=>({cells:[esc(nameOf(f.i)),(k+1)+'등'],lose:k===n-1,color:PAL[f.i][0]})))}),1500); }
   }
   const pastel=(x1,y1,x2,y2)=>{ const g=ctx.createLinearGradient(x1,y1,x2,y2); g.addColorStop(0,'#F7B6D9'); g.addColorStop(.5,'#C7B8F5'); g.addColorStop(1,'#A6EDD6'); return g; };
   function sparkle(x,y,r,al){ ctx.save(); ctx.globalAlpha=al; ctx.fillStyle='#FFF8EA'; ctx.beginPath(); ctx.moveTo(x,y-r*3); ctx.quadraticCurveTo(x,y,x+r*3,y); ctx.quadraticCurveTo(x,y,x,y+r*3); ctx.quadraticCurveTo(x,y,x-r*3,y); ctx.quadraticCurveTo(x,y,x,y-r*3); ctx.fill(); ctx.restore(); }
@@ -1257,7 +1475,7 @@ function startCroc(){
     if(k===trap){
       done=true; top.classList.add('bite'); setTimeout(()=>$('#crSvg').classList.add('shut'),140);
       timers.push(setTimeout(()=>{ sChomp(); buzz([250,60,120]); bang.setAttribute('opacity','1'); const sv=$('#crSvg'); sv.classList.remove('chomp'); sv.getBoundingClientRect(); sv.classList.add('chomp'); },150));
-      timers.push(setTimeout(()=>result({name:'걸린 사람!', color:'#22B048', sub:'악어에게 물렸어요! ('+(pressed+1)+'번째 이빨)', n:S.n}),1600));
+      timers.push(setTimeout(()=>result({name:'걸린 사람', color:'#22B048', sub:'악어에게 물렸어요!', n:S.n, table:mkTable(['기록','값'],[{cells:['물린 이빨',(pressed+1)+'번째'],lose:true},{cells:['무사히 누른 이빨',pressed+'개']},{cells:['남은 이빨',(N-pressed-1)+'개']}])}),1600));
       return;
     }
     t.classList.add('down');
@@ -1299,7 +1517,7 @@ function startPirate(){
         fx+= star ? '<polygon class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px;animation-delay:'+(q*30)+'ms" points="'+[0,1,2,3,4,5,6,7,8,9].map(m=>{ const r=m%2?6:14, an=m*Math.PI/5-Math.PI/2; return (cx+r*Math.cos(an)).toFixed(1)+','+(212+r*Math.sin(an)).toFixed(1); }).join(' ')+'" fill="#FFD447" stroke="#0B0C18" stroke-width="2"></polygon>'
                    : '<circle class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px" cx="'+cx.toFixed(1)+'" cy="212" r="'+(10+Math.random()*10).toFixed(1)+'" fill="#C9C3B8" opacity=".9"></circle>'; }
       const fxg=document.createElementNS('http://www.w3.org/2000/svg','g'); fxg.id='prFx'; fxg.innerHTML=fx; svg.appendChild(fxg);
-      timers.push(setTimeout(()=>result({name:'걸린 사람!', color:'#D7261E', sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n}),1700));
+      timers.push(setTimeout(()=>result({name:'걸린 사람', color:'#D7261E', sub:'해적이 날아갔어요!', n:S.n, table:mkTable(['기록','값'],[{cells:['튀어나온 칼',(used+1)+'번째'],lose:true},{cells:['무사히 꽂은 칼',used+'개']},{cells:['남은 구멍',(N-used-1)+'개']}])}),1700));
       return;
     }
     used++; sThunk(); buzz(20);
@@ -1309,43 +1527,22 @@ function startPirate(){
 }
 
 /* ── 결과 ── */
-function calc(total,n,rule){
-  if(n<2) return {l:total,o:0};
-  const r100=v=>Math.floor(v/100)*100;
-  let o=0;
-  if(rule==='double') o=r100(total/(n+1));
-  else if(rule==='half') o=r100(total/2/(n-1));
-  return {l:total-o*(n-1), o};
-}
-function renderSplit(){
-  const r=S.last; if(!r) return;
-  $$('.seg button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.rule===S.rule));
-  const box=$('#rSplit');
-  if(!S.amount){ box.innerHTML='<div class="mute" style="font-size:13px">금액을 넣으면 '+r.n+'명 기준으로 나눠 드려요</div>'; $('#rNote').hidden=true; return; }
-  const {l,o}=calc(S.amount,r.n,S.rule);
-  box.innerHTML='<div class="lose"><span>독박 · '+esc(r.name)+'</span><strong>'+won(l)+'</strong></div>'+
-    '<div class="rest"><span class="mute">나머지 '+(r.n-1)+'명 · 각자</span><strong>'+won(o)+'</strong></div>';
-  $('#rNote').hidden = S.rule==='all';
-}
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function result(r){
-  S.last=r; show('result');
-  $('#rName').textContent=r.name; $('#rSub').textContent=r.sub;
-  const sw=$('#rSwatch'); sw.style.borderColor=r.color; sw.style.background=r.color+'40';
-  $('#rAmt').value = S.amount? S.amount.toLocaleString('ko-KR') : '';
-  const tb=$('#rTable'); tb.hidden=!r.table; tb.innerHTML=r.table||'';
-  renderSplit();
+function mkTable(head, rows){
+  let h='<table class="sc"><thead><tr>'+head.map((t,k)=>'<th scope="col"'+(k===0?' style="text-align:left"':'')+'>'+t+'</th>').join('')+'</tr></thead><tbody>';
+  for(const r of rows) h+='<tr class="'+(r.lose?'lose':'')+'">'+r.cells.map((c,k)=>k===0?'<td class="nm">'+(r.color?'<i style="background:'+r.color+'"></i>':'')+c+'</td>':'<td'+(r.lose&&k===r.cells.length-1?' class="tot"':'')+'>'+c+'</td>').join('')+'</tr>';
+  return h+'</tbody></table>';
 }
-$$('.seg button').forEach(b=>b.onclick=()=>{ S.rule=b.dataset.rule; save(); renderSplit(); });
-$('#rHome').onclick=()=>{ show('home'); renderHome(); };
-$('#rAgain').onclick=()=>start(S.game);
-$('#rShare').onclick=async()=>{
-  const r=S.last; let txt='[오늘의 독박] '+r.name+' 당첨! ('+r.sub+')';
-  if(S.amount){ const {l,o}=calc(S.amount,r.n,S.rule); txt+='\n전체 '+won(S.amount)+' → 독박 '+won(l)+(o?', 나머지 각 '+won(o):''); }
-  try{ if(navigator.share){ await navigator.share({text:txt}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
-  try{ await navigator.clipboard.writeText(txt); toast('결과를 복사했어요. 카톡에 붙여 넣으세요'); }
-  catch(e){ toast('복사가 막혀 있어요. 화면을 캡처해 주세요'); }
-};
+function result(r){
+  S.last=r;
+  $('#resName').innerHTML=esc(r.name)+' <em>독박!</em>'; $('#resSub').textContent=r.sub||'';
+  const d=$('#resDot'); d.style.borderColor=r.color; d.style.background=r.color+'40';
+  const t=$('#resTable'); t.hidden=!r.table; t.innerHTML=r.table||'';
+  $('#resTop').hidden=false; $('#resBar').hidden=false;
+}
+function hideResult(){ $('#resTop').hidden=true; $('#resBar').hidden=true; }
+$('#resHome').onclick=()=>{ show('home'); renderHome(); };
+$('#resAgain').onclick=()=>{ hideResult(); start(S.game); };
 
 load(); renderHome(); show('home');
 })();
