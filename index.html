@@ -169,9 +169,9 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 .sc tr.lose td.tot{color:var(--red)}
 .sc td.tb{color:#B79CFF}
 
-.dc-guide{flex:none;text-align:left;font-size:12px;line-height:1.55;color:var(--mute);padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums}
-.dc-guide b{color:var(--accent);margin-right:6px}
-.dc-guide em{font-style:normal;color:var(--red);font-weight:700}
+.dc-guide{flex:none;align-self:flex-start;text-align:left;font-size:11px;line-height:1.45;color:var(--fg);padding:0 2px;font-variant-numeric:tabular-nums}
+.dc-guide b{display:inline-block;min-width:38px;color:var(--accent);font-weight:900}
+.dc-guide span{color:var(--mute)}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
 
 /* 양궁 */
@@ -558,7 +558,7 @@ body.res-open .screen .sc-wrap{visibility:hidden}
   </div>
   <div class="seg" role="group" aria-label="게임 방식" id="dcMode" style="flex:none;grid-template-columns:repeat(2,minmax(0,1fr))"><button data-m="jokbo">족보 게임</button><button data-m="sum">합계 게임</button></div>
   <div class="seg" role="group" aria-label="독박 규칙" id="dcRule" style="flex:none;grid-template-columns:repeat(2,minmax(0,1fr))"><button data-r="low">낮으면 독박</button><button data-r="high">높으면 독박</button></div>
-  <div class="dc-guide" id="dcGuide"><b>족보 순위</b> 66땡 &gt; 55땡 &gt; 44땡 &gt; 33땡 &gt; 22땡 &gt; 11땡 &gt; 65 &gt; 64 &gt; … &gt; 31 &gt; 21<br><span>땡이 가장 높고, 그다음은 큰 수가 앞인 숫자 순이에요 · <em>가장 낮은 족보가 독박</em></span></div>
+  <div class="dc-guide" id="dcGuide"><div><b>땡</b> 66 &gt; 55 &gt; … &gt; 11</div><div><b>합계순</b> 65 &gt; 64 &gt; … &gt; 21 <span>(합 같으면 큰 수)</span></div></div>
   <div class="mb-wrap" id="dcWrap"><canvas id="dcCanvas" aria-label="원형 테이블과 주사위"></canvas></div>
   <div class="mute" style="text-align:center;font-size:14px;flex:none" id="dcMsg">자기 칸의 투명 돔을 눌러 주사위를 굴려요</div>
 </section>
@@ -776,7 +776,8 @@ body.res-open .screen .sc-wrap{visibility:hidden}
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
     <div class="grab"></div>
     <div class="disp" style="font-size:24px" id="sTitle">설정</div>
-    <div class="switch"><span>효과음</span><button id="tSound" aria-label="효과음"></button></div>
+    <div class="switch"><span>게임 효과음</span><button id="tSound" aria-label="효과음"></button></div>
+    <div class="switch"><span>로또 추첨 소리</span><button id="tLtSound" aria-label="로또 추첨 소리"></button></div>
     <div class="switch"><span>진동 (안드로이드)</span><button id="tVib" aria-label="진동"></button></div>
     <button class="btn" id="sClose">닫기</button>
   </div>
@@ -792,8 +793,8 @@ const PAL = [['#FFD447','노랑'],['#FF7A59','주황'],['#6FD3FF','하늘'],['#7
 const MAXN = 10, MINN = 2;
 
 const S = {n:4, names:[], amount:0, rule:'all', sound:true, vib:true, game:null, last:null};
-function load(){ try{ const d = JSON.parse(localStorage.getItem('dokbak')||'{}'); Object.assign(S, {n:d.n||4, names:d.names||[], rule:d.rule||'all', sound:d.sound!==false, vib:d.vib!==false}); }catch(e){} }
-function save(){ try{ localStorage.setItem('dokbak', JSON.stringify({n:S.n,names:S.names,rule:S.rule,sound:S.sound,vib:S.vib})); }catch(e){} }
+function load(){ try{ const d = JSON.parse(localStorage.getItem('dokbak')||'{}'); Object.assign(S, {n:d.n||4, names:d.names||[], rule:d.rule||'all', sound:d.sound!==false, ltSound:d.ltSound!==false, vib:d.vib!==false}); }catch(e){} }
+function save(){ try{ localStorage.setItem('dokbak', JSON.stringify({n:S.n,names:S.names,rule:S.rule,sound:S.sound,ltSound:S.ltSound,vib:S.vib})); }catch(e){} }
 const nameOf = i => (S.names[i] && S.names[i].trim()) || (i+1)+'번';
 const won = v => v.toLocaleString('ko-KR')+'원';
 
@@ -856,9 +857,10 @@ $('#mCancel').onclick=()=>$('#modeSheet').hidden=true;
 $('#modeSheet').onclick=e=>{ if(e.target.id==='modeSheet') $('#modeSheet').hidden=true; };
 
 /* 설정 */
-function renderSet(){ $('#tSound').setAttribute('aria-pressed',S.sound); $('#tVib').setAttribute('aria-pressed',S.vib); }
+function renderSet(){ $('#tSound').setAttribute('aria-pressed',S.sound); $('#tLtSound').setAttribute('aria-pressed',S.ltSound!==false); $('#tVib').setAttribute('aria-pressed',S.vib); }
 $('#openSet').onclick=()=>{ renderSet(); $('#setSheet').hidden=false; };
 $('#tSound').onclick=()=>{ S.sound=!S.sound; save(); renderSet(); beep(); };
+$('#tLtSound').onclick=()=>{ S.ltSound=!(S.ltSound!==false); save(); renderSet(); };
 $('#tVib').onclick=()=>{ S.vib=!S.vib; save(); renderSet(); buzz(60); };
 $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
@@ -1243,6 +1245,9 @@ function startUpdown(){
 function ltColor(v){ return v<=10?'#FBC400':v<=20?'#69C8F2':v<=30?'#FF7272':v<=40?'#AAAAAA':'#B0D840'; }
 function ltBall(v){ return '<span class="lb" style="background:'+ltColor(v)+'">'+v+'</span>'; }
 function startLotto(){
+  const audio=()=>{ if(S.ltSound===false) return null; try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended') ac.resume(); }catch(e){ ac=null; } return ac; };
+  const beep=(f=660,d=.08,type='square',v=.06)=>{ const a=audio(); if(!a) return; tone(a,f,f,d,type,v); };
+  const fanfare=()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.14,'triangle',.08),i*110));
   show('lotto');
   // 실제 추첨기처럼: 아래에서 바람이 불어 공이 통 안을 휘젓고, 맨 위 구멍으로 빨려 올라간 공이 관을 타고 내려와 레일에 놓임
   const W=360, H=440, CX=180, CY=190, R=142, BR=12, cv=$('#ltCanvas'), ctx=cv.getContext('2d'), wrap=$('#ltWrap'), rnd=(a,b)=>a+Math.random()*(b-a);
@@ -1336,8 +1341,8 @@ function startLotto(){
     state='mix'; phaseT=0; ann=null; airStart(); $('#ltDraw').disabled=true; $('#ltQuick').disabled=true; $('#ltDraw').textContent='추첨 중…'; };
   $('#ltQuick').onclick=()=>{ if(state==='mix'||state==='draw') return; audio(); for(let g=0;g<5;g++){ const pool=[...Array(45)].map((_,i)=>i+1); const pick6=[]; for(let k=0;k<6;k++) pick6.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); addRow(pick6.sort((a,b)=>a-b)); } beep(900,.06,'triangle',.06); };
   const muteBtn=$('#ltMute');
-  const paintMute=()=>{ muteBtn.innerHTML=S.sound?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M17 9l5 6M22 9l-5 6"></path></svg>'; muteBtn.setAttribute('aria-label',S.sound?'소리 끄기':'소리 켜기'); muteBtn.setAttribute('aria-pressed',!S.sound); muteBtn.style.color=S.sound?'':'var(--red)'; };
-  muteBtn.onclick=()=>{ S.sound=!S.sound; save(); if(!S.sound) airStop(); else if(state==='mix'||state==='draw') airStart(); paintMute(); };
+  const paintMute=()=>{ muteBtn.innerHTML=S.ltSound!==false?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"></path></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M17 9l5 6M22 9l-5 6"></path></svg>'; const on=S.ltSound!==false; muteBtn.setAttribute('aria-label',on?'소리 끄기':'소리 켜기'); muteBtn.setAttribute('aria-pressed',!on); muteBtn.style.color=on?'':'var(--red)'; };
+  muteBtn.onclick=()=>{ S.ltSound=!(S.ltSound!==false); save(); if(S.ltSound===false) airStop(); else if(state==='mix'||state==='draw') airStart(); paintMute(); };
   paintMute();
   $('#ltDraw').disabled=false; $('#ltQuick').disabled=false; $('#ltDraw').textContent='추첨 시작';
   fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
@@ -1347,9 +1352,9 @@ function startLotto(){
 
 /* ── 주사위 테이블 ── */
 let dcRule='low', dcMode='jokbo';
-// 족보: 66>55>44>33>22>11(땡) 다음은 큰 수가 앞인 두 자리 숫자 순 (65>64>…>21)
-const dcScore=d=>dcMode==='sum'?d[0]+d[1]:(d[0]===d[1]?100+d[0]:Math.max(d[0],d[1])*10+Math.min(d[0],d[1]));
-const dcLabel=d=>dcMode==='sum'?String(d[0]+d[1]):(d[0]===d[1]?d[0]+''+d[1]+'땡':Math.max(d[0],d[1])+''+Math.min(d[0],d[1]));
+// 족보: 66>55>44>33>22>11(땡) 다음은 합계 높은 순 (54(9) > 61(7)), 합이 같으면 큰 수가 있는 쪽 (63 > 54)
+const dcScore=d=>dcMode==='sum'?d[0]+d[1]:(d[0]===d[1]?1000+d[0]:(d[0]+d[1])*10+Math.max(d[0],d[1]));
+const dcLabel=d=>dcMode==='sum'?String(d[0]+d[1]):(d[0]===d[1]?d[0]+''+d[1]+'땡':Math.max(d[0],d[1])+''+Math.min(d[0],d[1])+'('+(d[0]+d[1])+')');
 function startDice(){
   show('dice');
   const W=360, H=360, CX=180, CY=180, RT=166, cv=$('#dcCanvas'), ctx=cv.getContext('2d'), wrap=$('#dcWrap');
