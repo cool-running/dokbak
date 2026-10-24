@@ -175,6 +175,18 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 .dc-guide span{color:var(--mute)}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
 
+/* 볼링 탭 UI */
+#bowling .sp-board{height:18%;max-height:18%}
+.bw-gauge{flex:none;display:flex;flex-direction:column;gap:4px;transition:opacity .2s}
+.bw-gauge.dim{opacity:.3}
+.bw-lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--fg)}
+.bw-lab span:nth-child(2){color:#7CE38B}
+.bw-bar{position:relative;height:26px;border-radius:13px;background:linear-gradient(90deg,#FF5C7A,#FFD447 30%,#7CE38B 45%,#7CE38B 55%,#FFD447 70%,#FF5C7A);border:2px solid #0B0C18}
+.bw-bar i{position:absolute;top:-6px;width:10px;height:34px;margin-left:-5px;border-radius:5px;background:#14162B;border:3px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.bw-tap{height:60px;font-size:22px}
+.bw-tap .sp-hint{font:inherit;color:inherit}
+.bw-tap.step2{background:#7CE38B;border-color:#7CE38B}
+
 /* 양궁 */
 .ar-info{display:flex;gap:8px;flex:none}
 .ar-info .turn{flex:1}
@@ -627,7 +639,8 @@ body.res-open .screen .sc-wrap{visibility:hidden}
   <div class="seg" role="group" aria-label="프레임 수" id="bwFrames" style="flex:none"><button data-f="1">1프레임</button><button data-f="3">3프레임</button><button data-f="5">5프레임</button></div>
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="볼링 판"></canvas></div>
   <div class="sc-wrap sp-board"></div>
-  <div class="mute sp-hint" style="text-align:center;font-size:13px;flex:none">아래에서 위로 휙 밀어서 던져요</div>
+  <div class="bw-gauge" id="bwGauge" aria-hidden="true"><div class="bw-lab"><span>← 왼쪽으로 휨</span><span>정확</span><span>오른쪽으로 휨 →</span></div><div class="bw-bar"><i id="bwMark"></i></div></div>
+  <button class="btn bw-tap" id="bwTap"><span class="sp-hint">① 방향 정하기</span></button>
 </section>
 
 <!-- 컬링 -->
@@ -1815,8 +1828,8 @@ let bwFrames=3;
 function startBowling(){
   show('bowling');
   // 레인 좌표: x(좌우, m) z(앞으로, m). 화면은 원근으로 그림. 카메라는 공을 따라 앞으로 다가감.
-  const W=360, H=560, {cv,ctx,fit}=spCanvas('bowling',W,H), LW=.53, GW=.24, PINZ=18.3, BR=.11, PR=.062;
-  const sec=$('#bowling'), hint=sec.querySelector('.sp-hint');
+  const W=360, H=390, {cv,ctx,fit}=spCanvas('bowling',W,H), LW=.53, GW=.24, PINZ=18.3, BR=.11, PR=.062;
+  const sec=$('#bowling'), hint=sec.querySelector('.sp-hint'), tapBtn=$('#bwTap'), gauge=$('#bwGauge'), mark=$('#bwMark');
   // 프레임 진행: 1프레임을 모두 돌아가며 친 뒤 다음 프레임. 한 프레임 2구(스트라이크면 1구).
   const n=S.n, NF=bwFrames; const fr=[...Array(n)].map(()=>[]);   // fr[i] = [[a,b],[a,b]...]
   let order=[...Array(n).keys()], ci=0, frame=0, roll=0, tie=null;
@@ -1841,22 +1854,23 @@ function startBowling(){
     T.loser=lows[0]; return 'done'; };
   T.finish=sub=>{ const L=T.loser; sec.querySelector('.sp-board').innerHTML=T.table(L,false); boomSound(); buzz([200,60,300]); setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:sub(L,tot(L)), n, table:T.table(L,false)}),900); };
   let pins=[], ball, phase='dir', clock=0, dirV=0, dirSp=1, powV=0, powSp=1, theta=0, meter=0, oil, camZ=0, rum=null, settleT=0, lastClack=0, pop=null;
-  const F=736, HOR=150, CH=1.5, K=.45;
+  const F=640, HOR=40, CH=1.5, K=.45;
   const P=(x,z,y=0)=>{ const d=Math.max(.6,(z-camZ)*K+3); return [180+x*F/d, HOR+(CH-y)*F/d, F/d]; };
   function rack(){ pins=[]; const S=.3048, rows=[[0],[-.5,.5],[-1,0,1],[-1.5,-.5,.5,1.5]];
     rows.forEach((r,ri)=>r.forEach(k=>pins.push({x:k*S,z:PINZ+ri*S*.866,ox:k*S,oz:PINZ+ri*S*.866,vx:0,vz:0,down:false,gone:false,tilt:0,tv:0,ang:Math.random()*6}))); }
   function newThrow(){ ball={x:0,z:.4,vx:0,vz:0,hook:0,on:false,gutter:false,spinA:0};
     oil={len:9.5+Math.random()*4, f:.7+Math.random()*.7, drift:(Math.random()-.5)*.08};
     dirSp=1.6+Math.random()*1.4; powSp=2.4+Math.random()*2; dirV=Math.random()*6; powV=Math.random()*6; camZ=0;
-    phase='dir'; hint.textContent='① 화살표가 원하는 방향일 때 탭!'; T.paint(); }
+    phase='dir'; hint.textContent='① 방향 정하기 · 탭!'; tapBtn.disabled=false; tapBtn.classList.remove('step2'); gauge.classList.add('dim'); T.paint(); }
   rack(); newThrow();
-  cv.onpointerdown=e=>{ e.preventDefault(); audio(); $('#bwFrames').style.opacity=.5;
-    if(phase==='dir'){ theta=Math.sin(dirV)*.034; phase='pow'; beep(700,.06,'triangle',.07); hint.textContent='② 게이지가 가운데(초록)일 때 탭! · 끝이면 휘어요'; return; }
-    if(phase==='pow'){ meter=Math.sin(powV); beep(900,.06,'triangle',.07); release(); } };
+  const tap=e=>{ if(e) e.preventDefault(); audio(); $('#bwFrames').hidden=true; fit();
+    if(phase==='dir'){ theta=Math.sin(dirV)*.034; phase='pow'; beep(700,.06,'triangle',.07); hint.textContent='② 초록에서 탭!'; tapBtn.classList.add('step2'); gauge.classList.remove('dim'); return; }
+    if(phase==='pow'){ meter=Math.sin(powV); beep(900,.06,'triangle',.07); tapBtn.disabled=true; release(); } };
+  cv.onpointerdown=tap; tapBtn.onclick=()=>tap();
   function release(){
     const sp=7.6-1.2*Math.abs(meter)+Math.random()*.4;
     ball.vz=Math.cos(theta)*sp; ball.vx=Math.sin(theta)*sp; ball.hook=meter*1.0*oil.f+oil.drift; ball.on=true;
-    phase='roll'; settleT=0; rum=spRumble(); buzz(25); hint.textContent='굴러간다…';
+    phase='roll'; settleT=0; rum=spRumble(); buzz(25); hint.textContent='굴러간다…'; tapBtn.classList.remove('step2');
   }
   function clack(v){ const now=performance.now(); if(now-lastClack<25) return; lastClack=now; const a=audio(); if(!a) return; noiseBurst(a,.05,'bandpass',1800+Math.random()*1800,2,Math.min(1,v*.35)); tone(a,900+Math.random()*500,500,.05,'triangle',Math.min(.07,v*.03)); }
   function step(dt){ clock+=dt;
@@ -1894,7 +1908,7 @@ function startBowling(){
     setTimeout(()=>{ pins.forEach(p=>{ if(p.down) p.gone=true; });
       if(r==='again'){ newThrow(); return; }
       if(r==='next'||r==='tie'){ rack(); newThrow(); if(r==='tie') pop={txt:'동점! 한 구씩 더',t:0}; return; }
-      phase='done'; hint.textContent=''; T.finish((L,t)=>NF+'프레임 합계 '+t+'핀 · 꼴찌'); },1500);
+      phase='done'; hint.textContent='끝!'; T.finish((L,t)=>NF+'프레임 합계 '+t+'핀 · 꼴찌'); },1500);
   }
   // ── 그리기 ──
   function quad(pts,fill){ ctx.fillStyle=fill; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.fill(); }
@@ -1911,7 +1925,7 @@ function startBowling(){
     ctx.clearRect(0,0,W,H);
     // 볼링장 배경
     const bg=ctx.createLinearGradient(0,0,0,HOR+40); bg.addColorStop(0,'#0E0F22'); bg.addColorStop(1,'#26214A'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='rgba(183,156,255,.12)'; for(let k=0;k<6;k++){ ctx.fillRect(20+k*60,20,30,6); }
+    ctx.fillStyle='rgba(183,156,255,.12)'; for(let k=0;k<6;k++){ ctx.fillRect(20+k*60,8,30,5); }
     // 피트(핀 뒤 어두운 곳)
     const zEnd=PINZ+1.6; const pe1=P(-LW-GW,zEnd), pe2=P(LW+GW,zEnd), pt1=P(-LW-GW,zEnd,1.2), pt2=P(LW+GW,zEnd,1.2);
     quad([pt1,pt2,pe2,pe1],'#08080F');
@@ -1929,7 +1943,7 @@ function startBowling(){
     for(let k=0;k<7;k++){ const x=-.45+k*.15, z=4.6+Math.abs(k-3)*.3; if(z<camZ-1) continue; const t=P(x,z+.25), l=P(x-.03,z), r=P(x+.03,z); quad([t,r,l],'#8B4A1C'); }
     // 오일 라인 표시(희미)
     if(phase==='dir'||phase==='pow'){ const o1=P(-LW,oil.len), o2=P(LW,oil.len); ctx.strokeStyle='rgba(111,211,255,.35)'; ctx.setLineDash([4,6]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(o1[0],o1[1]); ctx.lineTo(o2[0],o2[1]); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(111,211,255,.7)'; ctx.font='bold 10px "Noto Sans KR",sans-serif'; ctx.textAlign='right'; ctx.fillText('오일 끝 (여기부터 휨)',o2[0]+52,o2[1]-3); }
+      ctx.fillStyle='#8FE0FF'; ctx.font='bold 13px "Noto Sans KR",sans-serif'; ctx.textAlign='right'; ctx.fillText('오일 끝 (여기부터 휨)',o2[0]+70,o2[1]-3); }
     // 핀 (먼 것부터)
     const obj=[]; for(const p of pins){ if(p.gone) continue; obj.push({z:p.z,f:()=>{ const [sx,sy,sc]=P(p.x,p.z); pinShape(sx,sy,sc,p.down?p.tilt:0,p.ang,p.down?.9:1); }}); }
     if(ball.on||phase==='dir'||phase==='pow') obj.push({z:ball.z,f:()=>{ const [sx,sy,sc]=P(ball.x,ball.z), r=BR*sc, col=PAL[T.who][0];
@@ -1941,18 +1955,12 @@ function startBowling(){
     if(phase==='dir'||phase==='pow'){ const th=phase==='dir'?Math.sin(dirV)*.034:theta, len=17; const s0=P(ball.x,ball.z+.6), s1=P(ball.x+Math.sin(th)*len,ball.z+Math.cos(th)*len);
       ctx.strokeStyle=phase==='dir'?'#FFD447':'rgba(255,212,71,.45)'; ctx.lineWidth=4; ctx.setLineDash([10,8]); ctx.beginPath(); ctx.moveTo(s0[0],s0[1]); ctx.lineTo(s1[0],s1[1]); ctx.stroke(); ctx.setLineDash([]);
       ctx.fillStyle=ctx.strokeStyle; ctx.beginPath(); ctx.arc(s1[0],s1[1],5,0,7); ctx.fill(); }
-    // 힘·회전 게이지
-    if(phase==='pow'||phase==='dir'){ const gx=40, gy=H-40, gw=280, gh=16, v=phase==='pow'?Math.sin(powV):0;
-      ctx.globalAlpha=phase==='pow'?1:.35;
-      const gg=ctx.createLinearGradient(gx,0,gx+gw,0); gg.addColorStop(0,'#FF5C7A'); gg.addColorStop(.35,'#FFD447'); gg.addColorStop(.5,'#7CE38B'); gg.addColorStop(.65,'#FFD447'); gg.addColorStop(1,'#FF5C7A');
-      ctx.fillStyle=gg; ctx.beginPath(); ctx.roundRect?ctx.roundRect(gx,gy,gw,gh,8):ctx.rect(gx,gy,gw,gh); ctx.fill();
-      ctx.fillStyle='#FFFFFF'; ctx.font='bold 10px "Noto Sans KR",sans-serif'; ctx.textAlign='left'; ctx.fillText('← 왼쪽으로 휨',gx,gy-5); ctx.textAlign='right'; ctx.fillText('오른쪽으로 휨 →',gx+gw,gy-5); ctx.textAlign='center'; ctx.fillText('정확',gx+gw/2,gy-5);
-      const mx=gx+gw/2+v*gw/2; ctx.fillStyle='#14162B'; ctx.fillRect(mx-3,gy-6,6,gh+12); ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=2; ctx.strokeRect(mx-3,gy-6,6,gh+12); ctx.globalAlpha=1; }
-    if(pop){ pop.t+=dt; const al=Math.max(0,1-pop.t/1.4); ctx.save(); ctx.globalAlpha=al; ctx.font='38px Jua, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=7; ctx.strokeStyle='#14162B'; ctx.fillStyle='#FFD447'; ctx.strokeText(pop.txt,180,110-pop.t*16); ctx.fillText(pop.txt,180,110-pop.t*16); ctx.restore(); if(pop.t>1.4) pop=null; }
+    mark.style.left=(50+(phase==='pow'?Math.sin(powV):(phase==='dir'?0:meter))*50)+'%';
+    if(pop){ pop.t+=dt; const al=Math.max(0,1-pop.t/1.4); ctx.save(); ctx.globalAlpha=al; ctx.font='38px Jua, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=7; ctx.strokeStyle='#14162B'; ctx.fillStyle='#FFD447'; ctx.strokeText(pop.txt,180,70-pop.t*12); ctx.fillText(pop.txt,180,70-pop.t*12); ctx.restore(); if(pop.t>1.4) pop=null; }
   }
   fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
   const stop=spLoop(dt=>{ step(dt); draw(dt); });
-  cleanup=()=>{ stop(); cv.onpointerdown=null; if(rum) rum.stop(); window.removeEventListener('resize',onR); };
+  cleanup=()=>{ stop(); cv.onpointerdown=null; tapBtn.onclick=null; $('#bwFrames').hidden=false; if(rum) rum.stop(); window.removeEventListener('resize',onR); };
 }
 
 /* ── 컬링 ── */
