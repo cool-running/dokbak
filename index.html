@@ -82,6 +82,9 @@ button{cursor:pointer}
 .money .amt-in{background:#0E1C15;border-color:#2B5340}
 .money .amt-in:focus{border-color:#7CE38B;outline:none}
 
+.pbtn{margin-left:auto;height:40px;padding:0 12px;border-radius:12px;border:1px solid #2A4870;background:#172440;color:#6FD3FF;display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:14px;flex:none}
+#peopleSheet .sheet{max-height:92%;overflow-y:auto}
+
 /* 손가락 → 폭탄 */
 .touch{flex:1;position:relative;border-radius:24px;background:radial-gradient(circle at 50% 45%,#22264A 0%,var(--deep) 70%);border:1px dashed var(--line);touch-action:none;overflow:hidden;user-select:none;-webkit-user-select:none}
 .touch .hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;pointer-events:none}
@@ -183,24 +186,8 @@ button{cursor:pointer}
     </button>
   </div>
 
-  <div class="card sec people">
-    <div class="sec-row">
-      <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg></span>인원</span>
-      <span class="sec-note">이름은 눌러서 바꾸기</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:30px;font-weight:900" id="nLabel">4명</div>
-      <div class="stepper">
-        <button class="round" id="minus" aria-label="인원 빼기">−</button>
-        <button class="round plus" id="plus" aria-label="인원 더하기">+</button>
-      </div>
-    </div>
-    <div class="names" id="names"></div>
-  </div>
-
   <div class="sec-row game-h">
     <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg></span>게임</span>
-    <span class="sec-note">골라서 바로 시작</span>
   </div>
   <div class="games">
     <button class="game hot" data-game="finger">
@@ -212,7 +199,7 @@ button{cursor:pointer}
     </button>
     <button class="game" data-game="wheel">
       <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v9l6.4 6.4"></path><path d="M12 12 3.6 15"></path></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.5" r="8.5"></circle><path d="M12 5v17M4.6 9.25l14.8 8.5M4.6 17.75l14.8-8.5"></path><path d="M9.5 1h5L12 4.5z" fill="#FF7A59"></path><circle cx="12" cy="13.5" r="2" fill="#FF7A59"></circle></svg>
         <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
       <span><b>돌림판</b><small>이름 넣고 빙글</small></span>
@@ -257,7 +244,7 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">돌림판</div>
-    <div class="mute" style="margin-left:auto;font-size:13px" id="wCount"></div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
   <div class="wheel-wrap" id="wWrap">
     <canvas id="wCanvas" width="680" height="680" aria-label="참가자 돌림판"></canvas>
@@ -271,7 +258,7 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">사다리</div>
-    <div class="mute" style="margin-left:auto;font-size:13px">이름을 눌러 타보기</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
   <div class="ladder-box">
     <div class="lad-top" id="ladTop"></div>
@@ -289,7 +276,7 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">폭탄 돌리기</div>
-    <span class="badge" style="margin-left:auto" id="bBadge">폰 1대</span>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
   <div class="stats">
     <div class="stat"><span>넘긴 횟수</span><span id="bPass" style="color:var(--accent)">0</span></div>
@@ -369,6 +356,30 @@ button{cursor:pointer}
   </div>
 </div>
 
+<!-- 참가자 시트 -->
+<div class="scrim" id="peopleSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+    <div class="grab"></div>
+    <div class="disp" style="font-size:24px" id="pTitle">참가자</div>
+  <div class="card sec people">
+    <div class="sec-row">
+      <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg></span>인원</span>
+      <span class="sec-note">이름은 눌러서 바꾸기</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:30px;font-weight:900" id="nLabel">4명</div>
+      <div class="stepper">
+        <button class="round" id="minus" aria-label="인원 빼기">−</button>
+        <button class="round plus" id="plus" aria-label="인원 더하기">+</button>
+      </div>
+    </div>
+    <div class="names" id="names"></div>
+  </div>
+
+    <button class="btn" id="pApply">이대로 시작</button>
+  </div>
+</div>
+
 <!-- 설정 시트 -->
 <div class="scrim" id="setSheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
@@ -415,6 +426,7 @@ bindAmt($('#rAmt'));
 
 /* 홈 */
 function renderHome(){
+  $$('.pn').forEach(e=>e.textContent=S.n+'명');
   $('#nLabel').textContent = S.n+'명';
   $('#minus').disabled = S.n<=MINN; $('#plus').disabled = S.n>=MAXN;
   const box = $('#names'); box.innerHTML='';
@@ -428,12 +440,18 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else start(g); });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel') openPeople(); } });
+/* 참가자 시트: 게임 안에서 인원·이름 정하기 */
+function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
+function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
+$('#pApply').onclick=closePeople;
+$('#peopleSheet').onclick=e=>{ if(e.target.id==='peopleSheet') closePeople(); };
+$$('.pbtn').forEach(b=>b.onclick=openPeople);
 
 /* 참여 방식 시트 */
 let modeGame=null;
 function openMode(g){ modeGame=g; $('#mTitle').textContent = g==='bomb'?'폭탄 돌리기':'사다리'; $('#mOneSub').textContent = g==='bomb'?'폰을 넘기다 터지면 독박':'한 화면에서 이름 눌러 타기'; $('#modeSheet').hidden=false; $('#mOne').focus(); }
-$('#mOne').onclick=()=>{ $('#modeSheet').hidden=true; start(modeGame); };
+$('#mOne').onclick=()=>{ $('#modeSheet').hidden=true; start(modeGame); openPeople(); };
 $('#mRoom').onclick=()=>toast('방 만들기는 다음 업데이트에서 열려요');
 $('#mCancel').onclick=()=>$('#modeSheet').hidden=true;
 $('#modeSheet').onclick=e=>{ if(e.target.id==='modeSheet') $('#modeSheet').hidden=true; };
@@ -521,7 +539,7 @@ let wRot=0;
 function startWheel(){
   show('wheel');
   const cv=$('#wCanvas'), ctx=cv.getContext('2d'), n=S.n, A=Math.PI*2/n;
-  $('#wCount').textContent=n+'명'; $('#spin').disabled=false;
+  $('#spin').disabled=false;
   let spinning=false, raf=0;
   function size(){ const w=$('#wWrap'); const s=Math.min(w.clientWidth, w.clientHeight-20, 400); cv.style.width=s+'px'; cv.style.height=s+'px'; w.style.setProperty('--wr',(s/2)+'px'); }
   function draw(rot){
@@ -610,7 +628,6 @@ function startBomb(){
   show('bomb');
   const MAXT=40;
   let running=false, passes=0, t0=0, total=0, tick=null, bar=null;
-  $('#bBadge').textContent='폰 1대 · '+S.n+'명';
   $('#bPass').textContent='0'; $('#bBar').style.width='0'; $('#bTitle').textContent='준비됐나요?'; $('#bMsg').textContent='시작을 누르고 폭탄을 넘겨요'; $('#bStart').hidden=false;
   const svg=$('#bombSvg');
   function loop(){
