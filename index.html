@@ -176,7 +176,14 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
 
 /* 볼링 탭 UI */
-#bowling .sp-board{height:18%;max-height:18%}
+#bowling .sp-board{height:auto;max-height:55vh}
+#bowling .bw-turn{justify-content:flex-start;padding:0 8px 0 14px}
+.bw-sbtn{margin-left:auto;flex:none;height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:#2A2E55;color:var(--fg);font:700 13px "Noto Sans KR",sans-serif}
+.bw-sheet{position:fixed;inset:0;z-index:40;background:rgba(8,9,20,.7);display:flex;align-items:center;justify-content:center;padding:16px}
+.bw-sheet[hidden]{display:none}
+.bw-sh-in{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+#bowling .mb-wrap{padding:0}
+#bowling .turn{padding-top:6px;padding-bottom:6px}
 .bw-gauge{flex:none;display:flex;flex-direction:column;gap:4px;transition:opacity .2s}
 .bw-gauge.dim{opacity:.3}
 .bw-lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--fg)}
@@ -635,10 +642,10 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 <!-- 볼링 -->
 <section class="screen fixed" id="bowling" hidden>
   <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">볼링</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
-  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="turn sp-turn bw-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span><button class="bw-sbtn" id="bwScore">📊 점수표</button></div>
   <div class="seg" role="group" aria-label="프레임 수" id="bwFrames" style="flex:none"><button data-f="1">1프레임</button><button data-f="3">3프레임</button><button data-f="5">5프레임</button></div>
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="볼링 판"></canvas></div>
-  <div class="sc-wrap sp-board"></div>
+  <div class="bw-sheet" id="bwSheet" hidden><div class="bw-sh-in"><div class="disp" style="font-size:20px;text-align:center">점수표</div><div class="sc-wrap sp-board"></div><button class="btn" id="bwClose">닫기</button></div></div>
   <div class="bw-gauge" id="bwGauge" aria-hidden="true"><div class="bw-lab"><span>← 왼쪽으로 휨</span><span>정확</span><span>오른쪽으로 휨 →</span></div><div class="bw-bar"><i id="bwMark"></i></div></div>
   <button class="btn bw-tap" id="bwTap"><span class="sp-hint">① 방향 정하기</span></button>
 </section>
@@ -1462,7 +1469,7 @@ const dcScore=d=>dcMode==='sum'?d[0]+d[1]:(d[0]===d[1]?1000+d[0]:(d[0]+d[1])*10+
 const dcLabel=d=>dcMode==='sum'?String(d[0]+d[1]):(d[0]===d[1]?d[0]+''+d[1]+'땡':Math.max(d[0],d[1])+''+Math.min(d[0],d[1])+'('+(d[0]+d[1])+')');
 function startDice(){
   show('dice');
-  const W=360, H=360, CX=180, CY=180, RT=166, cv=$('#dcCanvas'), ctx=cv.getContext('2d'), wrap=$('#dcWrap');
+  const W=360, H=420, CX=180, CY=180, RT=166, cv=$('#dcCanvas'), ctx=cv.getContext('2d'), wrap=$('#dcWrap');
   const n=S.n, rnd=(a,b)=>a+Math.random()*(b-a);
   let scale=1, raf=0, last=0, clock=0, phase='play', tieSet=null, rolls=0;
   const span=2*Math.PI/n, off=-Math.PI/2-span/2;
@@ -1828,7 +1835,7 @@ let bwFrames=3;
 function startBowling(){
   show('bowling');
   // 레인 좌표: x(좌우, m) z(앞으로, m). 화면은 원근으로 그림. 카메라는 공을 따라 앞으로 다가감.
-  const W=360, H=390, {cv,ctx,fit}=spCanvas('bowling',W,H), LW=.53, GW=.24, PINZ=18.3, BR=.11, PR=.062;
+  const W=360, H=500, {cv,ctx,fit}=spCanvas('bowling',W,H), LW=.53, GW=.24, PINZ=18.3, BR=.11, PR=.062;
   const sec=$('#bowling'), hint=sec.querySelector('.sp-hint'), tapBtn=$('#bwTap'), gauge=$('#bwGauge'), mark=$('#bwMark');
   // 프레임 진행: 1프레임을 모두 돌아가며 친 뒤 다음 프레임. 한 프레임 2구(스트라이크면 1구).
   const n=S.n, NF=bwFrames; const fr=[...Array(n)].map(()=>[]);   // fr[i] = [[a,b],[a,b]...]
@@ -1854,7 +1861,7 @@ function startBowling(){
     T.loser=lows[0]; return 'done'; };
   T.finish=sub=>{ const L=T.loser; sec.querySelector('.sp-board').innerHTML=T.table(L,false); boomSound(); buzz([200,60,300]); setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:sub(L,tot(L)), n, table:T.table(L,false)}),900); };
   let pins=[], ball, phase='dir', clock=0, dirV=0, dirSp=1, powV=0, powSp=1, theta=0, meter=0, oil, camZ=0, rum=null, settleT=0, lastClack=0, pop=null;
-  const F=640, HOR=40, CH=1.5, K=.45;
+  const F=790, HOR=95, CH=1.5, K=.45;
   const P=(x,z,y=0)=>{ const d=Math.max(.6,(z-camZ)*K+3); return [180+x*F/d, HOR+(CH-y)*F/d, F/d]; };
   function rack(){ pins=[]; const S=.3048, rows=[[0],[-.5,.5],[-1,0,1],[-1.5,-.5,.5,1.5]];
     rows.forEach((r,ri)=>r.forEach(k=>pins.push({x:k*S,z:PINZ+ri*S*.866,ox:k*S,oz:PINZ+ri*S*.866,vx:0,vz:0,down:false,gone:false,tilt:0,tv:0,ang:Math.random()*6}))); }
@@ -1867,6 +1874,7 @@ function startBowling(){
     if(phase==='dir'){ theta=Math.sin(dirV)*.034; phase='pow'; beep(700,.06,'triangle',.07); hint.textContent='② 초록에서 탭!'; tapBtn.classList.add('step2'); gauge.classList.remove('dim'); return; }
     if(phase==='pow'){ meter=Math.sin(powV); beep(900,.06,'triangle',.07); tapBtn.disabled=true; release(); } };
   cv.onpointerdown=tap; tapBtn.onclick=()=>tap();
+  $('#bwScore').onclick=()=>{ $('#bwSheet').hidden=false; }; $('#bwClose').onclick=$('#bwSheet').onclick=e=>{ if(e.target.id==='bwClose'||e.target.id==='bwSheet') $('#bwSheet').hidden=true; };
   function release(){
     const sp=7.6-1.2*Math.abs(meter)+Math.random()*.4;
     ball.vz=Math.cos(theta)*sp; ball.vx=Math.sin(theta)*sp; ball.hook=meter*1.0*oil.f+oil.drift; ball.on=true;
@@ -1943,7 +1951,7 @@ function startBowling(){
     for(let k=0;k<7;k++){ const x=-.45+k*.15, z=4.6+Math.abs(k-3)*.3; if(z<camZ-1) continue; const t=P(x,z+.25), l=P(x-.03,z), r=P(x+.03,z); quad([t,r,l],'#8B4A1C'); }
     // 오일 라인 표시(희미)
     if(phase==='dir'||phase==='pow'){ const o1=P(-LW,oil.len), o2=P(LW,oil.len); ctx.strokeStyle='rgba(111,211,255,.35)'; ctx.setLineDash([4,6]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(o1[0],o1[1]); ctx.lineTo(o2[0],o2[1]); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='#8FE0FF'; ctx.font='bold 13px "Noto Sans KR",sans-serif'; ctx.textAlign='right'; ctx.fillText('오일 끝 (여기부터 휨)',o2[0]+70,o2[1]-3); }
+      }
     // 핀 (먼 것부터)
     const obj=[]; for(const p of pins){ if(p.gone) continue; obj.push({z:p.z,f:()=>{ const [sx,sy,sc]=P(p.x,p.z); pinShape(sx,sy,sc,p.down?p.tilt:0,p.ang,p.down?.9:1); }}); }
     if(ball.on||phase==='dir'||phase==='pow') obj.push({z:ball.z,f:()=>{ const [sx,sy,sc]=P(ball.x,ball.z), r=BR*sc, col=PAL[T.who][0];
@@ -1960,7 +1968,7 @@ function startBowling(){
   }
   fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
   const stop=spLoop(dt=>{ step(dt); draw(dt); });
-  cleanup=()=>{ stop(); cv.onpointerdown=null; tapBtn.onclick=null; $('#bwFrames').hidden=false; if(rum) rum.stop(); window.removeEventListener('resize',onR); };
+  cleanup=()=>{ stop(); $('#bwSheet').hidden=true; cv.onpointerdown=null; tapBtn.onclick=null; $('#bwFrames').hidden=false; if(rum) rum.stop(); window.removeEventListener('resize',onR); };
 }
 
 /* ── 컬링 ── */
