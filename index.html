@@ -57,6 +57,7 @@ button{cursor:pointer}
 .names input{flex:1;min-width:0;width:100%;border:none;background:transparent;font-size:14px;font-weight:700;padding:0;outline:none}
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .game{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
+.game.wide{grid-column:1/-1}
 .game.hot{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .game.hot .badge{background:rgba(20,22,43,.14);border-color:transparent;color:var(--bg)}
 .game.hot small{color:var(--bg);opacity:.75;font-weight:700}
@@ -85,6 +86,16 @@ button{cursor:pointer}
 .pbtn{margin-left:auto;height:40px;padding:0 12px;border-radius:12px;border:1px solid #2A4870;background:#172440;color:#6FD3FF;display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:14px;flex:none}
 #peopleSheet .sheet{max-height:92%;overflow-y:auto}
 
+/* 구슬 핀볼 */
+.mb-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.mb-wrap canvas{display:block;border-radius:18px}
+.mb-rank b{font-weight:700}
+.mb-rank{display:flex;flex-wrap:wrap;gap:6px;min-height:34px;align-items:center;justify-content:center}
+.mb-rank span{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px 0 6px;border-radius:15px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700}
+.mb-rank i{width:16px;height:16px;border-radius:50%;display:inline-block;border:2px solid #0B0C18}
+.mb-rank span.last{background:var(--red);border-color:var(--red);color:var(--bg)}
+.mb-rank .wait{color:var(--mute);font-size:13px;font-weight:400;background:none;border:none}
+
 /* 악어 이빨 · 해적 통 */
 .turn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:15px;flex:none}
 .turn .dot{width:14px;height:14px;border-radius:50%}
@@ -92,10 +103,12 @@ button{cursor:pointer}
 .play-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
 .play-wrap svg{width:100%;height:100%;overflow:visible}
 .tooth,.slot{cursor:pointer;outline:none}
-.tooth rect{transition:height .12s,y .12s,fill .12s}
-.tooth:focus-visible rect,.slot:focus-visible .hole{stroke:#FFD447;stroke-width:5}
+.fang{transition:transform .14s ease-in,fill .14s}
+.tooth.down .fang{transform:translateY(var(--d));fill:#E2DED4}
+.tooth:focus-visible .fang,.slot:focus-visible .hole{stroke:#FFD447;stroke-width:4}
 #crTop{transition:transform .16s cubic-bezier(.7,0,1,1)}
-#crTop.bite{transform:translateY(150px)}
+#crTop.bite{transform:translateY(158px)}
+#crSvg.shut .mouth{opacity:0}
 #prMan{transform-origin:180px 160px;transition:transform 1s cubic-bezier(.2,.85,.3,1)}
 #prMan.pop{transform:translate(0,-620px) rotate(-14deg)}
 .pfx{transform-box:fill-box;transform-origin:center;animation:pfx .9s ease-out forwards}
@@ -103,7 +116,8 @@ button{cursor:pointer}
 #crSvg.chomp{animation:chomp .5s ease-out}
 @keyframes chomp{15%{transform:scale(1.07) rotate(-2.5deg)}35%{transform:scale(1.05) rotate(2.5deg)}55%{transform:scale(1.02) rotate(-1.5deg)}75%{transform:rotate(1deg)}}
 .sword{animation:stab .16s ease-out}
-@keyframes stab{from{transform:translateY(-14px);opacity:0}}
+@keyframes stab{from{transform:scale(1.25);opacity:0}}
+.sword{transform-box:fill-box;transform-origin:center}
 
 /* 손가락 → 폭탄 */
 .touch{flex:1;position:relative;border-radius:24px;background:radial-gradient(circle at 50% 45%,#22264A 0%,var(--deep) 70%);border:1px dashed var(--line);touch-action:none;overflow:hidden;user-select:none;-webkit-user-select:none}
@@ -231,6 +245,13 @@ button{cursor:pointer}
       </span>
       <span><b>사다리</b><small>숨은 독박 1칸</small></span>
     </button>
+    <button class="game wide" data-game="marble">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 3l6 6M20 3l-6 6M10 9h4"></path><circle cx="6" cy="13" r="1" fill="#B79CFF"></circle><circle cx="12" cy="13" r="1" fill="#B79CFF"></circle><circle cx="18" cy="13" r="1" fill="#B79CFF"></circle><circle cx="9" cy="17" r="1" fill="#B79CFF"></circle><circle cx="15" cy="17" r="1" fill="#B79CFF"></circle><path d="M3 19l8 3M21 19l-8 3"></path><circle cx="12" cy="6.5" r="2.2" fill="#B79CFF"></circle></svg>
+        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
+      </span>
+      <span><b>구슬 핀볼</b><small>꼴찌로 들어온 구슬이 독박</small></span>
+    </button>
     <button class="game" data-game="croc">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V9a3 3 0 0 1 3-3h.5a2 2 0 0 1 4 0h3a2 2 0 0 1 4 0h.5a3 3 0 0 1 3 3v4z"></path><path d="M5 13l1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1-2"></path><path d="M3 13v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"></path></svg>
@@ -331,39 +352,73 @@ button{cursor:pointer}
   <button class="btn" id="bStart">시작</button>
 </section>
 
+<!-- 구슬 핀볼 -->
+<section class="screen fixed" id="marble" hidden>
+  <div class="top">
+    <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+    <div class="disp" style="font-size:24px">구슬 핀볼</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
+  </div>
+  <div class="mb-rank" id="mbLegend"></div>
+  <div class="mb-wrap" id="mbWrap"><canvas id="mbCanvas" aria-label="구슬 핀볼 판"></canvas></div>
+  <div class="mb-rank" id="mbRank" aria-live="polite"></div>
+  <div class="row2" id="mbBtns"><button class="btn ghost" id="mbMix">섞기</button><button class="btn" id="mbStart">시작</button></div>
+</section>
+
 <!-- 악어 이빨 -->
 <section class="screen fixed" id="croc" hidden>
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">악어 이빨</div>
-    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
-  <div class="turn" id="crTurn"><span class="dot"></span><b>1번</b><span class="mute">차례</span></div>
   <div class="play-wrap">
     <svg id="crSvg" viewBox="0 0 360 430" role="img" aria-label="악어 입 속 이빨">
-      <rect x="34" y="196" width="292" height="222" rx="112" fill="#3E9E5A" stroke="#0B0C18" stroke-width="5"></rect>
-      <rect x="66" y="206" width="228" height="182" rx="90" fill="#B5372F" stroke="#0B0C18" stroke-width="4"></rect>
-      <ellipse cx="180" cy="300" rx="78" ry="58" fill="#8E2A24"></ellipse>
-      <path d="M150 318q30 26 60 0" stroke="#C9514A" stroke-width="10" fill="none" stroke-linecap="round"></path>
-      <g id="crTeeth"></g>
+      <defs>
+        <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4BDB6C"></stop><stop offset=".6" stop-color="#22B048"></stop><stop offset="1" stop-color="#168535"></stop></linearGradient>
+        <linearGradient id="gGreenD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2BBF52"></stop><stop offset="1" stop-color="#127A30"></stop></linearGradient>
+        <radialGradient id="gMouth" cx=".5" cy=".35" r=".75"><stop offset="0" stop-color="#7A0D0A"></stop><stop offset=".5" stop-color="#C21C17"></stop><stop offset="1" stop-color="#E8322A"></stop></radialGradient>
+        <radialGradient id="gIris" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#F06A3C"></stop><stop offset="1" stop-color="#8E1A0C"></stop></radialGradient>
+        <linearGradient id="gTooth" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"></stop><stop offset=".7" stop-color="#F3F1EA"></stop><stop offset="1" stop-color="#CFCAC0"></stop></linearGradient>
+      </defs>
+      <ellipse cx="180" cy="416" rx="160" ry="12" fill="#000" opacity=".35"></ellipse>
+      <g fill="url(#gGreenD)" stroke="#0E3A1A" stroke-width="4" stroke-linejoin="round">
+        <path d="M34 262Q4 266 6 296Q20 312 40 300Z"></path><path d="M326 262Q356 266 354 296Q340 312 320 300Z"></path>
+      </g>
+      <g fill="#F5C518" stroke="#7A5A00" stroke-width="2.5"><circle cx="8" cy="296" r="7"></circle><circle cx="16" cy="306" r="7"></circle><circle cx="352" cy="296" r="7"></circle><circle cx="344" cy="306" r="7"></circle></g>
+      <path d="M28 212Q22 406 180 412Q338 406 332 212Z" fill="url(#gGreenD)" stroke="#0E3A1A" stroke-width="5" stroke-linejoin="round"></path>
+      <path d="M40 300Q60 392 180 398Q300 392 320 300" stroke="#53E07A" stroke-width="4" fill="none" opacity=".5"></path>
+      <path class="mouth" d="M52 214Q50 384 180 388Q310 384 308 214Z" fill="#E8322A" stroke="#0E3A1A" stroke-width="4"></path>
+      <path class="mouth" d="M88 218Q92 352 180 356Q268 352 272 218Z" fill="url(#gMouth)"></path>
+      <path class="mouth" d="M122 326Q122 296 180 294Q238 296 238 326Q232 352 180 354Q128 352 122 326Z" fill="#EE5A4E"></path>
+      <path class="mouth" d="M180 300V346" stroke="#C73A31" stroke-width="5" stroke-linecap="round"></path>
+      <ellipse class="mouth" cx="150" cy="308" rx="16" ry="6" fill="#fff" opacity=".25"></ellipse>
+      <g id="crTeeth" class="mouth"></g>
       <g id="crTop">
-        <rect x="26" y="70" width="308" height="140" rx="66" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></rect>
-        <circle cx="112" cy="68" r="40" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></circle>
-        <circle cx="248" cy="68" r="40" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></circle>
-        <rect x="40" y="76" width="280" height="40" fill="#4CBF6B"></rect>
-        <circle cx="112" cy="70" r="24" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle>
-        <circle cx="248" cy="70" r="24" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle>
-        <circle cx="118" cy="74" r="10" fill="#14162B"></circle>
-        <circle cx="242" cy="74" r="10" fill="#14162B"></circle>
-        <path d="M84 42l52 16M276 42l-52 16" stroke="#0B0C18" stroke-width="7" stroke-linecap="round"></path>
-        <ellipse cx="146" cy="150" rx="15" ry="9" fill="#2E7D45"></ellipse>
-        <ellipse cx="214" cy="150" rx="15" ry="9" fill="#2E7D45"></ellipse>
-        <path d="M60 206l14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M16 214C12 112 66 54 180 50C294 54 348 112 344 214Z" fill="url(#gGreen)" stroke="#0E3A1A" stroke-width="5" stroke-linejoin="round"></path>
+        <path d="M60 110Q90 66 150 60" stroke="#fff" stroke-width="10" stroke-linecap="round" fill="none" opacity=".35"></path>
+        <path d="M120 112Q180 98 240 112M110 132Q180 118 250 132" stroke="#168535" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"></path>
+        <circle cx="116" cy="70" r="44" fill="url(#gGreen)" stroke="#0E3A1A" stroke-width="5"></circle>
+        <circle cx="244" cy="70" r="44" fill="url(#gGreen)" stroke="#0E3A1A" stroke-width="5"></circle>
+        <path d="M80 84Q116 112 152 84" fill="#22B048"></path><path d="M208 84Q244 112 280 84" fill="#22B048"></path>
+        <ellipse cx="116" cy="76" rx="30" ry="26" fill="#FFFFFF" stroke="#0E3A1A" stroke-width="3"></ellipse>
+        <ellipse cx="244" cy="76" rx="30" ry="26" fill="#FFFFFF" stroke="#0E3A1A" stroke-width="3"></ellipse>
+        <circle cx="124" cy="82" r="14" fill="url(#gIris)"></circle><circle cx="236" cy="82" r="14" fill="url(#gIris)"></circle>
+        <circle cx="126" cy="84" r="6.5" fill="#160604"></circle><circle cx="234" cy="84" r="6.5" fill="#160604"></circle>
+        <circle cx="120" cy="77" r="3.5" fill="#fff"></circle><circle cx="230" cy="77" r="3.5" fill="#fff"></circle>
+        <path d="M82 54Q120 50 154 78L152 46Q116 30 82 44Z" fill="#22B048" stroke="#0E3A1A" stroke-width="4" stroke-linejoin="round"></path>
+        <path d="M278 54Q240 50 206 78L208 46Q244 30 278 44Z" fill="#22B048" stroke="#0E3A1A" stroke-width="4" stroke-linejoin="round"></path>
+        <ellipse cx="130" cy="160" rx="30" ry="22" fill="#1C7A34" stroke="#0E3A1A" stroke-width="3"></ellipse>
+        <ellipse cx="230" cy="160" rx="30" ry="22" fill="#1C7A34" stroke="#0E3A1A" stroke-width="3"></ellipse>
+        <path d="M118 166Q124 148 142 154Q134 160 132 172Z" fill="#0A3B18"></path>
+        <path d="M242 166Q236 148 218 154Q226 160 228 172Z" fill="#0A3B18"></path>
+        <path d="M20 200Q180 222 340 200L342 214Q180 236 18 214Z" fill="#E8322A" stroke="#0E3A1A" stroke-width="3" stroke-linejoin="round"></path>
+        <g fill="url(#gTooth)" stroke="#6E6A60" stroke-width="2" stroke-linejoin="round"><path d="M31 212 L40 232 L49 212Z"/><path d="M51 212 L60 246 L69 212Z"/><path d="M71 212 L80 232 L89 212Z"/><path d="M91 212 L100 236 L109 212Z"/><path d="M111 212 L120 232 L129 212Z"/><path d="M131 212 L140 236 L149 212Z"/><path d="M151 212 L160 232 L169 212Z"/><path d="M171 212 L180 236 L189 212Z"/><path d="M191 212 L200 232 L209 212Z"/><path d="M211 212 L220 236 L229 212Z"/><path d="M231 212 L240 232 L249 212Z"/><path d="M251 212 L260 236 L269 212Z"/><path d="M271 212 L280 232 L289 212Z"/><path d="M291 212 L300 246 L309 212Z"/><path d="M311 212 L320 232 L329 212Z"/></g>
       </g>
       <text id="crBang" x="180" y="40" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FF5C7A" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">콱!</text>
     </svg>
   </div>
   <div class="mute" style="text-align:center;font-size:14px" id="crLeft">이빨을 하나씩 누르고 다음 사람에게</div>
+  <button class="btn" id="crStart">시작</button>
 </section>
 
 <!-- 해적 통 -->
@@ -371,37 +426,58 @@ button{cursor:pointer}
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
     <div class="disp" style="font-size:24px">해적 통</div>
-    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
   </div>
-  <div class="turn" id="prTurn"><span class="dot"></span><b>1번</b><span class="mute">차례</span></div>
   <div class="play-wrap">
-    <svg id="prSvg" viewBox="0 0 360 460" role="img" aria-label="해적이 숨은 나무통">
-      <ellipse cx="180" cy="212" rx="112" ry="24" fill="#3A2412" stroke="#0B0C18" stroke-width="4"></ellipse>
+    <svg id="prSvg" viewBox="0 0 360 512" role="img" aria-label="해적이 숨은 나무통">
+      <defs>
+        <linearGradient id="gWood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3B2414"></stop><stop offset=".25" stop-color="#7A4E2C"></stop><stop offset=".5" stop-color="#9A6638"></stop><stop offset=".75" stop-color="#7A4E2C"></stop><stop offset="1" stop-color="#3B2414"></stop></linearGradient>
+        <linearGradient id="gIron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A5A60"></stop><stop offset=".5" stop-color="#2A2A2E"></stop><stop offset="1" stop-color="#18181B"></stop></linearGradient>
+        <radialGradient id="gSkin" cx=".45" cy=".4" r=".65"><stop offset="0" stop-color="#FFD0A6"></stop><stop offset="1" stop-color="#E39A68"></stop></radialGradient>
+      </defs>
+      <ellipse cx="180" cy="498" rx="130" ry="10" fill="#000" opacity=".35"></ellipse>
+      <ellipse cx="180" cy="214" rx="110" ry="24" fill="#1E120A" stroke="#0B0C18" stroke-width="4"></ellipse>
       <g id="prMan">
-        <rect x="132" y="196" width="96" height="150" rx="18" fill="#FFF8EA" stroke="#0B0C18" stroke-width="4"></rect>
-        <path d="M134 222h92M134 248h92M134 274h92M134 300h92M134 326h92" stroke="#2B6BD6" stroke-width="12"></path>
-        <rect x="132" y="196" width="96" height="150" rx="18" fill="none" stroke="#0B0C18" stroke-width="4"></rect>
-        <circle cx="180" cy="152" r="58" fill="#F2C9A0" stroke="#0B0C18" stroke-width="4"></circle>
-        <path d="M122 146a58 58 0 0 1 116 0z" fill="#2B6BD6" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
-        <circle cx="152" cy="122" r="5" fill="#FFD447"></circle><circle cx="180" cy="110" r="5" fill="#FFD447"></circle><circle cx="208" cy="122" r="5" fill="#FFD447"></circle>
-        <path d="M236 138l26-6-8 18 18 10-30 0z" fill="#2B6BD6" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
-        <path d="M124 150l112 0" stroke="#0B0C18" stroke-width="3"></path>
-        <circle cx="160" cy="162" r="13" fill="#14162B"></circle>
-        <path d="M124 150l36 12" stroke="#14162B" stroke-width="4"></path>
-        <circle cx="202" cy="162" r="11" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle><circle cx="204" cy="164" r="5" fill="#14162B"></circle>
-        <path d="M156 186q12-10 24 0q12-10 24 0q-12 10-24 4q-12 6-24-4z" fill="#5A3A22" stroke="#0B0C18" stroke-width="2"></path>
-        <path d="M166 196q14 10 28 0" stroke="#0B0C18" stroke-width="4" fill="none" stroke-linecap="round"></path>
+        <rect x="128" y="196" width="104" height="160" rx="20" fill="#FFF8EA" stroke="#0B0C18" stroke-width="4"></rect>
+        <path d="M130 224h100M130 252h100M130 280h100M130 308h100M130 336h100" stroke="#C62828" stroke-width="13"></path>
+        <rect x="128" y="196" width="104" height="160" rx="20" fill="none" stroke="#0B0C18" stroke-width="4"></rect>
+        <ellipse cx="118" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <ellipse cx="242" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <circle cx="240" cy="170" r="7" fill="none" stroke="#F5C518" stroke-width="4"></circle>
+        <circle cx="180" cy="146" r="62" fill="url(#gSkin)" stroke="#0B0C18" stroke-width="4"></circle>
+        <path d="M120 150Q118 232 180 236Q242 232 240 150Q232 176 214 180Q180 172 146 180Q128 176 120 150Z" fill="#1A1210" stroke="#0B0C18" stroke-width="3"></path>
+        <path d="M156 190Q180 214 204 190Q196 206 180 208Q164 206 156 190Z" fill="#7A1A12" stroke="#0B0C18" stroke-width="2"></path>
+        <path d="M164 196Q180 200 196 196L194 202Q180 205 166 202Z" fill="#fff"></path>
+        <path d="M180 174Q150 166 134 184Q150 184 160 178Q170 182 180 178Q190 182 200 178Q210 184 226 184Q210 166 180 174Z" fill="#1A1210" stroke="#0B0C18" stroke-width="2"></path>
+        <ellipse cx="180" cy="160" rx="14" ry="12" fill="#E7895A" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <ellipse cx="206" cy="138" rx="13" ry="14" fill="#fff" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <circle cx="204" cy="140" r="6" fill="#1A1210"></circle><circle cx="202" cy="137" r="2" fill="#fff"></circle>
+        <path d="M192 116Q206 108 222 118" stroke="#1A1210" stroke-width="6" stroke-linecap="round" fill="none"></path>
+        <path d="M122 150L154 138L238 104" stroke="#1A1210" stroke-width="4.5" fill="none" stroke-linejoin="round"></path>
+        <ellipse cx="154" cy="138" rx="18" ry="15" fill="#1A1210" transform="rotate(-12 154 138)"></ellipse>
+        <path d="M118 126Q118 72 180 76Q242 72 242 126Q180 104 118 126Z" fill="#D7261E" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
+        <path d="M240 112q22 -6 34 6q-14 4 -18 14q-6-10 -16-8z" fill="#D7261E" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M244 118q16 10 18 30q-12-6 -22-8z" fill="#B71C15" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <g fill="#fff"><circle cx="180" cy="94" r="9"></circle><rect x="175" y="100" width="10" height="6" rx="2"></rect></g>
+        <g fill="#D7261E"><circle cx="176.5" cy="93" r="2.4"></circle><circle cx="183.5" cy="93" r="2.4"></circle></g>
+        <path d="M166 108l28-8M166 100l28 8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"></path>
       </g>
-      <path d="M68 212Q46 320 74 440L286 440Q314 320 292 212Q180 238 68 212z" fill="#B7793F" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
-      <path d="M110 230Q96 330 112 436M150 236Q144 330 150 440M210 236Q216 330 210 440M250 230Q264 330 248 436" stroke="#8C5A2B" stroke-width="4" fill="none"></path>
-      <path d="M58 270Q180 296 302 270" stroke="#5B3A1E" stroke-width="16" fill="none"></path>
-      <path d="M58 400Q180 426 302 400" stroke="#5B3A1E" stroke-width="16" fill="none"></path>
-      <path d="M68 212Q180 238 292 212" stroke="#0B0C18" stroke-width="5" fill="none"></path>
+      <g id="prFront">
+        <path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z" fill="url(#gWood)" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
+        <g stroke="#2A170B" stroke-width="3" fill="none" opacity=".8"><path d="M96 226Q78 360 100 490"/><path d="M124 226Q112 360 128 490"/><path d="M152 226Q147 360 156 490"/><path d="M180 226Q180 360 176 490"/><path d="M208 226Q213 360 204 490"/><path d="M236 226Q248 360 232 490"/><path d="M264 226Q282 360 260 490"/></g>
+        <path d="M110 330q8 4 6 12M232 420q-6 6 0 12M150 478q6-4 12 0" stroke="#2A170B" stroke-width="2.5" fill="none" opacity=".6"></path>
+        <path d="M62 274Q180 304 298 274L299 290Q180 320 61 290Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M56 344Q180 374 304 344L304 360Q180 390 56 360Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M58 414Q180 444 302 414L300 430Q180 460 60 430Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <g fill="#9A9AA2" stroke="#0B0C18" stroke-width="1.5"><circle cx="72" cy="284.4" r="4"/><circle cx="120" cy="293.1" r="4"/><circle cx="180" cy="297.0" r="4"/><circle cx="240" cy="293.1" r="4"/><circle cx="288" cy="284.4" r="4"/><circle cx="72" cy="354.4" r="4"/><circle cx="120" cy="363.1" r="4"/><circle cx="180" cy="367.0" r="4"/><circle cx="240" cy="363.1" r="4"/><circle cx="288" cy="354.4" r="4"/><circle cx="72" cy="424.4" r="4"/><circle cx="120" cy="433.1" r="4"/><circle cx="180" cy="437.0" r="4"/><circle cx="240" cy="433.1" r="4"/><circle cx="288" cy="424.4" r="4"/></g>
+        <path d="M70 214Q180 240 290 214" stroke="#0B0C18" stroke-width="5" fill="none"></path>
+        <path d="M72 220Q180 246 288 220" stroke="#B88250" stroke-width="3" fill="none" opacity=".6"></path>
+      </g>
       <g id="prSlots"></g>
       <text id="prBang" x="180" y="60" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FFD447" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">펑!</text>
     </svg>
   </div>
   <div class="mute" style="text-align:center;font-size:14px" id="prLeft">구멍에 칼을 하나씩 꽂고 다음 사람에게</div>
+  <button class="btn" id="prStart">시작</button>
 </section>
 
 <!-- 결과 -->
@@ -551,7 +627,7 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel'||g==='croc'||g==='pirate') openPeople(); } });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel'||g==='marble') openPeople(); } });
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
 function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
 function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
@@ -576,7 +652,7 @@ $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
-function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate})[g](); }
+function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble})[g](); }
 
 /* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
@@ -773,33 +849,177 @@ let turn=0;
 function setTurn(id){ const el=$(id), i=turn%S.n; el.querySelector('.dot').style.background=PAL[i][0]; el.querySelector('b').textContent=nameOf(i); }
 function bindPress(el,fn){ el.addEventListener('click',fn); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } }); }
 
+/* ── 구슬 핀볼 (밤하늘 테마, 천천히 보는 레이스) ── */
+function startMarble(){
+  show('marble');
+  const W=360, H=640, R=11, cv=$('#mbCanvas'), ctx=cv.getContext('2d'), wrap=$('#mbWrap'), rankEl=$('#mbRank');
+  const n=S.n, rnd=(a,b)=>a+Math.random()*(b-a);
+  let scale=1, raf=0, last=0, started=false, gateT=0, finished=[], ended=false, tStart=0, lastTick=0, lastDing=0, clock=0, mixT=0;
+  $('#mbLegend').innerHTML=[...Array(n)].map((_,i)=>'<span><i style="background:'+PAL[i][0]+'"></i>'+esc(nameOf(i))+'</span>').join('');
+  // 벽
+  const walls=[
+    [8,0,8,640],[352,0,352,640],[8,8,352,8],
+    [40,30,150,122],[320,30,210,122],[8,30,40,30],[320,30,352,30],[40,8,40,30],[320,8,320,30],
+    [8,524,164,582],[352,524,196,582],[164,582,164,640],[196,582,196,640]
+  ];
+  const gate=[150,122,210,122];
+  // 판마다 조금씩 다른 배치
+  const flipSide=Math.random()<.5;
+  const crosses=[{x:rnd(96,124),y:rnd(206,226),L:84,a:rnd(0,3),w:(Math.random()<.5?-1:1)*rnd(1.3,1.8)},{x:rnd(236,264),y:rnd(240,262),L:84,a:rnd(0,3),w:(Math.random()<.5?-1:1)*rnd(1.3,1.8)}];
+  const vy0=rnd(318,334); walls.push([112,vy0+30,180,vy0],[180,vy0,248,vy0+30]);          // 가운데 ∧ 막이
+  const barY=rnd(404,418); walls.push([60,barY,122,barY],[238,barY,300,barY]);            // 양쪽 파란 받침
+  const flippers=[{px:8,py:384,L:58,base:-.15,amp:.5,sp:rnd(2.2,2.8),ph:rnd(0,6),dir:1},{px:352,py:384,L:58,base:-.15,amp:.5,sp:rnd(2.2,2.8),ph:rnd(0,6),dir:-1}];
+  const bumpers=[{x:rnd(104,124),y:rnd(470,484),r:16,flash:0},{x:rnd(236,256),y:rnd(470,484),r:16,flash:0}];
+  const pegs=[];
+  [[100,175],[260,175],[180,192],[140,218],[220,218],[300,186],[60,280],[300,300],[140,280],[220,290],[180,450],[150,500],[210,500],[180,540]].forEach(([x,y])=>{
+    if(crosses.some(c=>Math.hypot(x-c.x,y-c.y)<c.L/2+16)) return; if(bumpers.some(o=>Math.hypot(x-o.x,y-o.y)<o.r+24)) return; pegs.push([x,y]); });
+  // 밤하늘 별
+  const stars=[...Array(70)].map(()=>[rnd(12,348),rnd(12,628),Math.random()<.12?rnd(2,3.5):rnd(.6,1.4),rnd(0,6)]);
+  // 구슬: 대기 칸
+  const slots=[]; for(let r=0;r<3;r++) for(let c=0;c<6;c++) slots.push([118+c*25+(r%2?12:0), 34+r*24]);
+  slots.sort(()=>Math.random()-.5);
+  const balls=[]; for(let i=0;i<n;i++){ const sp=slots[i]; balls.push({i,x:sp[0],y:sp[1],vx:rnd(-10,10),vy:0,done:false,still:0}); }
+  rankEl.innerHTML='<span class="wait">섞고 나서 시작을 누르면 문이 열려요 · 꼴찌가 독박</span>';
+  $('#mbBtns').hidden=false; $('#mbStart').disabled=false; $('#mbMix').disabled=false;
+
+  function fit(){ const w=wrap.clientWidth, h=wrap.clientHeight; scale=Math.min(w/W,h/H); const dpr=window.devicePixelRatio||1;
+    cv.style.width=(W*scale)+'px'; cv.style.height=(H*scale)+'px'; cv.width=Math.round(W*scale*dpr); cv.height=Math.round(H*scale*dpr); ctx.setTransform(scale*dpr,0,0,scale*dpr,0,0); }
+  function seg(b,x1,y1,x2,y2,th,e,cx,cy,w){
+    const dx=x2-x1, dy=y2-y1, L2=dx*dx+dy*dy; let t=((b.x-x1)*dx+(b.y-y1)*dy)/L2; t=t<0?0:t>1?1:t;
+    const px=x1+t*dx, py=y1+t*dy; let nx=b.x-px, ny=b.y-py; const d=Math.hypot(nx,ny), RR=R+th;
+    if(d>=RR||d<1e-6) return 0; nx/=d; ny/=d; b.x=px+nx*RR; b.y=py+ny*RR;
+    let svx=0, svy=0; if(w!==undefined){ svx=-w*(py-cy); svy=w*(px-cx); }
+    let rvx=b.vx-svx, rvy=b.vy-svy; const vn=rvx*nx+rvy*ny;
+    if(vn<0){ rvx-=(1+e)*vn*nx; rvy-=(1+e)*vn*ny; rvx*=.9993; rvy*=.9993; b.vx=rvx+svx; b.vy=rvy+svy; return -vn; } return 0;
+  }
+  function pt(b,x,y,rad,e){ let nx=b.x-x, ny=b.y-y; const d=Math.hypot(nx,ny), RR=R+rad; if(d>=RR||d<1e-6) return 0; nx/=d; ny/=d; b.x=x+nx*RR; b.y=y+ny*RR; const vn=b.vx*nx+b.vy*ny; if(vn<0){ b.vx-=(1+e)*vn*nx; b.vy-=(1+e)*vn*ny; return -vn; } return 0; }
+  function tick(hit){ const now=performance.now(); if(hit>80&&now-lastTick>50){ lastTick=now; beep(900+Math.random()*700,.025,'triangle',Math.min(.05,hit/5000)); } }
+  function flipAng(f){ return f.base+f.amp*Math.sin(clock*f.sp+f.ph); }
+  function flipEnd(f){ const a=flipAng(f); return [f.px+f.dir*Math.cos(a)*f.L, f.py+Math.sin(a)*f.L]; }
+  function step(dt){
+    const SUB=6, h=dt/SUB, G=520, VMAX=560;
+    clock+=dt; crosses.forEach(c=>c.a+=c.w*dt);
+    if(mixT>0){ mixT-=dt; for(const b of balls){ if(b.y<124){ b.vx+=(Math.random()-.5)*5200*dt; b.vy-=Math.random()*2400*dt; } } if(Math.random()<.35) beep(500+Math.random()*900,.02,'square',.025); if(mixT<=0){ $('#mbStart').disabled=false; $('#mbMix').disabled=false; } }
+    for(let k=0;k<SUB;k++){
+      for(const b of balls){ if(b.done) continue; b.vy+=G*h; b.vx*=.9995; b.vy*=.9995; const sp=Math.hypot(b.vx,b.vy); if(sp>VMAX){ b.vx*=VMAX/sp; b.vy*=VMAX/sp; } b.x+=b.vx*h; b.y+=b.vy*h; }
+      for(const b of balls){ if(b.done) continue;
+        for(const w of walls) seg(b,w[0],w[1],w[2],w[3],2,.35);
+        if(!started) seg(b,gate[0],gate[1],gate[2],gate[3],3,.2);
+        for(const pg of pegs) tick(pt(b,pg[0],pg[1],5,.5));
+        for(const c of crosses){ for(let m=0;m<2;m++){ const a=c.a+m*Math.PI/2, cx=Math.cos(a)*c.L/2, cy=Math.sin(a)*c.L/2; tick(seg(b,c.x-cx,c.y-cy,c.x+cx,c.y+cy,4,.45,c.x,c.y,c.w)); } }
+        for(const f of flippers){ const [ex,ey]=flipEnd(f), wv=f.amp*f.sp*Math.cos(clock*f.sp+f.ph)*f.dir; tick(seg(b,f.px,f.py,ex,ey,5,.5,f.px,f.py,wv)); }
+        for(const o of bumpers){ let nx=b.x-o.x, ny=b.y-o.y; const d=Math.hypot(nx,ny), RR=R+o.r; if(d<RR&&d>1e-6){ nx/=d; ny/=d; b.x=o.x+nx*RR; b.y=o.y+ny*RR; const vn=b.vx*nx+b.vy*ny; if(vn<0){ const out=Math.max(300,-vn*1.1); b.vx+=(out-vn)*nx; b.vy+=(out-vn)*ny; o.flash=.3; const now=performance.now(); if(now-lastDing>90){ lastDing=now; beep(1180,.08,'sine',.07); beep(1770,.06,'sine',.03); } } } }
+      }
+      for(let a=0;a<balls.length;a++){ const A=balls[a]; if(A.done) continue; for(let c=a+1;c<balls.length;c++){ const B=balls[c]; if(B.done) continue;
+        let nx=B.x-A.x, ny=B.y-A.y; const d=Math.hypot(nx,ny); if(d>=2*R||d<1e-6) continue; nx/=d; ny/=d; const o=(2*R-d)/2; A.x-=nx*o; A.y-=ny*o; B.x+=nx*o; B.y+=ny*o;
+        const vn=(B.vx-A.vx)*nx+(B.vy-A.vy)*ny; if(vn<0){ const j=-1.5*vn/2; A.vx-=j*nx; A.vy-=j*ny; B.vx+=j*nx; B.vy+=j*ny; } } }
+    }
+    bumpers.forEach(o=>o.flash=Math.max(0,o.flash-dt));
+    if(started){
+      for(const b of balls){ if(b.done) continue;
+        if(b.y>612){ b.done=true; finished.push(b); onFinish(b); continue; }
+        if(Math.hypot(b.vx,b.vy)<14){ b.still+=dt; if(b.still>1.5){ b.vy=-200; b.vx=rnd(-150,150); b.still=0; } } else b.still=0;
+      }
+      if(!ended && performance.now()-tStart>70000){ balls.filter(b=>!b.done).sort((p,q)=>q.y-p.y).forEach(b=>{ b.done=true; finished.push(b); onFinish(b); }); }
+    }
+  }
+  function onFinish(b){
+    const k=finished.length; beep(520+k*70,.12,'triangle',.08); buzz(20);
+    if(k===1) rankEl.innerHTML='';
+    const el=document.createElement('span'); el.innerHTML='<i style="background:'+PAL[b.i][0]+'"></i>'+k+'. '+esc(nameOf(b.i)); rankEl.appendChild(el);
+    if(k===n-1){ const rest=balls.find(x=>!x.done); if(rest) rest.last=true; }
+    if(k===n && !ended){ ended=true; el.classList.add('last'); boomSound(); buzz([200,60,300]);
+      setTimeout(()=>result({name:nameOf(b.i), color:PAL[b.i][0], sub:n+'명 중 꼴찌로 들어왔어요', n}),1500); }
+  }
+  const pastel=(x1,y1,x2,y2)=>{ const g=ctx.createLinearGradient(x1,y1,x2,y2); g.addColorStop(0,'#F7B6D9'); g.addColorStop(.5,'#C7B8F5'); g.addColorStop(1,'#A6EDD6'); return g; };
+  function sparkle(x,y,r,al){ ctx.save(); ctx.globalAlpha=al; ctx.fillStyle='#FFF8EA'; ctx.beginPath(); ctx.moveTo(x,y-r*3); ctx.quadraticCurveTo(x,y,x+r*3,y); ctx.quadraticCurveTo(x,y,x,y+r*3); ctx.quadraticCurveTo(x,y,x-r*3,y); ctx.quadraticCurveTo(x,y,x,y-r*3); ctx.fill(); ctx.restore(); }
+  function draw(){
+    const bg=ctx.createRadialGradient(180,300,40,180,320,420); bg.addColorStop(0,'#26232F'); bg.addColorStop(1,'#141219');
+    ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect?ctx.roundRect(0,0,W,H,18):ctx.rect(0,0,W,H); ctx.fill();
+    // 은은한 판 무늬
+    ctx.strokeStyle='rgba(199,184,245,.06)'; ctx.lineWidth=1; for(let y=40;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(10,y); ctx.lineTo(350,y); ctx.stroke(); }
+    ctx.beginPath(); ctx.arc(180,330,150,0,7); ctx.stroke(); ctx.beginPath(); ctx.arc(180,330,110,0,7); ctx.stroke();
+    // 별
+    for(const st of stars){ const al=.35+.35*Math.sin(clock*1.6+st[3]); if(st[2]>2) sparkle(st[0],st[1],st[2],.4+al*.6); else { ctx.fillStyle='rgba(255,248,234,'+al.toFixed(2)+')'; ctx.beginPath(); ctx.arc(st[0],st[1],st[2],0,7); ctx.fill(); } }
+    // 결승선 (체크무늬)
+    for(let x=166,c=0;x<194;x+=7,c++) for(let r=0;r<2;r++){ ctx.fillStyle=(c+r)%2?'#F7F5EE':'#1A1820'; ctx.fillRect(x,600+r*7,7,7); }
+    ctx.fillStyle='#A6EDD6'; ctx.font='14px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('FINISH',180,632);
+    // 대기칸
+    ctx.fillStyle='#1E1B28'; ctx.beginPath(); ctx.moveTo(40,30); ctx.lineTo(320,30); ctx.lineTo(210,122); ctx.lineTo(150,122); ctx.closePath(); ctx.fill();
+    // 벽
+    ctx.lineCap='round'; ctx.shadowColor='rgba(199,184,245,.6)'; ctx.shadowBlur=6; ctx.strokeStyle='#CFC6EE'; ctx.lineWidth=4;
+    for(const w of walls){ ctx.beginPath(); ctx.moveTo(w[0],w[1]); ctx.lineTo(w[2],w[3]); ctx.stroke(); } ctx.shadowBlur=0;
+    // 문
+    const open=Math.min(1,gateT/.35); ctx.strokeStyle='#F7B6D9'; ctx.lineWidth=7;
+    ctx.save(); ctx.translate(150,122); ctx.rotate(open*Math.PI/2); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(30,0); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.translate(210,122); ctx.rotate(-open*Math.PI/2); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-30,0); ctx.stroke(); ctx.restore();
+    // 핀
+    pegs.forEach(([x,y],k)=>{ ctx.fillStyle=['#F7B6D9','#C7B8F5','#A6EDD6'][k%3]; ctx.beginPath(); ctx.arc(x,y,5,0,7); ctx.fill(); ctx.fillStyle='rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(x-1.5,y-1.5,1.6,0,7); ctx.fill(); });
+    // 범퍼 (과녁)
+    for(const o of bumpers){ const f=o.flash/.3, r=o.r+f*4;
+      ctx.fillStyle=pastel(o.x-r,o.y-r,o.x+r,o.y+r); ctx.beginPath(); ctx.arc(o.x,o.y,r,0,7); ctx.fill();
+      ctx.fillStyle=f>0?'#FFF8EA':'#2A2633'; ctx.beginPath(); ctx.arc(o.x,o.y,r*.62,0,7); ctx.fill();
+      ctx.fillStyle=pastel(o.x+r,o.y-r,o.x-r,o.y+r); ctx.beginPath(); ctx.arc(o.x,o.y,r*.32,0,7); ctx.fill(); }
+    // 회전 십자
+    for(const c of crosses){ ctx.lineWidth=8; for(let m=0;m<2;m++){ const a=c.a+m*Math.PI/2, cx=Math.cos(a)*c.L/2, cy=Math.sin(a)*c.L/2; ctx.strokeStyle=pastel(c.x-cx,c.y-cy,c.x+cx,c.y+cy); ctx.beginPath(); ctx.moveTo(c.x-cx,c.y-cy); ctx.lineTo(c.x+cx,c.y+cy); ctx.stroke(); }
+      ctx.fillStyle='#2A2633'; ctx.beginPath(); ctx.arc(c.x,c.y,7,0,7); ctx.fill(); ctx.strokeStyle='#FFF8EA'; ctx.lineWidth=2; ctx.stroke(); }
+    // 날개(흔들리는 막대)
+    for(const f of flippers){ const [ex,ey]=flipEnd(f); ctx.strokeStyle='#A6EDD6'; ctx.lineWidth=10; ctx.beginPath(); ctx.moveTo(f.px,f.py); ctx.lineTo(ex,ey); ctx.stroke(); ctx.fillStyle='#2A2633'; ctx.beginPath(); ctx.arc(f.px,f.py,7,0,7); ctx.fill(); }
+    // 구슬
+    for(const b of balls){ if(b.done) continue;
+      ctx.fillStyle=PAL[b.i][0]; ctx.strokeStyle='#0B0C18'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.arc(b.x,b.y,R,0,7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.55)'; ctx.beginPath(); ctx.arc(b.x-3.5,b.y-4,3,0,7); ctx.fill();
+      ctx.fillStyle='#0B0C18'; ctx.font='bold 11px "Noto Sans KR", sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(nameOf(b.i).slice(0,1),b.x,b.y+1); ctx.textBaseline='alphabetic';
+      if(b.last){ ctx.strokeStyle='#FF5C7A'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(b.x,b.y,R+5,0,7); ctx.stroke(); } }
+  }
+  function cover(){
+    const sh=mixT>0?(Math.random()-.5)*4:0, op=Math.max(0,1-gateT/.6); if(op<=0) return;
+    ctx.save(); ctx.globalAlpha=op; ctx.translate(sh,0);
+    ctx.beginPath(); ctx.moveTo(37,6); ctx.lineTo(323,6); ctx.lineTo(323,30); ctx.lineTo(212,120); ctx.lineTo(148,120); ctx.lineTo(37,30); ctx.closePath();
+    ctx.fillStyle='#2A2633'; ctx.fill(); ctx.save(); ctx.clip();
+    ctx.strokeStyle='rgba(199,184,245,.10)'; ctx.lineWidth=10; for(let x=-60;x<380;x+=26){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+90,130); ctx.stroke(); }
+    ctx.restore(); ctx.strokeStyle='#CFC6EE'; ctx.lineWidth=3; ctx.stroke();
+    ctx.fillStyle=pastel(130,40,230,60); ctx.font='30px Jua, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('? ? ?',180,52);
+    ctx.fillStyle='#CFC6EE'; ctx.font='bold 12px "Noto Sans KR", sans-serif'; ctx.fillText(n+'개 구슬 대기 중',180,84); ctx.textBaseline='alphabetic';
+    ctx.restore();
+  }
+  function loop(t){ const dt=Math.min(.033,(t-(last||t))/1000)||.016; last=t; if(started) gateT+=dt; step(dt); draw(); cover(); raf=requestAnimationFrame(loop); }
+  $('#mbMix').onclick=()=>{ audio(); mixT=1.4; $('#mbStart').disabled=true; $('#mbMix').disabled=true; buzz([30,30,30,30,30]); };
+  $('#mbStart').onclick=()=>{ if(mixT>0) return; audio(); started=true; tStart=performance.now(); $('#mbBtns').hidden=true; beep(300,.08,'square',.06); beep(180,.12,'sine',.08); rankEl.innerHTML='<span class="wait">달려라!</span>'; };
+  fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  raf=requestAnimationFrame(loop);
+  cleanup=()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize',onR); };
+}
+
 /* ── 악어 이빨 ── */
 function startCroc(){
   show('croc');
   const N=12, trap=Math.floor(Math.random()*N), top=$('#crTop'), box=$('#crTeeth'), bang=$('#crBang');
   let pressed=0, done=false, timers=[];
-  turn=0; setTurn('#crTurn'); top.classList.remove('bite'); bang.setAttribute('opacity','0'); $('#crSvg').classList.remove('chomp');
-  $('#crLeft').textContent='이빨을 하나씩 누르고 다음 사람에게';
+  let ready=false; $('#crStart').hidden=false; $('#crStart').onclick=()=>{ audio(); ready=true; $('#crStart').hidden=true; beep(660,.08,'triangle',.08); $('#crLeft').textContent='돌아가며 이빨을 하나씩 눌러요'; };
+  top.classList.remove('bite'); bang.setAttribute('opacity','0'); $('#crSvg').classList.remove('chomp','shut');
+  $('#crLeft').textContent='폰을 돌려가며 한 사람씩 이빨을 눌러요';
   let h='';
   // 입 안쪽 가장자리를 따라 왼쪽 4 · 아래 4 · 오른쪽 4
-  const POS=[[94,246],[94,282],[96,318],[104,352],[134,370],[166,374],[198,374],[230,370],[260,352],[268,318],[270,282],[270,246]];
+  const POS=[[76,250],[76,286],[82,320],[96,350],[124,370],[160,378],[200,378],[236,370],[264,350],[278,320],[284,286],[284,250]];
   for(let k=0;k<N;k++){
     const x=POS[k][0], y=POS[k][1];
-    h+='<g class="tooth" role="button" tabindex="0" aria-label="이빨 '+(k+1)+'"><rect x="'+(x-14).toFixed(1)+'" y="'+(y-18).toFixed(1)+'" width="26" height="32" rx="10" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></rect></g>';
+    const L=(k===0||k===11)?34:30;
+    h+='<clipPath id="tc'+k+'"><rect x="'+(x-20)+'" y="'+(y-60)+'" width="40" height="'+(74)+'"></rect></clipPath>'+
+       '<g class="tooth" role="button" tabindex="0" aria-label="이빨 '+(k+1)+'" style="--d:'+(L-7)+'px"><rect x="'+(x-18)+'" y="'+(y-24)+'" width="36" height="44" fill="transparent"></rect><g clip-path="url(#tc'+k+')"><path class="fang" d="M'+(x-12)+' '+(y+14)+' L'+(x-12)+' '+(y+14-L*.45)+' Q'+(x-11)+' '+(y+14-L*.85)+' '+x+' '+(y+14-L)+' Q'+(x+11)+' '+(y+14-L*.85)+' '+(x+12)+' '+(y+14-L*.45)+' L'+(x+12)+' '+(y+14)+'Z" fill="url(#gTooth)" stroke="#6E6A60" stroke-width="2" stroke-linejoin="round"></path></g><ellipse cx="'+x+'" cy="'+(y+14)+'" rx="13" ry="3.5" fill="#9E1712" opacity=".55"></ellipse></g>';
   }
   box.innerHTML=h;
-  [...box.children].forEach((t,k)=>bindPress(t,()=>{
-    if(done||t.dataset.p) return; t.dataset.p='1'; audio();
-    const i=turn%S.n;
+  [...box.querySelectorAll('.tooth')].forEach((t,k)=>bindPress(t,()=>{
+    if(!ready||done||t.dataset.p) return; t.dataset.p='1'; audio();
     if(k===trap){
-      done=true; top.classList.add('bite');
+      done=true; top.classList.add('bite'); setTimeout(()=>$('#crSvg').classList.add('shut'),140);
       timers.push(setTimeout(()=>{ sChomp(); buzz([250,60,120]); bang.setAttribute('opacity','1'); const sv=$('#crSvg'); sv.classList.remove('chomp'); sv.getBoundingClientRect(); sv.classList.add('chomp'); },150));
-      timers.push(setTimeout(()=>result({name:nameOf(i), color:PAL[i][0], sub:'악어에게 물렸어요! ('+(pressed+1)+'번째 이빨)', n:S.n}),1600));
+      timers.push(setTimeout(()=>result({name:'걸린 사람!', color:'#22B048', sub:'악어에게 물렸어요! ('+(pressed+1)+'번째 이빨)', n:S.n}),1600));
       return;
     }
-    const r=t.querySelector('rect'); r.setAttribute('y',(parseFloat(r.getAttribute('y'))+24).toFixed(1)); r.setAttribute('height','10'); r.setAttribute('fill','#D9D2C3');
+    t.classList.add('down');
     pressed++; sToothClick(); buzz(15);
-    turn++; setTurn('#crTurn'); $('#crLeft').textContent='남은 이빨 '+(N-pressed)+'개 · 다음 사람에게';
+    $('#crLeft').textContent='남은 이빨 '+(N-pressed)+'개 · 다음 사람에게';
   }));
   cleanup=()=>timers.forEach(clearTimeout);
 }
@@ -808,19 +1028,27 @@ function startCroc(){
 function startPirate(){
   show('pirate');
   const svg=$('#prSvg'), man=$('#prMan'), box=$('#prSlots'), bang=$('#prBang');
-  const rows=[262,306,350,392], N=16, trap=Math.floor(Math.random()*N);
+  const rows=[238,308,378,448], N=20, trap=Math.floor(Math.random()*N);
   let used=0, done=false, timers=[];
-  turn=0; setTurn('#prTurn'); bang.setAttribute('opacity','0');
-  man.classList.remove('pop'); svg.insertBefore(man, svg.children[1]); const ofx=$('#prFx'); if(ofx) ofx.remove();
-  $('#prLeft').textContent='구멍에 칼을 하나씩 꽂고 다음 사람에게';
+  let ready=false; $('#prStart').hidden=false; $('#prStart').onclick=()=>{ audio(); ready=true; $('#prStart').hidden=true; beep(660,.08,'triangle',.08); $('#prLeft').textContent='돌아가며 칼을 하나씩 꽂아요'; };
+  bang.setAttribute('opacity','0');
+  man.classList.remove('pop'); svg.insertBefore(man, $('#prFront')); const ofx=$('#prFx'); if(ofx) ofx.remove();
+  $('#prLeft').textContent='폰을 돌려가며 한 사람씩 칼을 꽂아요';
   let h='';
-  rows.forEach((y,ri)=>{ const half=[96,104,104,96][ri]; for(let c=0;c<4;c++){ const x=180-half+c*(half*2/3);
-    h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*4+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="32" fill="transparent"></rect><rect class="hole" x="'+(x-16)+'" y="'+(y-6)+'" width="32" height="12" rx="6" fill="#3A2412" stroke="#0B0C18" stroke-width="2"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
+  rows.forEach((y0,ri)=>{ const half=[96,108,110,104][ri]; for(let c=0;c<5;c++){ const x=Math.round(180-half+c*(half/2)), y=Math.round(y0+15*(1-Math.pow((x-180)/118,2)));
+    h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*5+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-5)+'" y="'+(y-13)+'" width="10" height="26" rx="5" fill="#0F0905" stroke="#C08A55" stroke-width="1.5"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
   box.innerHTML=h;
   [...box.children].forEach((sl,k)=>bindPress(sl,()=>{
-    if(done||sl.dataset.p) return; sl.dataset.p='1'; audio();
-    const i=turn%S.n, g=sl.querySelector('.sw'), x=+g.dataset.x, y=+g.dataset.y;
-    g.innerHTML='<g class="sword"><rect x="'+(x-16)+'" y="'+(y-9)+'" width="32" height="8" rx="4" fill="#E8E3D6" stroke="#0B0C18" stroke-width="2"></rect><rect x="'+(x-7)+'" y="'+(y-38)+'" width="14" height="30" rx="6" fill="'+PAL[i][0]+'" stroke="#0B0C18" stroke-width="2.5"></rect></g>';
+    if(!ready||done||sl.dataset.p) return; sl.dataset.p='1'; audio();
+    const g=sl.querySelector('.sw'), x=+g.dataset.x, y=+g.dataset.y;
+    const TOY=['#E53935','#FDD835','#43A047','#1E88E5','#FB8C00','#8E24AA'], col=TOY[used%TOY.length], rot=(Math.random()*24-12).toFixed(0);
+    const dir = x<170 ? -1 : (x>190 ? 1 : (Math.random()<.5?-1:1)), gx = x+dir*4;
+    g.innerHTML='<g transform="rotate('+rot+' '+x+' '+y+')"><g class="sword">'+
+      '<rect x="'+(x-4.5)+'" y="'+(y-15)+'" width="9" height="30" rx="4" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect>'+
+      '<rect x="'+(dir<0?gx-30:gx)+'" y="'+(y-6)+'" width="30" height="12" rx="5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect>'+
+      '<path d="M'+(gx+dir*8)+' '+(y-6)+'v12M'+(gx+dir*15)+' '+(y-6)+'v12M'+(gx+dir*22)+' '+(y-6)+'v12" stroke="#0B0C18" stroke-width="1.3" opacity=".45"></path>'+
+      '<circle cx="'+(gx+dir*34)+'" cy="'+y+'" r="6.5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></circle>'+
+      '<rect x="'+(dir<0?gx-28:gx+2)+'" y="'+(y-4)+'" width="26" height="2.5" rx="1.2" fill="#fff" opacity=".45"></rect></g></g>';
     if(k===trap){
       done=true; svg.appendChild(man); svg.appendChild(bang); man.getBoundingClientRect(); man.classList.add('pop');
       sPop(); buzz([120,40,260]); bang.setAttribute('opacity','1');
@@ -828,11 +1056,11 @@ function startPirate(){
         fx+= star ? '<polygon class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px;animation-delay:'+(q*30)+'ms" points="'+[0,1,2,3,4,5,6,7,8,9].map(m=>{ const r=m%2?6:14, an=m*Math.PI/5-Math.PI/2; return (cx+r*Math.cos(an)).toFixed(1)+','+(212+r*Math.sin(an)).toFixed(1); }).join(' ')+'" fill="#FFD447" stroke="#0B0C18" stroke-width="2"></polygon>'
                    : '<circle class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px" cx="'+cx.toFixed(1)+'" cy="212" r="'+(10+Math.random()*10).toFixed(1)+'" fill="#C9C3B8" opacity=".9"></circle>'; }
       const fxg=document.createElementNS('http://www.w3.org/2000/svg','g'); fxg.id='prFx'; fxg.innerHTML=fx; svg.appendChild(fxg);
-      timers.push(setTimeout(()=>result({name:nameOf(i), color:PAL[i][0], sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n}),1700));
+      timers.push(setTimeout(()=>result({name:'걸린 사람!', color:'#D7261E', sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n}),1700));
       return;
     }
     used++; sThunk(); buzz(20);
-    turn++; setTurn('#prTurn'); $('#prLeft').textContent='남은 구멍 '+(N-used)+'개 · 다음 사람에게';
+    $('#prLeft').textContent='남은 구멍 '+(N-used)+'개 · 다음 사람에게';
   }));
   cleanup=()=>timers.forEach(clearTimeout);
 }
