@@ -1,5 +1,5 @@
 // 고칠 때마다 아래 버전 숫자를 올려야 폰에 새 버전이 들어가요
-const VERSION = 'dokbak-v7';
+const VERSION = 'dokbak-v8';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
