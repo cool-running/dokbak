@@ -57,7 +57,7 @@ button{cursor:pointer}
 .names input{flex:1;min-width:0;width:100%;border:none;background:transparent;font-size:14px;font-weight:700;padding:0;outline:none}
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .game{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
-.game.hot{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.game.hot{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .game.hot .badge{background:rgba(20,22,43,.14);border-color:transparent;color:var(--bg)}
 .game.hot small{color:var(--bg);opacity:.75;font-weight:700}
 .game .g-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
@@ -84,6 +84,26 @@ button{cursor:pointer}
 
 .pbtn{margin-left:auto;height:40px;padding:0 12px;border-radius:12px;border:1px solid #2A4870;background:#172440;color:#6FD3FF;display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:14px;flex:none}
 #peopleSheet .sheet{max-height:92%;overflow-y:auto}
+
+/* 악어 이빨 · 해적 통 */
+.turn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:15px;flex:none}
+.turn .dot{width:14px;height:14px;border-radius:50%}
+.turn b{font-family:var(--display);font-weight:400;font-size:22px}
+.play-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.play-wrap svg{width:100%;height:100%;overflow:visible}
+.tooth,.slot{cursor:pointer;outline:none}
+.tooth rect{transition:height .12s,y .12s,fill .12s}
+.tooth:focus-visible rect,.slot:focus-visible .hole{stroke:#FFD447;stroke-width:5}
+#crTop{transition:transform .16s cubic-bezier(.7,0,1,1)}
+#crTop.bite{transform:translateY(150px)}
+#prMan{transform-origin:180px 160px;transition:transform 1s cubic-bezier(.2,.85,.3,1)}
+#prMan.pop{transform:translate(0,-620px) rotate(-14deg)}
+.pfx{transform-box:fill-box;transform-origin:center;animation:pfx .9s ease-out forwards}
+@keyframes pfx{from{transform:translate(0,0) scale(.3);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(1.15);opacity:0}}
+#crSvg.chomp{animation:chomp .5s ease-out}
+@keyframes chomp{15%{transform:scale(1.07) rotate(-2.5deg)}35%{transform:scale(1.05) rotate(2.5deg)}55%{transform:scale(1.02) rotate(-1.5deg)}75%{transform:rotate(1deg)}}
+.sword{animation:stab .16s ease-out}
+@keyframes stab{from{transform:translateY(-14px);opacity:0}}
 
 /* 손가락 → 폭탄 */
 .touch{flex:1;position:relative;border-radius:24px;background:radial-gradient(circle at 50% 45%,#22264A 0%,var(--deep) 70%);border:1px dashed var(--line);touch-action:none;overflow:hidden;user-select:none;-webkit-user-select:none}
@@ -211,12 +231,19 @@ button{cursor:pointer}
       </span>
       <span><b>사다리</b><small>숨은 독박 1칸</small></span>
     </button>
-    <button class="game" data-game="bomb">
+    <button class="game" data-game="croc">
       <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="14" r="7"></circle><path d="M15 8.5 17.5 6M18 3v1.5M21 6h-1.5M19.8 3.8l-1 1"></path></svg>
-        <span class="badge multi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="2" y="5" width="10" height="16" rx="2"></rect><path d="M15 3h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"></path></svg>각자 폰 OK</span>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V9a3 3 0 0 1 3-3h.5a2 2 0 0 1 4 0h3a2 2 0 0 1 4 0h.5a3 3 0 0 1 3 3v4z"></path><path d="M5 13l1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1-2"></path><path d="M3 13v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"></path></svg>
+        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>폭탄 돌리기</b><small>터지면 독박</small></span>
+      <span><b>악어 이빨</b><small>물리면 독박</small></span>
+    </button>
+    <button class="game" data-game="pirate">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1.2 6.5L18 21H6l-1.2-6.5z"></path><path d="M5.2 11.5h13.6M5.2 17.5h13.6"></path><circle cx="12" cy="4.5" r="2.5"></circle><path d="M15 12l4-4"></path></svg>
+        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
+      </span>
+      <span><b>해적 통</b><small>튀어나오면 독박</small></span>
     </button>
   </div>
 </section>
@@ -302,6 +329,79 @@ button{cursor:pointer}
     <div style="display:flex;justify-content:space-between;font-size:11px" class="mute"><span>째깍 소리가 점점 빨라져요</span><span>위험!</span></div>
   </div>
   <button class="btn" id="bStart">시작</button>
+</section>
+
+<!-- 악어 이빨 -->
+<section class="screen fixed" id="croc" hidden>
+  <div class="top">
+    <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+    <div class="disp" style="font-size:24px">악어 이빨</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
+  </div>
+  <div class="turn" id="crTurn"><span class="dot"></span><b>1번</b><span class="mute">차례</span></div>
+  <div class="play-wrap">
+    <svg id="crSvg" viewBox="0 0 360 430" role="img" aria-label="악어 입 속 이빨">
+      <rect x="34" y="196" width="292" height="222" rx="112" fill="#3E9E5A" stroke="#0B0C18" stroke-width="5"></rect>
+      <rect x="66" y="206" width="228" height="182" rx="90" fill="#B5372F" stroke="#0B0C18" stroke-width="4"></rect>
+      <ellipse cx="180" cy="300" rx="78" ry="58" fill="#8E2A24"></ellipse>
+      <path d="M150 318q30 26 60 0" stroke="#C9514A" stroke-width="10" fill="none" stroke-linecap="round"></path>
+      <g id="crTeeth"></g>
+      <g id="crTop">
+        <rect x="26" y="70" width="308" height="140" rx="66" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></rect>
+        <circle cx="112" cy="68" r="40" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></circle>
+        <circle cx="248" cy="68" r="40" fill="#4CBF6B" stroke="#0B0C18" stroke-width="5"></circle>
+        <rect x="40" y="76" width="280" height="40" fill="#4CBF6B"></rect>
+        <circle cx="112" cy="70" r="24" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle>
+        <circle cx="248" cy="70" r="24" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle>
+        <circle cx="118" cy="74" r="10" fill="#14162B"></circle>
+        <circle cx="242" cy="74" r="10" fill="#14162B"></circle>
+        <path d="M84 42l52 16M276 42l-52 16" stroke="#0B0C18" stroke-width="7" stroke-linecap="round"></path>
+        <ellipse cx="146" cy="150" rx="15" ry="9" fill="#2E7D45"></ellipse>
+        <ellipse cx="214" cy="150" rx="15" ry="9" fill="#2E7D45"></ellipse>
+        <path d="M60 206l14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22 14 22 14-22" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+      </g>
+      <text id="crBang" x="180" y="40" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FF5C7A" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">콱!</text>
+    </svg>
+  </div>
+  <div class="mute" style="text-align:center;font-size:14px" id="crLeft">이빨을 하나씩 누르고 다음 사람에게</div>
+</section>
+
+<!-- 해적 통 -->
+<section class="screen fixed" id="pirate" hidden>
+  <div class="top">
+    <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+    <div class="disp" style="font-size:24px">해적 통</div>
+    <button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button>
+  </div>
+  <div class="turn" id="prTurn"><span class="dot"></span><b>1번</b><span class="mute">차례</span></div>
+  <div class="play-wrap">
+    <svg id="prSvg" viewBox="0 0 360 460" role="img" aria-label="해적이 숨은 나무통">
+      <ellipse cx="180" cy="212" rx="112" ry="24" fill="#3A2412" stroke="#0B0C18" stroke-width="4"></ellipse>
+      <g id="prMan">
+        <rect x="132" y="196" width="96" height="150" rx="18" fill="#FFF8EA" stroke="#0B0C18" stroke-width="4"></rect>
+        <path d="M134 222h92M134 248h92M134 274h92M134 300h92M134 326h92" stroke="#2B6BD6" stroke-width="12"></path>
+        <rect x="132" y="196" width="96" height="150" rx="18" fill="none" stroke="#0B0C18" stroke-width="4"></rect>
+        <circle cx="180" cy="152" r="58" fill="#F2C9A0" stroke="#0B0C18" stroke-width="4"></circle>
+        <path d="M122 146a58 58 0 0 1 116 0z" fill="#2B6BD6" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
+        <circle cx="152" cy="122" r="5" fill="#FFD447"></circle><circle cx="180" cy="110" r="5" fill="#FFD447"></circle><circle cx="208" cy="122" r="5" fill="#FFD447"></circle>
+        <path d="M236 138l26-6-8 18 18 10-30 0z" fill="#2B6BD6" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M124 150l112 0" stroke="#0B0C18" stroke-width="3"></path>
+        <circle cx="160" cy="162" r="13" fill="#14162B"></circle>
+        <path d="M124 150l36 12" stroke="#14162B" stroke-width="4"></path>
+        <circle cx="202" cy="162" r="11" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></circle><circle cx="204" cy="164" r="5" fill="#14162B"></circle>
+        <path d="M156 186q12-10 24 0q12-10 24 0q-12 10-24 4q-12 6-24-4z" fill="#5A3A22" stroke="#0B0C18" stroke-width="2"></path>
+        <path d="M166 196q14 10 28 0" stroke="#0B0C18" stroke-width="4" fill="none" stroke-linecap="round"></path>
+      </g>
+      <path d="M68 212Q46 320 74 440L286 440Q314 320 292 212Q180 238 68 212z" fill="#B7793F" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
+      <path d="M110 230Q96 330 112 436M150 236Q144 330 150 440M210 236Q216 330 210 440M250 230Q264 330 248 436" stroke="#8C5A2B" stroke-width="4" fill="none"></path>
+      <path d="M58 270Q180 296 302 270" stroke="#5B3A1E" stroke-width="16" fill="none"></path>
+      <path d="M58 400Q180 426 302 400" stroke="#5B3A1E" stroke-width="16" fill="none"></path>
+      <path d="M68 212Q180 238 292 212" stroke="#0B0C18" stroke-width="5" fill="none"></path>
+      <g id="prSlots"></g>
+      <text id="prBang" x="180" y="60" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FFD447" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">펑!</text>
+    </svg>
+  </div>
+  <div class="mute" style="text-align:center;font-size:14px" id="prLeft">구멍에 칼을 하나씩 꽂고 다음 사람에게</div>
 </section>
 
 <!-- 결과 -->
@@ -410,6 +510,17 @@ const won = v => v.toLocaleString('ko-KR')+'원';
 let ac = null;
 function audio(){ if(!S.sound) return null; try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended') ac.resume(); }catch(e){ ac=null; } return ac; }
 function beep(f=660, d=.08, type='square', v=.06){ const a=audio(); if(!a) return; const o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.value=f; g.gain.setValueAtTime(v,a.currentTime); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+d); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime+d+.02); }
+function whistle(){ const a=audio(); if(!a) return; const o=a.createOscillator(), g=a.createGain(); o.type='triangle'; o.frequency.setValueAtTime(300,a.currentTime); o.frequency.exponentialRampToValueAtTime(1600,a.currentTime+.45); g.gain.setValueAtTime(.09,a.currentTime); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.55); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime+.6); }
+function noiseBurst(a,dur,type,freq,q,vol,t0){ const len=Math.floor(a.sampleRate*dur), b=a.createBuffer(1,len,a.sampleRate), ch=b.getChannelData(0); for(let i=0;i<len;i++) ch[i]=(Math.random()*2-1)*Math.pow(1-i/len,3); const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); f.type=type; f.frequency.value=freq; f.Q.value=q; g.gain.value=vol; s.buffer=b; s.connect(f).connect(g).connect(a.destination); s.start(a.currentTime+(t0||0)); }
+function tone(a,f0,f1,dur,type,vol,t0){ const o=a.createOscillator(), g=a.createGain(), t=a.currentTime+(t0||0); o.type=type; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur); o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.02); }
+/* 이빨 누름: 작은 플라스틱 딸깍 */
+function sToothClick(){ const a=audio(); if(!a) return; noiseBurst(a,.035,'highpass',2500,.7,.35); tone(a,1500,900,.03,'square',.03); }
+/* 악어가 무는 소리: 날카로운 딱! + 묵직한 쿵 */
+function sChomp(){ const a=audio(); if(!a) return; noiseBurst(a,.14,'bandpass',2600,1.2,1.4); tone(a,240,70,.18,'sine',.5); noiseBurst(a,.08,'highpass',3500,.8,.5,.03); }
+/* 칼 꽂기: 나무 통 둔탁한 퉁 */
+function sThunk(){ const a=audio(); if(!a) return; tone(a,470,240,.09,'sine',.45); noiseBurst(a,.06,'bandpass',800,1.5,.6); }
+/* 해적 튀어나옴: 낮은 뿅~ 휘익 + 반짝 */
+function sPop(){ const a=audio(); if(!a) return; tone(a,90,260,.12,'triangle',.5); tone(a,260,110,.35,'triangle',.4,.1); noiseBurst(a,.4,'lowpass',700,.7,.5); [.36,.44,.52].forEach((t,i)=>tone(a,3500+i*250,3800+i*250,.08,'sine',.06,t)); }
 function boomSound(){ const a=audio(); if(!a) return; const len=a.sampleRate*1.1, b=a.createBuffer(1,len,a.sampleRate), ch=b.getChannelData(0); for(let i=0;i<len;i++) ch[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5); const s=a.createBufferSource(), g=a.createGain(), f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900; g.gain.value=.7; s.buffer=b; s.connect(f).connect(g).connect(a.destination); s.start(); }
 function fanfare(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.14,'triangle',.08),i*110)); }
 function buzz(p){ if(!S.vib) return; try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
@@ -440,7 +551,7 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel') openPeople(); } });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else { start(g); if(g==='wheel'||g==='croc'||g==='pirate') openPeople(); } });
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
 function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
 function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
@@ -465,7 +576,7 @@ $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
-function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb})[g](); }
+function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate})[g](); }
 
 /* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
@@ -655,6 +766,75 @@ function startBomb(){
     const b=$('#bombBtn'); b.classList.remove('bump'); b.getBoundingClientRect(); b.classList.add('bump'); beep(330,.06,'sine',.07);
   };
   cleanup=()=>{ running=false; clearTimeout(tick); clearInterval(bar); $$('.flash').forEach(f=>f.remove()); };
+}
+
+/* ── 차례 표시 (악어·해적 공통) ── */
+let turn=0;
+function setTurn(id){ const el=$(id), i=turn%S.n; el.querySelector('.dot').style.background=PAL[i][0]; el.querySelector('b').textContent=nameOf(i); }
+function bindPress(el,fn){ el.addEventListener('click',fn); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } }); }
+
+/* ── 악어 이빨 ── */
+function startCroc(){
+  show('croc');
+  const N=12, trap=Math.floor(Math.random()*N), top=$('#crTop'), box=$('#crTeeth'), bang=$('#crBang');
+  let pressed=0, done=false, timers=[];
+  turn=0; setTurn('#crTurn'); top.classList.remove('bite'); bang.setAttribute('opacity','0'); $('#crSvg').classList.remove('chomp');
+  $('#crLeft').textContent='이빨을 하나씩 누르고 다음 사람에게';
+  let h='';
+  // 입 안쪽 가장자리를 따라 왼쪽 4 · 아래 4 · 오른쪽 4
+  const POS=[[94,246],[94,282],[96,318],[104,352],[134,370],[166,374],[198,374],[230,370],[260,352],[268,318],[270,282],[270,246]];
+  for(let k=0;k<N;k++){
+    const x=POS[k][0], y=POS[k][1];
+    h+='<g class="tooth" role="button" tabindex="0" aria-label="이빨 '+(k+1)+'"><rect x="'+(x-14).toFixed(1)+'" y="'+(y-18).toFixed(1)+'" width="26" height="32" rx="10" fill="#FFF8EA" stroke="#0B0C18" stroke-width="3"></rect></g>';
+  }
+  box.innerHTML=h;
+  [...box.children].forEach((t,k)=>bindPress(t,()=>{
+    if(done||t.dataset.p) return; t.dataset.p='1'; audio();
+    const i=turn%S.n;
+    if(k===trap){
+      done=true; top.classList.add('bite');
+      timers.push(setTimeout(()=>{ sChomp(); buzz([250,60,120]); bang.setAttribute('opacity','1'); const sv=$('#crSvg'); sv.classList.remove('chomp'); sv.getBoundingClientRect(); sv.classList.add('chomp'); },150));
+      timers.push(setTimeout(()=>result({name:nameOf(i), color:PAL[i][0], sub:'악어에게 물렸어요! ('+(pressed+1)+'번째 이빨)', n:S.n}),1600));
+      return;
+    }
+    const r=t.querySelector('rect'); r.setAttribute('y',(parseFloat(r.getAttribute('y'))+24).toFixed(1)); r.setAttribute('height','10'); r.setAttribute('fill','#D9D2C3');
+    pressed++; sToothClick(); buzz(15);
+    turn++; setTurn('#crTurn'); $('#crLeft').textContent='남은 이빨 '+(N-pressed)+'개 · 다음 사람에게';
+  }));
+  cleanup=()=>timers.forEach(clearTimeout);
+}
+
+/* ── 해적 통 ── */
+function startPirate(){
+  show('pirate');
+  const svg=$('#prSvg'), man=$('#prMan'), box=$('#prSlots'), bang=$('#prBang');
+  const rows=[262,306,350,392], N=16, trap=Math.floor(Math.random()*N);
+  let used=0, done=false, timers=[];
+  turn=0; setTurn('#prTurn'); bang.setAttribute('opacity','0');
+  man.classList.remove('pop'); svg.insertBefore(man, svg.children[1]); const ofx=$('#prFx'); if(ofx) ofx.remove();
+  $('#prLeft').textContent='구멍에 칼을 하나씩 꽂고 다음 사람에게';
+  let h='';
+  rows.forEach((y,ri)=>{ const half=[96,104,104,96][ri]; for(let c=0;c<4;c++){ const x=180-half+c*(half*2/3);
+    h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*4+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="32" fill="transparent"></rect><rect class="hole" x="'+(x-16)+'" y="'+(y-6)+'" width="32" height="12" rx="6" fill="#3A2412" stroke="#0B0C18" stroke-width="2"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
+  box.innerHTML=h;
+  [...box.children].forEach((sl,k)=>bindPress(sl,()=>{
+    if(done||sl.dataset.p) return; sl.dataset.p='1'; audio();
+    const i=turn%S.n, g=sl.querySelector('.sw'), x=+g.dataset.x, y=+g.dataset.y;
+    g.innerHTML='<g class="sword"><rect x="'+(x-16)+'" y="'+(y-9)+'" width="32" height="8" rx="4" fill="#E8E3D6" stroke="#0B0C18" stroke-width="2"></rect><rect x="'+(x-7)+'" y="'+(y-38)+'" width="14" height="30" rx="6" fill="'+PAL[i][0]+'" stroke="#0B0C18" stroke-width="2.5"></rect></g>';
+    if(k===trap){
+      done=true; svg.appendChild(man); svg.appendChild(bang); man.getBoundingClientRect(); man.classList.add('pop');
+      sPop(); buzz([120,40,260]); bang.setAttribute('opacity','1');
+      let fx=''; for(let q=0;q<11;q++){ const star=q<6, dx=Math.round((Math.random()-.5)*(star?260:160)), dy=Math.round(-40-Math.random()*(star?190:90)), cx=180+(Math.random()-.5)*120;
+        fx+= star ? '<polygon class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px;animation-delay:'+(q*30)+'ms" points="'+[0,1,2,3,4,5,6,7,8,9].map(m=>{ const r=m%2?6:14, an=m*Math.PI/5-Math.PI/2; return (cx+r*Math.cos(an)).toFixed(1)+','+(212+r*Math.sin(an)).toFixed(1); }).join(' ')+'" fill="#FFD447" stroke="#0B0C18" stroke-width="2"></polygon>'
+                   : '<circle class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px" cx="'+cx.toFixed(1)+'" cy="212" r="'+(10+Math.random()*10).toFixed(1)+'" fill="#C9C3B8" opacity=".9"></circle>'; }
+      const fxg=document.createElementNS('http://www.w3.org/2000/svg','g'); fxg.id='prFx'; fxg.innerHTML=fx; svg.appendChild(fxg);
+      timers.push(setTimeout(()=>result({name:nameOf(i), color:PAL[i][0], sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n}),1700));
+      return;
+    }
+    used++; sThunk(); buzz(20);
+    turn++; setTurn('#prTurn'); $('#prLeft').textContent='남은 구멍 '+(N-used)+'개 · 다음 사람에게';
+  }));
+  cleanup=()=>timers.forEach(clearTimeout);
 }
 
 /* ── 결과 ── */
