@@ -129,8 +129,10 @@ button{cursor:pointer}
 .play-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
 .play-wrap svg{width:100%;height:100%;overflow:visible}
 .tooth,.slot{cursor:pointer;outline:none}
-.fang{transition:transform .14s ease-in,fill .14s}
-.tooth.down .fang{transform:translateY(var(--d));fill:#E2DED4}
+.fang{transition:transform .13s cubic-bezier(.5,0,1,1)}
+.tooth.down .fang{transform:translateY(var(--d))}
+.tooth .cap{opacity:0;transition:opacity .05s .1s}
+.tooth.down .cap{opacity:1}
 .tooth:focus-visible .fang,.slot:focus-visible .hole{stroke:#FFD447;stroke-width:4}
 #crTop{transition:transform .16s cubic-bezier(.7,0,1,1)}
 #crTop.bite{transform:translateY(158px)}
@@ -1247,7 +1249,7 @@ function startCroc(){
     const x=POS[k][0], y=POS[k][1];
     const L=(k===0||k===11)?34:30;
     h+='<clipPath id="tc'+k+'"><rect x="'+(x-20)+'" y="'+(y-60)+'" width="40" height="'+(74)+'"></rect></clipPath>'+
-       '<g class="tooth" role="button" tabindex="0" aria-label="이빨 '+(k+1)+'" style="--d:'+(L-7)+'px"><rect x="'+(x-18)+'" y="'+(y-24)+'" width="36" height="44" fill="transparent"></rect><g clip-path="url(#tc'+k+')"><path class="fang" d="M'+(x-12)+' '+(y+14)+' L'+(x-12)+' '+(y+14-L*.45)+' Q'+(x-11)+' '+(y+14-L*.85)+' '+x+' '+(y+14-L)+' Q'+(x+11)+' '+(y+14-L*.85)+' '+(x+12)+' '+(y+14-L*.45)+' L'+(x+12)+' '+(y+14)+'Z" fill="url(#gTooth)" stroke="#6E6A60" stroke-width="2" stroke-linejoin="round"></path></g><ellipse cx="'+x+'" cy="'+(y+14)+'" rx="13" ry="3.5" fill="#9E1712" opacity=".55"></ellipse></g>';
+       '<g class="tooth" role="button" tabindex="0" aria-label="이빨 '+(k+1)+'" style="--d:'+(L+4)+'px"><rect x="'+(x-18)+'" y="'+(y-24)+'" width="36" height="44" fill="transparent"></rect><g clip-path="url(#tc'+k+')"><path class="fang" d="M'+(x-12)+' '+(y+14)+' L'+(x-12)+' '+(y+14-L*.45)+' Q'+(x-11)+' '+(y+14-L*.85)+' '+x+' '+(y+14-L)+' Q'+(x+11)+' '+(y+14-L*.85)+' '+(x+12)+' '+(y+14-L*.45)+' L'+(x+12)+' '+(y+14)+'Z" fill="url(#gTooth)" stroke="#6E6A60" stroke-width="2" stroke-linejoin="round"></path></g><ellipse cx="'+x+'" cy="'+(y+14)+'" rx="13" ry="3.5" fill="#9E1712" opacity=".55"></ellipse><ellipse class="cap" cx="'+x+'" cy="'+(y+12)+'" rx="11" ry="3.4" fill="#F1EEE6" stroke="#6E6A60" stroke-width="1.2"></ellipse></g>';
   }
   box.innerHTML=h;
   [...box.querySelectorAll('.tooth')].forEach((t,k)=>bindPress(t,()=>{
