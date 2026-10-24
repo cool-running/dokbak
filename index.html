@@ -189,7 +189,7 @@ button{cursor:pointer}
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v6"></path><path d="M13 10.5V9a2 2 0 0 1 4 0v4"></path><path d="M9 11.5V10a2 2 0 0 0-4 0v4a8 8 0 0 0 8 8h1a6 6 0 0 0 6-6v-3a2 2 0 0 0-3-1.7"></path></svg>
         <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>손가락 뽑기</b><small>폭탄 하나가 펑!</small></span>
+      <span><b>손가락 폭탄</b><small>폭탄 하나가 펑!</small></span>
     </button>
     <button class="game" data-game="wheel">
       <span class="g-top">
@@ -220,11 +220,11 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- 손가락 뽑기 -->
+<!-- 손가락 폭탄 -->
 <section class="screen fixed" id="finger" hidden>
   <div class="top">
     <button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
-    <div class="disp" style="font-size:24px">손가락 뽑기</div>
+    <div class="disp" style="font-size:24px">손가락 폭탄</div>
     <div class="mute" style="margin-left:auto;font-size:13px" id="fCount">0명</div>
   </div>
   <div class="touch" id="touch">
@@ -436,7 +436,7 @@ $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
 function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb})[g](); }
 
-/* ── 손가락 뽑기 (폭탄) ── */
+/* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
   return '<svg viewBox="0 0 104 120" width="104" height="120" aria-hidden="true">'+
     '<circle cx="52" cy="72" r="44" fill="'+color+'" stroke="#0B0C18" stroke-width="4"></circle>'+
@@ -457,24 +457,25 @@ function burstSVG(){
 function startFinger(){
   show('finger');
   const area=$('#touch'), num=$('#fNum'), hint=$('#fHint'), banner=$('#fBanner');
-  const pts=new Map(); let locked=false, cd=null, lastCount=0, mid=0, order=0;
+  // 지금 화면에 닿아 있는 손가락만큼만 폭탄. 누가 떼면 남은 폭탄을 1번부터 다시 매기고 카운트다운도 처음부터.
+  const pts=new Map(); let locked=false, cd=null, dirty=false, mid=0, seq=0;
   [...area.querySelectorAll('.fb,.boomflash')].forEach(d=>d.remove());
   num.hidden=true; hint.hidden=false; banner.hidden=true; $('#fCount').textContent='0명';
-  const freeColor=()=>{ const u=new Set([...pts.values()].map(p=>p.c)); for(let i=0;i<PAL.length;i++) if(!u.has(i)) return i; return pts.size%PAL.length; };
+  function paintBomb(p){ p.el.innerHTML='<div class="ring" style="border-color:'+PAL[p.c][0]+'"></div><div class="bm">'+bombSVG(PAL[p.c][0],p.no)+'</div>'; }
+  function renumber(){ [...pts.values()].sort((a,b)=>a.seq-b.seq).forEach((p,i)=>{ if(p.c!==i){ p.c=i; p.no=i+1; paintBomb(p); } }); }
   function add(id,x,y){
-    if(locked||pts.size>=PAL.length) return;
-    const c=freeColor(); order++;
-    const el=document.createElement('div'); el.className='fb';
-    el.innerHTML='<div class="ring" style="border-color:'+PAL[c][0]+'"></div><div class="bm">'+bombSVG(PAL[c][0],order)+'</div>';
-    area.appendChild(el); pts.set(id,{c,el,no:order}); move(id,x,y); beep(440+c*60,.05,'sine',.05); buzz(15);
+    if(locked||pts.size>=PAL.length||pts.has(id)) return;
+    const c=pts.size, p={c,no:c+1,seq:seq++,el:document.createElement('div')};
+    p.el.className='fb'; paintBomb(p); area.appendChild(p.el); pts.set(id,p); move(id,x,y);
+    dirty=true; beep(440+c*60,.05,'sine',.05); buzz(15);
   }
   function move(id,x,y){ const p=pts.get(id); if(!p) return; const r=area.getBoundingClientRect(); const lx=x-r.left, ly=y-r.top; p.el.style.left=lx+'px'; p.el.style.top=ly+'px'; p.el.classList.toggle('below', ly<190); }
-  function del(id){ if(locked) return; const p=pts.get(id); if(!p) return; p.el.remove(); pts.delete(id); }
+  function del(id){ if(locked) return; const p=pts.get(id); if(!p) return; p.el.remove(); pts.delete(id); renumber(); dirty=true; }
   function update(){
     if(locked) return;
     const k=pts.size; $('#fCount').textContent=k+'명'; hint.hidden=k>0;
     banner.hidden=k===0; banner.textContent = k===1 ? '한 명 더 올려주세요' : '손가락을 떼지 마세요!';
-    if(k===lastCount) return; lastCount=k;
+    if(!dirty) return; dirty=false;
     clearInterval(cd); num.hidden=true; pts.forEach(p=>p.el.classList.remove('hot'));
     if(k<2) return;
     let left=3; num.hidden=false; num.textContent=left; beep(700);
@@ -494,7 +495,7 @@ function startFinger(){
   }
   const ts=e=>{ e.preventDefault(); for(const t of e.changedTouches) add('t'+t.identifier,t.clientX,t.clientY); update(); };
   const tm=e=>{ e.preventDefault(); for(const t of e.changedTouches) move('t'+t.identifier,t.clientX,t.clientY); };
-  const te=e=>{ e.preventDefault(); for(const t of e.changedTouches) del('t'+t.identifier); update(); };
+  const te=e=>{ e.preventDefault(); for(const t of e.changedTouches) del('t'+t.identifier); const live=new Set([...e.touches].map(t=>'t'+t.identifier)); for(const id of [...pts.keys()]) if(id[0]==='t'&&!live.has(id)) del(id); update(); };
   const pd=e=>{ if(e.pointerType!=='mouse'||locked) return; const r=area.getBoundingClientRect(); for(const [id,p] of pts){ const dx=e.clientX-(parseFloat(p.el.style.left)+r.left), dy=e.clientY-(parseFloat(p.el.style.top)+r.top); if(dx*dx+dy*dy<50*50){ del(id); update(); return; } } add('m'+(mid++),e.clientX,e.clientY); update(); };
   area.addEventListener('touchstart',ts,{passive:false}); area.addEventListener('touchmove',tm,{passive:false});
   area.addEventListener('touchend',te,{passive:false}); area.addEventListener('touchcancel',te,{passive:false});
