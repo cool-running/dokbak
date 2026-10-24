@@ -56,14 +56,23 @@ button{cursor:pointer}
 .names .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .names input{flex:1;min-width:0;width:100%;border:none;background:transparent;font-size:14px;font-weight:700;padding:0;outline:none}
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;flex:1;min-height:0}
+/* 12개 넘으면 옆으로 넘기는 페이지 */
+.pager{flex:1;min-height:0;display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.pager::-webkit-scrollbar{display:none}
+.pager .games{flex:0 0 100%;height:100%;scroll-snap-align:start;grid-template-rows:repeat(6,minmax(0,1fr));grid-auto-rows:auto}
+.pg-dots{display:flex;justify-content:center;gap:7px;flex:none}
+.pg-dots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s,width .2s}
+.pg-dots i.on{background:var(--accent);width:18px;border-radius:4px}
 .game{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:9px 11px;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:4px}
-.game .g-top>svg{width:24px;height:24px;flex:none}
+.game{align-items:center;justify-content:center;text-align:center;gap:6px}
+.game .g-top>svg{width:clamp(30px,6.2vh,48px);height:clamp(30px,6.2vh,48px);flex:none}
+.game>span:last-child{max-width:100%}
 .game .badge{height:20px;font-size:10px;padding:0 6px}
 .game.hot{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .game.hot .badge{background:rgba(20,22,43,.14);border-color:transparent;color:var(--bg)}
 .game.hot small{color:var(--bg);opacity:.75;font-weight:700}
-.game .g-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
-.game b{font-family:var(--display);font-weight:400;font-size:18px;display:block;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game .g-top{display:flex;justify-content:center;align-items:center}
+.game b{font-family:var(--display);font-weight:400;font-size:20px;display:block;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .game small{font-size:11px;color:var(--mute);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .amt-in{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:17px;font-weight:700;padding:0 14px;width:100%;font-variant-numeric:tabular-nums}
 .amt-in::placeholder{color:#7D7F9C;font-weight:400}
@@ -309,86 +318,74 @@ button{cursor:pointer}
     <button class="game hot" data-game="finger">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v6"></path><path d="M13 10.5V9a2 2 0 0 1 4 0v4"></path><path d="M9 11.5V10a2 2 0 0 0-4 0v4a8 8 0 0 0 8 8h1a6 6 0 0 0 6-6v-3a2 2 0 0 0-3-1.7"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>손가락 폭탄</b><small>폭탄 하나가 펑!</small></span>
+      <span><b>손가락 폭탄</b></span>
     </button>
     <button class="game" data-game="wheel">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.5" r="8.5"></circle><path d="M12 5v17M4.6 9.25l14.8 8.5M4.6 17.75l14.8-8.5"></path><path d="M9.5 1h5L12 4.5z" fill="#FF7A59"></path><circle cx="12" cy="13.5" r="2" fill="#FF7A59"></circle></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>돌림판</b><small>이름 넣고 빙글</small></span>
+      <span><b>돌림판</b></span>
     </button>
     <button class="game" data-game="ladder">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 3v18M12 3v18M19 3v18M5 8h7M12 13h7M5 17h7"></path></svg>
-        <span class="badge multi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="2" y="5" width="10" height="16" rx="2"></rect><path d="M15 3h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"></path></svg>각자 폰 OK</span>
       </span>
-      <span><b>사다리</b><small>숨은 독박 1칸</small></span>
+      <span><b>사다리</b></span>
     </button>
     <button class="game" data-game="dice">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8" width="10" height="10" rx="2.5"></rect><rect x="11.5" y="4" width="10" height="10" rx="2.5" transform="rotate(12 16.5 9)"></rect><circle cx="5.5" cy="11" r="1" fill="#6FD3FF"></circle><circle cx="9.5" cy="15" r="1" fill="#6FD3FF"></circle><circle cx="16.5" cy="9" r="1" fill="#6FD3FF"></circle></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>주사위 테이블</b><small>족보·합계로 독박</small></span>
+      <span><b>주사위 테이블</b></span>
     </button>
     <button class="game" data-game="croc">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V9a3 3 0 0 1 3-3h.5a2 2 0 0 1 4 0h3a2 2 0 0 1 4 0h.5a3 3 0 0 1 3 3v4z"></path><path d="M5 13l1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1-2"></path><path d="M3 13v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>악어 이빨</b><small>물리면 독박</small></span>
+      <span><b>악어 이빨</b></span>
     </button>
     <button class="game" data-game="pirate">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1.2 6.5L18 21H6l-1.2-6.5z"></path><path d="M5.2 11.5h13.6M5.2 17.5h13.6"></path><circle cx="12" cy="4.5" r="2.5"></circle><path d="M15 12l4-4"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>해적 통</b><small>튀어나오면 독박</small></span>
+      <span><b>해적 통</b></span>
     </button>
     <button class="game" data-game="marble">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 3l6 6M20 3l-6 6M10 9h4"></path><circle cx="6" cy="13" r="1" fill="#B79CFF"></circle><circle cx="12" cy="13" r="1" fill="#B79CFF"></circle><circle cx="18" cy="13" r="1" fill="#B79CFF"></circle><circle cx="9" cy="17" r="1" fill="#B79CFF"></circle><circle cx="15" cy="17" r="1" fill="#B79CFF"></circle><path d="M3 19l8 3M21 19l-8 3"></path><circle cx="12" cy="6.5" r="2.2" fill="#B79CFF"></circle></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>구슬 핀볼</b><small>꼴찌 구슬이 독박</small></span>
+      <span><b>구슬 핀볼</b></span>
     </button>
     <button class="game" data-game="archery">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="13" cy="11" r="8"></circle><circle cx="13" cy="11" r="4.5"></circle><circle cx="13" cy="11" r="1.2" fill="#FF5C7A"></circle><path d="M2 22l10-10M2 22v-4M2 22h4"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>양궁</b><small>점수 꼴찌가 독박</small></span>
+      <span><b>양궁</b></span>
     </button>
     <button class="game" data-game="timer">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD447" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.5" r="8"></circle><path d="M12 13.5V9M10 2.5h4M18.5 6l1.5-1.5"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>10초 멈추기</b><small>감으로 딱 10초</small></span>
+      <span><b>10초 멈추기</b></span>
     </button>
     <button class="game" data-game="balloon">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 2.5c4 0 7 3.2 7 7.2 0 4.6-3.7 8.3-7 8.3s-7-3.7-7-8.3c0-4 3-7.2 7-7.2z"></path><path d="M11 18l1 2 1-2M12 20c0 1.5-1.5 1.5-1.5 3"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>풍선 불기</b><small>터뜨린 사람 독박</small></span>
+      <span><b>풍선 불기</b></span>
     </button>
     <button class="game" data-game="updown">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5-6 5 6M7 14l5 6 5-6"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>숫자 폭탄</b><small>업! 다운! 펑!</small></span>
+      <span><b>숫자 폭탄</b></span>
     </button>
     <button class="game" data-game="lotto">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" aria-hidden="true"><circle cx="12" cy="10" r="7.5"></circle><circle cx="9.5" cy="8.5" r="1.8" fill="#FBC400" stroke="none"></circle><circle cx="14" cy="11.5" r="1.8" fill="#FF7272" stroke="none"></circle><circle cx="11" cy="13" r="1.8" fill="#69C8F2" stroke="none"></circle><path d="M12 17.5V21M8 21h8"></path></svg>
-        <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect></svg>폰 1대</span>
       </span>
-      <span><b>로또 추첨기</b><small>6개 + 보너스</small></span>
+      <span><b>로또 추첨기</b></span>
     </button>
   </div>
 </section>
@@ -1825,6 +1822,14 @@ function hideResult(){ $('#resTop').hidden=true; $('#resBar').hidden=true; }
 $('#resHome').onclick=()=>{ show('home'); renderHome(); };
 $('#resAgain').onclick=()=>{ hideResult(); start(S.game); };
 
+// 메인 게임 카드: 12개씩 한 페이지, 넘치면 좌우로 넘김
+(function(){ const src=$('#home .games'), cards=[...src.children], PER=12, pages=Math.ceil(cards.length/PER);
+  const pager=document.createElement('div'); pager.className='pager';
+  for(let k=0;k<pages;k++){ const pg=document.createElement('div'); pg.className='games'; cards.slice(k*PER,(k+1)*PER).forEach(c=>pg.appendChild(c)); pager.appendChild(pg); }
+  src.replaceWith(pager);
+  if(pages>1){ const dots=document.createElement('div'); dots.className='pg-dots'; dots.innerHTML=[...Array(pages)].map((_,k)=>'<i class="'+(k?'':'on')+'"></i>').join(''); pager.after(dots);
+    pager.addEventListener('scroll',()=>{ const k=Math.round(pager.scrollLeft/pager.clientWidth); [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===k)); },{passive:true}); }
+})();
 load(); renderHome(); show('home');
 })();
 </script>
