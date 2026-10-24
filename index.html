@@ -66,6 +66,22 @@ button{cursor:pointer}
 .amt-in{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:17px;font-weight:700;padding:0 14px;width:100%;font-variant-numeric:tabular-nums}
 .amt-in::placeholder{color:#7D7F9C;font-weight:400}
 
+/* 홈 섹션: 인원(하늘) · 게임(노랑) · 금액(초록) */
+.sec{display:flex;flex-direction:column;gap:12px}
+.sec-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec-h{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:900;color:var(--c)}
+.sec-i{width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--ci);color:var(--c)}
+.sec-note{font-size:12px;color:var(--mute)}
+.people{--c:#6FD3FF;--ci:rgba(111,211,255,.16);background:#172440;border-color:#2A4870}
+.people .round{background:#0F1830;border-color:#2A4870}
+.people .round.plus{background:#6FD3FF;color:var(--bg)}
+.people .names{margin-top:0}
+.people .names label{background:#0F1830;border-color:#2A4870}
+.game-h{--c:var(--accent);--ci:rgba(255,212,71,.16);padding-top:4px}
+.money{--c:#7CE38B;--ci:rgba(124,227,139,.16);background:#15281F;border-color:#2B5340}
+.money .amt-in{background:#0E1C15;border-color:#2B5340}
+.money .amt-in:focus{border-color:#7CE38B;outline:none}
+
 /* 손가락 → 폭탄 */
 .touch{flex:1;position:relative;border-radius:24px;background:radial-gradient(circle at 50% 45%,#22264A 0%,var(--deep) 70%);border:1px dashed var(--line);touch-action:none;overflow:hidden;user-select:none;-webkit-user-select:none}
 .touch .hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;pointer-events:none}
@@ -161,19 +177,19 @@ button{cursor:pointer}
   <div class="top" style="justify-content:space-between">
     <div>
       <div class="disp title">오늘의 독박</div>
-      <div class="mute" style="font-size:13px">광고 없이 바로 뽑는 복불복</div>
     </div>
     <button class="icon-btn" id="openSet" aria-label="설정">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
     </button>
   </div>
 
-  <div class="card">
+  <div class="card sec people">
+    <div class="sec-row">
+      <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg></span>인원</span>
+      <span class="sec-note">이름은 눌러서 바꾸기</span>
+    </div>
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div class="mute" style="font-size:12px">참가 인원 · 이름은 눌러서 바꾸기</div>
-        <div style="font-size:26px;font-weight:900" id="nLabel">4명</div>
-      </div>
+      <div style="font-size:30px;font-weight:900" id="nLabel">4명</div>
       <div class="stepper">
         <button class="round" id="minus" aria-label="인원 빼기">−</button>
         <button class="round plus" id="plus" aria-label="인원 더하기">+</button>
@@ -182,7 +198,10 @@ button{cursor:pointer}
     <div class="names" id="names"></div>
   </div>
 
-  <div class="mute" style="font-size:14px;font-weight:700">게임 고르기</div>
+  <div class="sec-row game-h">
+    <span class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg></span>게임</span>
+    <span class="sec-note">골라서 바로 시작</span>
+  </div>
   <div class="games">
     <button class="game hot" data-game="finger">
       <span class="g-top">
@@ -214,8 +233,11 @@ button{cursor:pointer}
     </button>
   </div>
 
-  <div class="card" style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
-    <label for="amt" style="font-size:14px;font-weight:700">독박 금액 같이 계산 <span class="mute" style="font-weight:400">(선택)</span></label>
+  <div class="card sec money" style="margin-top:auto">
+    <div class="sec-row">
+      <label for="amt" class="sec-h"><span class="sec-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l3 12 5-9 5 9 3-12"></path><path d="M3 11h18"></path></svg></span>금액</label>
+      <span class="sec-note">선택 · 독박 금액 같이 계산</span>
+    </div>
     <input id="amt" class="amt-in" type="text" inputmode="numeric" placeholder="예) 커피값 24,000" autocomplete="off">
   </div>
 </section>
