@@ -102,14 +102,19 @@ button{cursor:pointer}
 #peopleSheet .sheet{max-height:92%;overflow-y:auto}
 
 /* 결과 오버레이 */
-.res-top{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:calc(8px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px));pointer-events:none}
-.res-card{pointer-events:auto;width:100%;max-width:440px;max-height:62vh;display:flex;flex-direction:column;gap:10px;padding:14px 14px 10px;border-radius:22px;background:#171A33;border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.45);animation:resdown .35s cubic-bezier(.2,1.2,.4,1)}
-@keyframes resdown{from{transform:translateY(-40px);opacity:0}}
-.res-head{display:flex;align-items:center;gap:12px}
-.res-dot{width:46px;height:46px;border-radius:50%;border:6px solid;flex:none}
-.res-name{font-size:30px;line-height:1.1;color:var(--fg)}
+.res-top{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,20,.62);animation:resfade .25s ease}
+.res-top[hidden]{display:none}
+.res-card{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 20px 18px;border-radius:26px;background:#1A1D3A;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.55);animation:respop .45s cubic-bezier(.2,1.5,.4,1);text-align:center}
+@keyframes respop{from{transform:scale(.6);opacity:0}}
+@keyframes resfade{from{opacity:0}}
+.res-head{display:flex;flex-direction:column;align-items:center;gap:12px}
+.res-dot{width:64px;height:64px;border-radius:50%;border:8px solid;flex:none;animation:resbeat 1s ease-in-out infinite}
+@keyframes resbeat{50%{transform:scale(1.08)}}
+.res-name{font-size:36px;line-height:1.15;color:var(--fg);word-break:keep-all}
+.res-card .row2{width:100%}
+.res-peek{background:none;border:none;color:var(--mute);font:600 13px "Noto Sans KR",sans-serif;padding:4px 10px}
 .res-name em{font-style:normal;color:var(--red)}
-.res-sub{font-size:13px}
+.res-sub{font-size:14px;margin-top:4px}
 .res-card .sc-wrap{max-height:none;flex:1;min-height:0}
 .res-card .sc th{background:#14162B}
 .res-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(11,12,24,.92) 40%)}
@@ -150,7 +155,7 @@ button{cursor:pointer}
 .lt-plus{color:var(--mute);font-weight:900}
 
 /* 점수표 */
-body.res-open .screen .sc-wrap{visibility:hidden}
+body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-open .screen .bw-gauge, body.res-open .screen .sp-hint{visibility:hidden}
 .sc-wrap{flex:none;max-height:28%;overflow:auto;border-radius:14px}
 #arBoard,#blBoard,#tmBoard,.sp-board{height:22%;max-height:22%}
 .sp-cv{touch-action:none;cursor:grab}
@@ -869,7 +874,9 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 <div class="res-top" id="resTop" hidden>
   <div class="res-card" role="status" aria-live="polite">
     <div class="res-head"><span class="res-dot" id="resDot"></span><div style="min-width:0"><div class="disp res-name" id="resName">2번 독박!</div><div class="mute res-sub" id="resSub"></div></div></div>
-    <div class="sc-wrap" id="resTable"></div>
+    <div class="sc-wrap" id="resTable" hidden></div>
+    <div class="row2"><button class="btn ghost" id="resHome2">다른 게임</button><button class="btn" id="resAgain2">한 번 더</button></div>
+    <button class="res-peek" id="resPeek">판 보기 ▾</button>
   </div>
 </div>
 <div class="res-bar" id="resBar" hidden><div class="row2"><button class="btn ghost" id="resHome">다른 게임</button><button class="btn" id="resAgain">한 번 더</button></div></div>
@@ -2863,12 +2870,14 @@ function result(r){
   S.last=r;
   $('#resName').innerHTML=esc(r.name)+' <em>독박!</em>'; $('#resSub').textContent=r.sub||'';
   const d=$('#resDot'); d.style.borderColor=r.color; d.style.background=r.color+'40';
-  const t=$('#resTable'); t.hidden=!r.table; t.innerHTML=r.table||'';
-  $('#resTop').hidden=false; $('#resBar').hidden=false; document.body.classList.add('res-open');
+  const t=$('#resTable'); t.hidden=true; t.innerHTML='';   // 결과 카드에는 독박자만 표시
+  $('#resTop').hidden=false; $('#resBar').hidden=true; document.body.classList.add('res-open');
 }
 function hideResult(){ $('#resTop').hidden=true; $('#resBar').hidden=true; document.body.classList.remove('res-open'); }
 $('#resHome').onclick=()=>{ show('home'); renderHome(); };
 $('#resAgain').onclick=()=>{ hideResult(); start(S.game); };
+$('#resHome2').onclick=()=>$('#resHome').onclick(); $('#resAgain2').onclick=()=>$('#resAgain').onclick();
+$('#resPeek').onclick=()=>{ $('#resTop').hidden=true; $('#resBar').hidden=false; };   // 팝업 닫고 게임 판 보기 (아래 버튼은 남김)
 
 // 메인 게임 카드: 12개씩 한 페이지, 넘치면 좌우로 넘김
 $$('#home .games').forEach(src=>{ const cards=[...src.children], PER=12, pages=Math.max(1,Math.ceil(cards.length/PER));
