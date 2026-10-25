@@ -176,6 +176,9 @@ body.res-open .screen .sc-wrap{visibility:hidden}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
 
 /* 물컵·수박·모래성 */
+.screen.fixed,.screen.fixed *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#wtBtn{touch-action:none}
+.screen.fixed input,.screen.fixed textarea{-webkit-user-select:text;user-select:text}
 #water .sp-board,#melon .sp-board,#sand .sp-board{height:auto;max-height:17%}
 .ml-btns{display:flex;gap:10px;flex:none}.ml-btns .btn{flex:1;height:58px;font-size:22px}
 /* 볼링 탭 UI */
@@ -396,12 +399,6 @@ body.res-open .screen .sc-wrap{visibility:hidden}
       </span>
       <span><b>컬링</b></span>
     </button>
-    <button class="game" data-game="jenga">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E8A65A" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="17" width="14" height="4" rx="1"></rect><rect x="5" y="12" width="14" height="4" rx="1"></rect><rect x="5" y="7" width="9" height="4" rx="1"></rect><rect x="15" y="7" width="7" height="4" rx="1" transform="translate(3 -1) rotate(8 18 9)"></rect><rect x="5" y="2" width="14" height="4" rx="1"></rect></svg>
-      </span>
-      <span><b>젠가</b></span>
-    </button>
     <button class="game" data-game="stack">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="17" width="12" height="4" rx="1"></rect><rect x="7" y="12" width="11" height="4" rx="1"></rect><rect x="8" y="7" width="9" height="4" rx="1"></rect><path d="M3 4h12" stroke-linecap="round"></path><path d="M17 2l3 2-3 2"></path></svg>
@@ -449,12 +446,6 @@ body.res-open .screen .sc-wrap{visibility:hidden}
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="12.5" rx="9" ry="7.5"></ellipse><path d="M12 5v15" stroke="#FF5C7A"></path><path d="M10 5.3v14.4M14 5.3v14.4" stroke="#FFD447"></path></svg>
       </span>
       <span><b>수박 고무줄</b></span>
-    </button>
-    <button class="game" data-game="sand">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD447" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21c3-5 6-9 10-9s7 4 10 9z"></path><path d="M12 12V3"></path><path d="M12 3l6 2.2-6 2.2" fill="#FF5C7A" stroke="#FF5C7A"></path></svg>
-      </span>
-      <span><b>모래성 깃발</b></span>
     </button>
     <button class="game" data-game="updown">
       <span class="g-top">
@@ -2372,7 +2363,7 @@ function startWater(){
   const up=e=>{ if(!hold) return; hold=false; if(phase==='pour'){ phase='lag'; lag=.18+Math.random()*.12; paint(); } };
   btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('pointerleave',up);
   cv.addEventListener('pointerdown',down); cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
-  btn.style.touchAction='none';
+  btn.style.touchAction='none'; const noMenu=e=>e.preventDefault(); btn.addEventListener('contextmenu',noMenu); cv.addEventListener('contextmenu',noMenu); btn.addEventListener('selectstart',noMenu);
   function addWater(v){ level+=v; mine+=v; per[cur]+=v; if(level>limit) overflow(); }
   function overflow(){ phase='over'; hold=false; sndOff(); spill=1; buzz([200,60,200]);
     const a=audio(); if(a){ noiseBurst(a,.5,'lowpass',700,.7,.7); tone(a,300,90,.5,'sine',.3); }
@@ -2402,7 +2393,7 @@ function startWater(){
     // 컵 유리
     ctx.strokeStyle='rgba(220,235,255,.85)'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(GX0-2,GY0-4); ctx.lineTo(GX0+12,GY1+8); ctx.lineTo(GX1-12,GY1+8); ctx.lineTo(GX1+2,GY0-4); ctx.stroke();
     ctx.fillStyle='rgba(220,235,255,.18)'; ctx.fillRect(GX0+12,GY1,GX1-GX0-24,12);
-    ctx.fillStyle='rgba(255,255,255,.18)'; ctx.beginPath(); ctx.moveTo(GX0+10,GY0+10); ctx.lineTo(GX0+22,GY0+10); ctx.lineTo(GX0+32,GY1-10); ctx.lineTo(GX0+22,GY1-10); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.07)'; ctx.beginPath(); ctx.moveTo(GX0+8,GY0+10); ctx.lineTo(GX0+14,GY0+10); ctx.lineTo(GX0+24,GY1-10); ctx.lineTo(GX0+18,GY1-10); ctx.fill();
     // 주전자 (위에서 기울어짐)
     ctx.save(); ctx.translate(300,70); ctx.rotate(-.25-tilt*.55);
     const kg=ctx.createLinearGradient(-50,0,40,0); kg.addColorStop(0,'#9AA3B5'); kg.addColorStop(.5,'#E4E9F2'); kg.addColorStop(1,'#8890A2'); ctx.fillStyle=kg;
