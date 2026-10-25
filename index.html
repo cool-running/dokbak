@@ -709,7 +709,7 @@ body.res-open .screen .sc-wrap{visibility:hidden}
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="물컵"></canvas></div>
   <div class="sc-wrap sp-board"></div>
   <button class="btn bw-tap" id="wtBtn">꾹 눌러서 따르기</button>
-  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">한 번에 6~45ml · 오래 누를수록 콸콸 · 떼도 조금 더 흘러요 · 넘치면 독박!</div>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">톡 치면 한 방울 · 오래 누를수록 콸콸 · 언제 넘칠지 몰라요!</div>
 </section>
 
 <!-- 수박 고무줄 -->
@@ -2349,10 +2349,10 @@ function startWater(){
   show('water');
   const W=360, H=520, {cv,ctx,fit}=spCanvas('water',W,H), sec=$('#water'), btn=$('#wtBtn'), n=S.n;
   const GX0=110, GX1=250, GY0=150, GY1=470;              // 컵 안쪽 (위 넓고 아래 좁음)
-  const limit=1+.004+Math.random()*.016;                  // 넘치는 한계 (표면장력으로 아주 살짝 볼록하게 버팀)
+  const limit=1+.002+Math.random()*.028;                  // 넘치는 한계 (표면장력으로 아주 살짝 볼록하게 버팀)
   let level=.3+Math.random()*.15, cur=0, phase='ready', hold=false, holdT=0, flow=0, lag=0, mine=0, per=Array(n).fill(0), t=0, pourSnd=null, drops=[], spill=0, tilt=0;
-  const MIN=.02, MAX=.15, ML=300;   // 한 번에 최소 6ml ~ 최대 45ml (컵 300ml)
-  function paint(){ tgTurn(sec,cur, (phase==='ready'&&mine===0)?'차례 · 최소 '+Math.round(MIN*ML)+'ml ~ 최대 '+Math.round(MAX*ML)+'ml':'이번 차례 '+(mine*ML).toFixed(1)+'ml'+(mine<MIN?' · 최소 '+Math.round(MIN*ML)+'ml':''));
+  const ML=300;   // 컵 300ml · 최소/최대 없음 (살짝 탭하면 한 방울)
+  function paint(){ tgTurn(sec,cur, (phase==='ready'&&mine===0)?'차례 · 꾹 눌러서 따르기 (톡 치면 한 방울)':'이번 차례 '+(mine*ML).toFixed(1)+'ml');
     btn.disabled=phase==='lag'||phase==='over'; btn.textContent=phase==='pour'?'따르는 중… (떼면 멈춤)':'꾹 눌러서 따르기';
     sec.querySelector('.sp-board').innerHTML=mkTable(['이름','따른 양'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),(per[i]*ML).toFixed(1)+'ml'],color:PAL[i][0]}))); }
   function sndOn(){ const a=audio(); if(!a||pourSnd) return; const len=a.sampleRate*2, buf=a.createBuffer(1,len,a.sampleRate), ch=buf.getChannelData(0); for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
@@ -2360,7 +2360,7 @@ function startWater(){
   function sndSet(v,fr){ if(!pourSnd) return; pourSnd.g.gain.setTargetAtTime(v,pourSnd.a.currentTime,.05); pourSnd.f.frequency.setTargetAtTime(fr,pourSnd.a.currentTime,.1); }
   function sndOff(){ if(!pourSnd) return; const p=pourSnd; pourSnd=null; p.g.gain.setTargetAtTime(0,p.a.currentTime,.05); p.src.stop(p.a.currentTime+.3); }
   const down=e=>{ e.preventDefault(); if(phase!=='ready') return; audio(); hold=true; holdT=0; phase='pour'; sndOn(); paint(); };
-  const up=e=>{ if(!hold) return; hold=false; if(phase==='pour'){ phase='lag'; lag=.18+Math.random()*.12; paint(); } };
+  const up=e=>{ if(!hold) return; hold=false; if(phase==='pour'){ phase='lag'; lag=holdT<.2?.05:.15+Math.random()*.15; if(holdT<.2) addWater(.0008+Math.random()*.0008); paint(); } };
   btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('pointerleave',up);
   cv.addEventListener('pointerdown',down); cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
   btn.style.touchAction='none'; const noMenu=e=>e.preventDefault(); btn.addEventListener('contextmenu',noMenu); cv.addEventListener('contextmenu',noMenu); btn.addEventListener('selectstart',noMenu);
@@ -2370,9 +2370,9 @@ function startWater(){
     for(let k=0;k<60;k++) drops.push({x:GX0-8+Math.random()*(GX1-GX0+16),y:GY0-6,vx:(Math.random()<.5?-1:1)*(20+Math.random()*70),vy:-Math.random()*60,t:1.4+Math.random()}); 
     tgLose(sec,cur,'따른 양',i=>(per[i]*ML).toFixed(1)+'ml','물을 넘치게 했어요 💦'); }
   function step(dt){ t+=dt; tilt+=((phase==='pour'||phase==='lag'?1:0)-tilt)*Math.min(1,dt*6);
-    if(phase==='pour'){ holdT+=dt; flow=.025+Math.min(.22,holdT*holdT*.09); addWater(flow*dt); sndSet(.18+flow,700+level*500); if(phase==='pour'){ if(mine>=MAX){ hold=false; phase='lag'; lag=.12; pop('한 번에 여기까지!',.9); } paint(); } }
+    if(phase==='pour'){ holdT+=dt; flow=holdT<.25?.004+holdT*.03:.012+Math.min(.22,(holdT-.25)*(holdT-.25)*.1); addWater(flow*dt); sndSet(.18+flow,700+level*500); if(phase==='pour') paint(); }
     else if(phase==='lag'){ lag-=dt; flow*=Math.exp(-dt*10); addWater(flow*dt); sndSet(.1*flow*10,700+level*500);
-      if(lag<=0&&phase==='lag'){ sndOff(); if(mine<MIN){ phase='ready'; pop('최소 '+Math.round(MIN*ML)+'ml는 따라야 해요',1.1); paint(); return; } phase='ready'; const v=(mine*ML).toFixed(1); pop('+'+v+'ml',.9); beep(660,.06,'triangle',.05); cur=(cur+1)%n; mine=0; paint(); } }
+      if(lag<=0&&phase==='lag'){ sndOff(); phase='ready'; const v=(mine*ML).toFixed(1); pop('+'+v+'ml',.9); beep(660,.06,'triangle',.05); cur=(cur+1)%n; mine=0; paint(); } }
     drops.forEach(d=>{ d.vy+=500*dt; d.x+=d.vx*dt; d.y+=d.vy*dt; d.t-=dt; }); drops=drops.filter(d=>d.t>0&&d.y<H+20); }
   let popT=null; function pop(txt,dur){ popT={txt,t:0,dur}; }
   const gx=y=>{ const f=(y-GY0)/(GY1-GY0); return [GX0+f*14, GX1-f*14]; };
@@ -2390,9 +2390,6 @@ function startWater(){
     ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=2; ctx.beginPath(); if(level>=1){ ctx.moveTo(GX0,GY0); ctx.quadraticCurveTo(180,GY0-bulge*2+wob,GX1,GY0); } else { ctx.moveTo(l0,top); ctx.quadraticCurveTo(180,top+wob,r0,top); } ctx.stroke(); ctx.restore();
     // 기포
     ctx.fillStyle='rgba(255,255,255,.35)'; for(let k=0;k<10;k++){ const yy=GY1-((t*30+k*47)%Math.max(1,GY1-Math.max(top,GY0))); const xx=130+((k*53)%100); if(yy>Math.max(top,GY0)+4) { ctx.beginPath(); ctx.arc(xx,yy,1.6+(k%3),0,7); ctx.fill(); } }
-    // 이번 차례 최소·최대 표시 (컵 오른쪽 눈금)
-    if(phase==='ready'||phase==='pour'){ const base=level-mine, ly=v=>GY1-(GY1-GY0)*Math.min(1.02,v);
-      [[base+MIN,'#7CE38B','최소'],[base+MAX,'#FF5C7A','최대']].forEach(([v,c,lb])=>{ if(v>1.02) return; const y=ly(v), [,rx]=gx(y); ctx.strokeStyle=c; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(rx-26,y); ctx.lineTo(rx+6,y); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=c; ctx.font='bold 12px "Noto Sans KR",sans-serif'; ctx.textAlign='left'; ctx.fillText(lb,rx+10,y+4); }); }
     // 컵 유리
     ctx.strokeStyle='rgba(220,235,255,.85)'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(GX0-2,GY0-4); ctx.lineTo(GX0+12,GY1+8); ctx.lineTo(GX1-12,GY1+8); ctx.lineTo(GX1+2,GY0-4); ctx.stroke();
     ctx.fillStyle='rgba(220,235,255,.18)'; ctx.fillRect(GX0+12,GY1,GX1-GX0-24,12);
