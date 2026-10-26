@@ -184,7 +184,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 .screen.fixed,.screen.fixed *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #wtBtn{touch-action:none}
 .screen.fixed input,.screen.fixed textarea{-webkit-user-select:text;user-select:text}
-#water .sp-board,#melon .sp-board,#sand .sp-board{height:auto;max-height:17%}
+#water .sp-board,#melon .sp-board,#sand .sp-board,#hamster .sp-board,#penguin .sp-board,#honey .sp-board,#bell .sp-board,#frog .sp-board{height:auto;max-height:15%}
 .ml-btns{display:flex;gap:10px;flex:none}.ml-btns .btn{flex:1;height:58px;font-size:22px}
 /* 볼링 탭 UI */
 #bowling .sp-board{height:auto;max-height:55vh}
@@ -380,30 +380,6 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
       </span>
       <span><b>주사위 테이블</b></span>
     </button>
-    <button class="game" data-game="croc">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V9a3 3 0 0 1 3-3h.5a2 2 0 0 1 4 0h3a2 2 0 0 1 4 0h.5a3 3 0 0 1 3 3v4z"></path><path d="M5 13l1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1-2"></path><path d="M3 13v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"></path></svg>
-      </span>
-      <span><b>악어 이빨</b></span>
-    </button>
-    <button class="game" data-game="pirate">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1.2 6.5L18 21H6l-1.2-6.5z"></path><path d="M5.2 11.5h13.6M5.2 17.5h13.6"></path><circle cx="12" cy="4.5" r="2.5"></circle><path d="M15 12l4-4"></path></svg>
-      </span>
-      <span><b>해적 통</b></span>
-    </button>
-    <button class="game" data-game="bowling">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="15" r="6.5"></circle><circle cx="7.5" cy="13" r=".9" fill="#FF9F1C"></circle><circle cx="10.5" cy="13" r=".9" fill="#FF9F1C"></circle><circle cx="9" cy="15.5" r=".9" fill="#FF9F1C"></circle><path d="M18 3c1.4 0 2 1.2 1.6 2.6-.3 1-.1 1.6.3 2.6.7 1.8.6 4-.4 6.8h-3c-1-2.8-1.1-5-.4-6.8.4-1 .6-1.6.3-2.6C16 4.2 16.6 3 18 3z"></path></svg>
-      </span>
-      <span><b>볼링</b></span>
-    </button>
-    <button class="game" data-game="curling">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15a8 3.5 0 0 0 16 0v2a8 3.5 0 0 1-16 0z"></path><ellipse cx="12" cy="15" rx="8" ry="3.5"></ellipse><path d="M10 11.5V8a3 3 0 0 1 3-3h4"></path></svg>
-      </span>
-      <span><b>컬링</b></span>
-    </button>
     <button class="game" data-game="stack">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="17" width="12" height="4" rx="1"></rect><rect x="7" y="12" width="11" height="4" rx="1"></rect><rect x="8" y="7" width="9" height="4" rx="1"></rect><path d="M3 4h12" stroke-linecap="round"></path><path d="M17 2l3 2-3 2"></path></svg>
@@ -421,12 +397,6 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 3l6 6M20 3l-6 6M10 9h4"></path><circle cx="6" cy="13" r="1" fill="#B79CFF"></circle><circle cx="12" cy="13" r="1" fill="#B79CFF"></circle><circle cx="18" cy="13" r="1" fill="#B79CFF"></circle><circle cx="9" cy="17" r="1" fill="#B79CFF"></circle><circle cx="15" cy="17" r="1" fill="#B79CFF"></circle><path d="M3 19l8 3M21 19l-8 3"></path><circle cx="12" cy="6.5" r="2.2" fill="#B79CFF"></circle></svg>
       </span>
       <span><b>구슬 핀볼</b></span>
-    </button>
-    <button class="game" data-game="archery">
-      <span class="g-top">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="13" cy="11" r="8"></circle><circle cx="13" cy="11" r="4.5"></circle><circle cx="13" cy="11" r="1.2" fill="#FF5C7A"></circle><path d="M2 22l10-10M2 22v-4M2 22h4"></path></svg>
-      </span>
-      <span><b>양궁</b></span>
     </button>
     <button class="game" data-game="timer">
       <span class="g-top">
@@ -452,11 +422,65 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
       </span>
       <span><b>수박 고무줄</b></span>
     </button>
+    <button class="game" data-game="hamster">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E9B872" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="14" rx="8" ry="6.5"></ellipse><circle cx="7.5" cy="7.5" r="2.3"></circle><circle cx="16.5" cy="7.5" r="2.3"></circle><circle cx="9.5" cy="13" r=".8" fill="#E9B872"></circle><circle cx="14.5" cy="13" r=".8" fill="#E9B872"></circle></svg>
+      </span>
+      <span><b>햄스터 씨앗</b></span>
+    </button>
+    <button class="game" data-game="penguin">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="11" rx="6" ry="7.5"></ellipse><ellipse cx="12" cy="12.5" rx="3.5" ry="5"></ellipse><path d="M10.5 9.5l1.5 1 1.5-1" stroke="#FF9F1C"></path><path d="M3 21h18"></path></svg>
+      </span>
+      <span><b>펭귄 얼음</b></span>
+    </button>
+    <button class="game" data-game="honey">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD447" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8M7 7h10l1 4-1 9H7l-1-9z"></path><path d="M6.5 11h11"></path></svg>
+      </span>
+      <span><b>곰돌이 꿀단지</b></span>
+    </button>
+    <button class="game" data-game="bell">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD447" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="7"></circle><path d="M5.5 13h13"></path><circle cx="12" cy="16" r="1.2" fill="#FFD447"></circle><circle cx="12" cy="4.5" r="1.8"></circle></svg>
+      </span>
+      <span><b>고양이 방울</b></span>
+    </button>
+    <button class="game" data-game="frog">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="15" rx="8" ry="5.5"></ellipse><circle cx="8" cy="8.5" r="2.6"></circle><circle cx="16" cy="8.5" r="2.6"></circle><path d="M9 16c1.8 1.3 4.2 1.3 6 0"></path></svg>
+      </span>
+      <span><b>개구리 점프</b></span>
+    </button>
     <button class="game" data-game="updown">
       <span class="g-top">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B79CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5-6 5 6M7 14l5 6 5-6"></path></svg>
       </span>
       <span><b>숫자 폭탄</b></span>
+    </button>
+    <button class="game" data-game="croc">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V9a3 3 0 0 1 3-3h.5a2 2 0 0 1 4 0h3a2 2 0 0 1 4 0h.5a3 3 0 0 1 3 3v4z"></path><path d="M5 13l1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1.5-2 1.5 2 1-2"></path><path d="M3 13v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4"></path></svg>
+      </span>
+      <span><b>악어 이빨</b></span>
+    </button>
+    <button class="game" data-game="pirate">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1.2 6.5L18 21H6l-1.2-6.5z"></path><path d="M5.2 11.5h13.6M5.2 17.5h13.6"></path><circle cx="12" cy="4.5" r="2.5"></circle><path d="M15 12l4-4"></path></svg>
+      </span>
+      <span><b>해적 통</b></span>
+    </button>
+    <button class="game" data-game="bowling">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="15" r="6.5"></circle><circle cx="7.5" cy="13" r=".9" fill="#FF9F1C"></circle><circle cx="10.5" cy="13" r=".9" fill="#FF9F1C"></circle><circle cx="9" cy="15.5" r=".9" fill="#FF9F1C"></circle><path d="M18 3c1.4 0 2 1.2 1.6 2.6-.3 1-.1 1.6.3 2.6.7 1.8.6 4-.4 6.8h-3c-1-2.8-1.1-5-.4-6.8.4-1 .6-1.6.3-2.6C16 4.2 16.6 3 18 3z"></path></svg>
+      </span>
+      <span><b>볼링</b></span>
+    </button>
+    <button class="game" data-game="archery">
+      <span class="g-top">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="13" cy="11" r="8"></circle><circle cx="13" cy="11" r="4.5"></circle><circle cx="13" cy="11" r="1.2" fill="#FF5C7A"></circle><path d="M2 22l10-10M2 22v-4M2 22h4"></path></svg>
+      </span>
+      <span><b>양궁</b></span>
     </button>
   </div>
   </div>
@@ -734,6 +758,51 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="모래성"></canvas></div>
   <div class="sc-wrap sp-board"></div>
   <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">모래산을 손가락으로 쓸어요 · 길게 쓸수록 많이 퍼가요(3~25줌) · 깃발 쓰러뜨리면 독박!</div>
+</section>
+
+<section class="screen fixed" id="hamster" hidden>
+  <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">햄스터 씨앗 훔치기</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
+  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="햄스터 씨앗 훔치기"></canvas></div>
+  <div class="sc-wrap sp-board"></div>
+  <button class="btn bw-tap" id="hmBtn">꾹 눌러 살금살금</button>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">누르는 동안 움직여요 · 고양이가 눈 뜨면 바로 손 떼기!</div>
+</section>
+
+<section class="screen fixed" id="penguin" hidden>
+  <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">펭귄 얼음 건너기</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
+  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="펭귄 얼음 건너기"></canvas></div>
+  <div class="sc-wrap sp-board"></div>
+  <div class="ml-btns" id="pgBtns"><button class="btn" data-k="1">1칸 점프</button><button class="btn" data-k="2">2칸 점프</button></div>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">금 간 얼음일수록 잘 깨져요 · 빠지면 독박!</div>
+</section>
+
+<section class="screen fixed" id="honey" hidden>
+  <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">곰돌이 꿀단지</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
+  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="곰돌이 꿀단지"></canvas></div>
+  <div class="sc-wrap sp-board"></div>
+  <button class="btn bw-tap" id="hnBtn">꿀단지 떨어뜨리기!</button>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">흔들리는 곰돌이 머리 위에 쌓아요 · 무너뜨리면 독박!</div>
+</section>
+
+<section class="screen fixed" id="bell" hidden>
+  <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">고양이 방울 달기</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
+  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="고양이 방울 달기"></canvas></div>
+  <div class="sc-wrap sp-board"></div>
+  
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">방울을 손가락으로 살살 끌어 노란 선까지 · 빠르면 딸랑! · 4.5초 안에</div>
+</section>
+
+<section class="screen fixed" id="frog" hidden>
+  <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">개구리 연잎 점프</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
+  <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
+  <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="개구리 연잎 점프"></canvas></div>
+  <div class="sc-wrap sp-board"></div>
+  <button class="btn bw-tap" id="fgBtn">꾹 눌러서 점프</button>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">꾹 눌러 힘 모으고 떼면 점프 · 누런 연잎은 가라앉을 수도!</div>
 </section>
 
 <!-- 구슬 핀볼 -->
@@ -1021,7 +1090,7 @@ $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
-function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand})[g](); }
+function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand, hamster:startHamster, penguin:startPenguin, honey:startHoney, bell:startBell, frog:startFrog})[g](); }
 
 /* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
@@ -2528,6 +2597,335 @@ function startSand(){
   paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
   const stop=spLoop(dt=>{ step(dt); draw(dt); });
   cleanup=()=>{ stop(); cv.onpointerdown=cv.onpointermove=cv.onpointerup=cv.onpointercancel=null; window.removeEventListener('resize',onR); };
+}
+
+/* ── 귀여운 동물 공용 그리기 ── */
+function cuteEyes(ctx,x,y,r,open,look=0){ if(open>.5){ ctx.fillStyle='#1A1420'; ctx.beginPath(); ctx.ellipse(x+look,y,r,r*1.15*open,0,0,7); ctx.fill(); ctx.fillStyle='#FFFFFF'; ctx.beginPath(); ctx.arc(x+look-r*.35,y-r*.4,r*.38,0,7); ctx.fill(); }
+  else { ctx.strokeStyle='#1A1420'; ctx.lineWidth=Math.max(1.5,r*.5); ctx.lineCap='round'; ctx.beginPath(); ctx.arc(x,y-r*.2,r*.9,.15*Math.PI,.85*Math.PI); ctx.stroke(); ctx.lineCap='butt'; } }
+function cuteBlush(ctx,x,y,r){ ctx.fillStyle='rgba(255,120,150,.45)'; ctx.beginPath(); ctx.ellipse(x,y,r,r*.6,0,0,7); ctx.fill(); }
+function popText(ctx,p,dt,y0,size=28,col='#FFD447'){ if(!p.v) return; p.v.t+=dt; const al=Math.max(0,1-p.v.t/(p.v.d||1.1)); ctx.save(); ctx.globalAlpha=al; ctx.font=size+'px Jua, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=6; ctx.strokeStyle='#14162B'; ctx.fillStyle=p.v.c||col; ctx.strokeText(p.v.txt,180,y0-p.v.t*18); ctx.fillText(p.v.txt,180,y0-p.v.t*18); ctx.restore(); if(p.v.t>(p.v.d||1.1)) p.v=null; }
+function holdBtn(btn,cv,down,up){ const noMenu=e=>e.preventDefault(); const d=e=>{ e.preventDefault(); audio(); down(); }, u=()=>up();
+  [btn,cv].forEach(el=>{ el.addEventListener('pointerdown',d); el.addEventListener('pointerup',u); el.addEventListener('pointercancel',u); el.addEventListener('pointerleave',u); el.addEventListener('contextmenu',noMenu); }); btn.style.touchAction='none';
+  return ()=>[btn,cv].forEach(el=>{ el.removeEventListener('pointerdown',d); el.removeEventListener('pointerup',u); el.removeEventListener('pointercancel',u); el.removeEventListener('pointerleave',u); el.removeEventListener('contextmenu',noMenu); }); }
+
+/* ── 🐹 햄스터 해바라기씨: 고양이가 잘 때만 움직이기. 눈 뜬 고양이에게 들키면 독박 ── */
+function startHamster(){
+  show('hamster');
+  const W=360, H=480, {cv,ctx,fit}=spCanvas('hamster',W,H), sec=$('#hamster'), btn=$('#hmBtn'), n=S.n;
+  const HOME=60, PILE=250, FLOOR=380;
+  let cur=0, hx=HOME, carry=false, holding=false, moveT=0, seeds=Array(n).fill(0), total=0, t=0, cat='sleep', catT=1.6+Math.random()*2, awakeT=0, over=false, pop={v:null}, step0=0, zz=0, look=0;
+  const table=()=>mkTable(['이름','훔친 씨앗'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),seeds[i]+'개'],color:PAL[i][0]})));
+  function paint(){ tgTurn(sec,cur, carry?'차례 · 씨앗 들고 집으로!':'차례 · 씨앗 훔치러 가기'); sec.querySelector('.sp-board').innerHTML=table(); }
+  const off=holdBtn(btn,cv,()=>{ if(!over) holding=true; },()=>{ holding=false; });
+  function nextWake(){ const light=Math.min(.6,total*.03); return (1.1+Math.random()*2.8)*(1-light); }
+  function step(dt){ t+=dt; if(over) return;
+    // 고양이
+    catT-=dt;
+    if(cat==='sleep'&&catT<=0){ cat='twitch'; catT=Math.random()<.12?.12:.28+Math.random()*.45; if(Math.random()<.25) cat='fake'; }
+    else if(cat==='fake'&&catT<=0){ cat='sleep'; catT=nextWake(); }
+    else if(cat==='twitch'&&catT<=0){ cat='awake'; awakeT=0; catT=1.1+Math.random()*1.1; const a=audio(); if(a) tone(a,700,900,.12,'triangle',.06); look=hx<180?-3:3; }
+    else if(cat==='awake'){ awakeT+=dt; if(holding&&awakeT>.12){ caught(); return; } if(catT<=0){ cat='sleep'; catT=nextWake(); } }
+    // 햄스터
+    if(holding){ moveT+=dt; const sp=62; hx+=(carry?-1:1)*sp*dt; if(Math.floor(moveT*7)!==step0){ step0=Math.floor(moveT*7); const a=audio(); if(a) tone(a,1500+Math.random()*300,1200,.025,'sine',.03); }
+      if(!carry&&hx>=PILE){ hx=PILE; carry=true; holding=false; beep(980,.06,'triangle',.06); pop.v={txt:'냠! 씨앗 겟',t:0,d:.9}; paint(); }
+      if(carry&&hx<=HOME){ hx=HOME; carry=false; holding=false; seeds[cur]++; total++; fanfare(); pop.v={txt:'성공! 🌻',t:0,d:1}; cur=(cur+1)%n; paint(); } }
+    zz+=dt; }
+  function caught(){ over=true; holding=false; cat='pounce'; const a=audio(); if(a){ tone(a,500,1200,.25,'sawtooth',.12); noiseBurst(a,.3,'bandpass',1200,1,.4); } pop.v={txt:'들켰다!',t:0,d:1.6,c:'#FF5C7A'};
+    tgLose(sec,cur,'훔친 씨앗',i=>seeds[i]+'개','고양이한테 들켰어요 🐱'); }
+  function drawCat(x,y){ const st=cat; ctx.save(); ctx.translate(x,y);
+    const breath=st==='sleep'||st==='fake'?Math.sin(t*2)*2:0;
+    ctx.fillStyle='#C0392B'; ctx.beginPath(); ctx.ellipse(0,40,92,24,0,0,7); ctx.fill(); ctx.fillStyle='#E05A47'; ctx.beginPath(); ctx.ellipse(0,34,88,20,0,0,7); ctx.fill();   // 방석
+    ctx.fillStyle='#F5A04A'; ctx.beginPath(); ctx.ellipse(10,10-breath*.5,70,34+breath,0,0,7); ctx.fill();                 // 몸
+    ctx.strokeStyle='#D9822B'; ctx.lineWidth=5; [[-10,-12],[10,-14],[30,-10]].forEach(([dx,dy])=>{ ctx.beginPath(); ctx.moveTo(dx,dy-breath*.5); ctx.lineTo(dx+6,dy+12); ctx.stroke(); });
+    ctx.strokeStyle='#F5A04A'; ctx.lineWidth=14; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(72,20); ctx.quadraticCurveTo(100,0+Math.sin(t*1.5)*6,84,-24); ctx.stroke(); ctx.lineCap='butt';
+    const hy=st==='awake'||st==='pounce'?-30:-6, hxx=-48;
+    ctx.fillStyle='#F5A04A'; ctx.beginPath(); ctx.moveTo(hxx-34,hy-12); ctx.lineTo(hxx-30,hy-46+(st==='twitch'?-6:0)); ctx.lineTo(hxx-10,hy-28); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(hxx+34,hy-12); ctx.lineTo(hxx+30,hy-46); ctx.lineTo(hxx+10,hy-28); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#FFB3B3'; ctx.beginPath(); ctx.moveTo(hxx-28,hy-20); ctx.lineTo(hxx-27,hy-38+(st==='twitch'?-5:0)); ctx.lineTo(hxx-16,hy-26); ctx.fill();
+    ctx.fillStyle='#F5A04A'; ctx.beginPath(); ctx.ellipse(hxx,hy,40,32,0,0,7); ctx.fill(); ctx.fillStyle='#FFE3C2'; ctx.beginPath(); ctx.ellipse(hxx,hy+12,22,14,0,0,7); ctx.fill();
+    const open=st==='awake'||st==='pounce'?1:st==='twitch'?(Math.sin(t*40)>0?.7:0):0;
+    if(st==='twitch'){ cuteEyes(ctx,hxx-15,hy-4,6,0); ctx.fillStyle='#1A1420'; ctx.beginPath(); ctx.ellipse(hxx+15,hy-4,6,3+Math.abs(Math.sin(t*30))*3,0,0,7); ctx.fill(); }
+    else { cuteEyes(ctx,hxx-15,hy-4,7,open,look); cuteEyes(ctx,hxx+15,hy-4,7,open,look); }
+    cuteBlush(ctx,hxx-26,hy+8,7); cuteBlush(ctx,hxx+26,hy+8,7);
+    ctx.fillStyle='#E0607E'; ctx.beginPath(); ctx.moveTo(hxx-4,hy+6); ctx.lineTo(hxx+4,hy+6); ctx.lineTo(hxx,hy+10); ctx.fill();
+    ctx.strokeStyle='#6B4A2A'; ctx.lineWidth=1.2; [[-1,1],[1,1]].forEach(([s])=>{ for(let k=0;k<2;k++){ ctx.beginPath(); ctx.moveTo(hxx+s*14,hy+10+k*4); ctx.lineTo(hxx+s*34,hy+8+k*6); ctx.stroke(); } });
+    if(st==='sleep'||st==='fake'){ ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='bold 18px Jua, sans-serif'; ctx.textAlign='center'; for(let k=0;k<3;k++){ const ph=(zz*.5+k/3)%1; ctx.globalAlpha=1-ph; ctx.font='bold '+(12+k*5)+'px Jua, sans-serif'; ctx.fillText('z',hxx+20+ph*30,hy-40-ph*40); } ctx.globalAlpha=1; }
+    if(st==='awake'||st==='pounce'){ ctx.fillStyle='#FF5C7A'; ctx.font='34px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('!',hxx+44,hy-36); }
+    if(st==='twitch'||st==='fake'){ ctx.fillStyle='#FFD447'; ctx.font='20px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('…?',hxx+44,hy-34); }
+    ctx.restore(); }
+  function drawHamster(x,y){ const bob=holding?Math.abs(Math.sin(t*14))*4:0, col=PAL[cur][0]; ctx.save(); ctx.translate(x,y-bob); if(carry) ctx.scale(-1,1);
+    ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(0,26+bob,26,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#E9B872'; ctx.beginPath(); ctx.ellipse(0,4,30,26,0,0,7); ctx.fill(); ctx.fillStyle='#FFF3DE'; ctx.beginPath(); ctx.ellipse(4,12,18,15,0,0,7); ctx.fill();
+    ctx.fillStyle='#E9B872'; ctx.beginPath(); ctx.arc(-14,-20,9,0,7); ctx.arc(12,-22,9,0,7); ctx.fill(); ctx.fillStyle='#FFB3C1'; ctx.beginPath(); ctx.arc(-14,-20,5,0,7); ctx.arc(12,-22,5,0,7); ctx.fill();
+    cuteEyes(ctx,-8,-4,4.5,1,2); cuteEyes(ctx,12,-4,4.5,1,2); cuteBlush(ctx,-16,6,6); cuteBlush(ctx,22,6,6); if(carry){ ctx.fillStyle='#F0C890'; ctx.beginPath(); ctx.arc(22,8,9,0,7); ctx.fill(); }
+    ctx.fillStyle='#E0607E'; ctx.beginPath(); ctx.arc(3,3,2.5,0,7); ctx.fill();
+    ctx.fillStyle=col; ctx.fillRect(-20,16,40,6);   // 목도리 = 내 색
+    if(carry){ ctx.save(); ctx.translate(26,-8); ctx.rotate(.5); ctx.fillStyle='#2A2A2A'; ctx.beginPath(); ctx.ellipse(0,0,5,9,0,0,7); ctx.fill(); ctx.strokeStyle='#DDD'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(0,-7); ctx.lineTo(0,7); ctx.stroke(); ctx.restore(); }
+    ctx.restore(); }
+  function draw(dt){
+    ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#3D2E5C'); bg.addColorStop(1,'#2A2142'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#FFE9A8'; ctx.globalAlpha=.08; ctx.beginPath(); ctx.arc(300,60,120,0,7); ctx.fill(); ctx.globalAlpha=1;
+    ctx.fillStyle='#8B5A3C'; ctx.fillRect(0,FLOOR,W,H-FLOOR); ctx.fillStyle='#A06B48'; for(let k=0;k<6;k++) ctx.fillRect(0,FLOOR+k*18,W,2);
+    // 집 (왼쪽)
+    ctx.fillStyle='#6FD3FF'; ctx.beginPath(); ctx.moveTo(10,FLOOR); ctx.lineTo(10,FLOOR-70); ctx.lineTo(55,FLOOR-104); ctx.lineTo(100,FLOOR-70); ctx.lineTo(100,FLOOR); ctx.fill(); ctx.fillStyle='#2A2142'; ctx.beginPath(); ctx.arc(55,FLOOR,24,Math.PI,0); ctx.fill();
+    // 씨앗 더미
+    for(let k=0;k<Math.max(3,26-total);k++){ const x=PILE+8+(k*13)%40, y=FLOOR-6-Math.floor(k/4)*5; ctx.save(); ctx.translate(x,y); ctx.rotate(k); ctx.fillStyle='#2A2A2A'; ctx.beginPath(); ctx.ellipse(0,0,4,7,0,0,7); ctx.fill(); ctx.strokeStyle='#DDD'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,-5); ctx.lineTo(0,5); ctx.stroke(); ctx.restore(); }
+    drawCat(250,FLOOR-130);
+    drawHamster(hx,FLOOR-26);
+    // 진행 표시
+    ctx.fillStyle='rgba(255,255,255,.15)'; ctx.fillRect(HOME,FLOOR+50,PILE-HOME,6); ctx.fillStyle=PAL[cur][0]; ctx.fillRect(HOME,FLOOR+50,hx-HOME,6);
+    if(cat==='awake'&&!over){ ctx.fillStyle='rgba(255,92,122,.18)'; ctx.fillRect(0,0,W,H); }
+    popText(ctx,pop,dt,120);
+  }
+  paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  const stop=spLoop(dt=>{ step(dt); draw(dt); });
+  cleanup=()=>{ stop(); off(); window.removeEventListener('resize',onR); };
+}
+
+/* ── 🐧 펭귄 얼음 건너기: 1칸/2칸 골라 점프. 얼음이 깨지면 독박 ── */
+function startPenguin(){
+  show('penguin');
+  const W=360, H=480, {cv,ctx,fit}=spCanvas('penguin',W,H), sec=$('#penguin'), n=S.n, btns=$$('#pgBtns button');
+  const PB=[.03,.1,.22,.42];
+  const tiles=[{c:0,x:180}]; const gen=()=>{ const r=Math.random(), c=r<.32?0:r<.62?1:r<.86?2:3; tiles.push({c,x:120+Math.random()*120}); };
+  for(let i=0;i<12;i++) gen();
+  let pos=0, cur=0, phase='ready', jump=null, cam=0, t=0, hops=Array(n).fill(0), pop={v:null}, sink=0, splash=[];
+  const tileY=i=>400-(i-cam)*78;
+  function paint(){ tgTurn(sec,cur,'차례 · 1칸? 2칸?'); btns.forEach(b=>b.disabled=phase!=='ready'); sec.querySelector('.sp-board').innerHTML=mkTable(['이름','건넌 칸'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),hops[i]+'칸'],color:PAL[i][0]}))); }
+  btns.forEach(b=>b.onclick=()=>{ if(phase!=='ready') return; audio(); const k=+b.dataset.k; while(tiles.length<pos+k+10) gen(); jump={from:pos,to:pos+k,t:0}; phase='jump'; paint(); const a=audio(); if(a) tone(a,500,900,.15,'sine',.08); });
+  function land(){ const tl=tiles[pos]; hops[cur]+=jump.to-jump.from; jump=null;
+    const a=audio(); if(a) noiseBurst(a,.06,'bandpass',2600,2,.3);
+    if(Math.random()<PB[tl.c]){ phase='break'; sink=0; tl.broken=true; if(a){ noiseBurst(a,.3,'highpass',2000,.8,.6); setTimeout(()=>{ noiseBurst(a,.5,'lowpass',500,.7,.7); tone(a,300,80,.4,'sine',.3); },300); }
+      for(let k=0;k<24;k++) splash.push({x:tl.x,y:tileY(pos),vx:(Math.random()-.5)*160,vy:-80-Math.random()*160,t:1});
+      pop.v={txt:'쩌억… 풍덩!',t:0,d:1.6,c:'#6FD3FF'}; tgLose(sec,cur,'건넌 칸',i=>hops[i]+'칸','얼음이 깨져 풍덩 🐧'); return; }
+    tl.c=Math.min(3,tl.c+1); phase='ready'; pop.v={txt:'휴~',t:0,d:.8}; cur=(cur+1)%n; paint(); }
+  function step(dt){ t+=dt; cam+=((pos-0)-cam)*Math.min(1,dt*3);
+    if(jump){ jump.t+=dt/.55; if(jump.t>=1){ pos=jump.to; land(); } }
+    if(phase==='break') sink=Math.min(1,sink+dt*.8);
+    splash.forEach(p=>{ p.vy+=500*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.t-=dt; }); splash=splash.filter(p=>p.t>0); }
+  function drawTile(tl,y){ if(tl.broken){ ctx.globalAlpha=1-sink; }
+    ctx.fillStyle='rgba(0,40,80,.35)'; ctx.beginPath(); ctx.ellipse(tl.x+4,y+8,52,20,0,0,7); ctx.fill();
+    const g=ctx.createLinearGradient(0,y-18,0,y+18); g.addColorStop(0,'#F4FBFF'); g.addColorStop(1,'#BFE3F7'); ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(tl.x,y,50,18,0,0,7); ctx.fill();
+    ctx.fillStyle='#8CC8E8'; ctx.beginPath(); ctx.ellipse(tl.x,y+6,50,12,0,0,Math.PI); ctx.fill();
+    ctx.strokeStyle='rgba(60,110,150,.85)'; ctx.lineWidth=1.6; const c=tl.c;
+    const seeds=[[-.6,.2,.3,-.4],[.4,-.3,-.2,.5],[0,.5,.6,-.2]]; for(let k=0;k<c;k++){ const [a1,b1,a2,b2]=seeds[k]; ctx.beginPath(); ctx.moveTo(tl.x+a1*40,y+b1*12); ctx.lineTo(tl.x+(a1+a2)*20,y+(b1+b2)*6+3); ctx.lineTo(tl.x+a2*44,y+b2*14); ctx.stroke(); }
+    ctx.globalAlpha=1; }
+  function drawPeng(x,y,col,sc=1,sad=false){ ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
+    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0,2,20,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#243048'; ctx.beginPath(); ctx.ellipse(0,-26,22,28,0,0,7); ctx.fill(); ctx.fillStyle='#FFFFFF'; ctx.beginPath(); ctx.ellipse(0,-20,15,21,0,0,7); ctx.fill();
+    ctx.fillStyle='#243048'; ctx.beginPath(); ctx.ellipse(-21,-22,6,14,.4,0,7); ctx.ellipse(21,-22,6,14,-.4,0,7); ctx.fill();
+    cuteEyes(ctx,-7,-34,3.5,sad?0:1); cuteEyes(ctx,7,-34,3.5,sad?0:1); cuteBlush(ctx,-12,-26,4); cuteBlush(ctx,12,-26,4);
+    ctx.fillStyle='#FF9F1C'; ctx.beginPath(); ctx.moveTo(-5,-29); ctx.lineTo(5,-29); ctx.lineTo(0,-23); ctx.fill(); ctx.beginPath(); ctx.ellipse(-8,0,7,3,0,0,7); ctx.ellipse(8,0,7,3,0,0,7); ctx.fill();
+    ctx.fillStyle=col; ctx.fillRect(-16,-17,32,6); ctx.fillRect(8,-14,6,12); ctx.restore(); }
+  function draw(dt){
+    ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#0E3A66'); bg.addColorStop(1,'#1A6FA8'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=2; for(let k=0;k<14;k++){ const y=((k*45+t*14)%H); ctx.beginPath(); ctx.moveTo(((k*70)%W)-20,y); ctx.quadraticCurveTo(((k*70)%W)+10,y-6,((k*70)%W)+40,y); ctx.stroke(); }
+    for(let i=Math.max(0,Math.floor(cam)-1);i<tiles.length;i++){ const y=tileY(i); if(y<-40) break; if(y>H+40) continue; drawTile(tiles[i],y); }
+    // 펭귄
+    let px,py,sc=1; if(jump){ const a=tiles[jump.from], b=tiles[jump.to], k=jump.t; px=a.x+(b.x-a.x)*k; py=tileY(jump.from)+(tileY(jump.to)-tileY(jump.from))*k-Math.sin(k*Math.PI)*60; sc=1+Math.sin(k*Math.PI)*.15; }
+    else { px=tiles[pos].x; py=tileY(pos)+(phase==='break'?sink*50:0); }
+    if(phase!=='break'||sink<.9) drawPeng(px,py,PAL[phase==='break'||phase==='done'?cur:cur][0],sc,phase==='break');
+    // 기다리는 펭귄들
+    for(let i=0;i<n;i++){ if(i===cur) continue; drawPeng(26+((i>cur?i-1:i)%10)*30,H-12,PAL[i][0],.55); }
+    splash.forEach(p=>{ ctx.fillStyle='rgba(200,235,255,'+p.t+')'; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,7); ctx.fill(); });
+    ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='bold 11px "Noto Sans KR",sans-serif'; ctx.textAlign='left'; ctx.fillText('금이 많을수록 위험해요',10,20);
+    popText(ctx,pop,dt,110);
+  }
+  paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  const stop=spLoop(dt=>{ step(dt); draw(dt); });
+  cleanup=()=>{ stop(); btns.forEach(b=>b.onclick=null); window.removeEventListener('resize',onR); };
+}
+
+/* ── 🐻 곰돌이 꿀단지 쌓기: 흔들리는 곰 머리 위에 꿀단지를 쌓아요. 무너뜨리면 독박 ── */
+function startHoney(){
+  show('honey');
+  const W=360, H=480, {cv,ctx,fit}=spCanvas('honey',W,H), sec=$('#honey'), btn=$('#hnBtn'), n=S.n, PW=58, PH=40;
+  let pots=[], cur=0, phase='aim', mover={x:60,dir:1,sp:120}, drop=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, fall=null, lean=0, leanV=0;
+  const tip=.45+Math.random()*.3;   // 무너지는 기울기 한계 (비밀)
+  const sway=()=>Math.sin(t*1.3)*(8+pots.length*2.2)+Math.sin(t*3.1)*pots.length*.6;
+  const headY=()=>392-120;
+  function paint(){ tgTurn(sec,cur,'차례 · 꿀단지 '+(pots.length+1)+'층'); btn.disabled=phase!=='aim'; sec.querySelector('.sp-board').innerHTML=mkTable(['이름','올린 꿀단지'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'개'],color:PAL[i][0]}))); }
+  const dropIt=()=>{ if(phase!=='aim') return; audio(); phase='drop'; drop={x:mover.x, y:60+cam, vy:0}; btn.disabled=true; const a=audio(); if(a) tone(a,800,400,.15,'sine',.06); };
+  btn.onclick=dropIt; cv.onpointerdown=e=>{ e.preventDefault(); dropIt(); };
+  const topX=()=>{ let x=0; pots.forEach(p=>x+=p.off); return x; };   // 곰 머리 기준
+  function landed(){ const base=180+sway(), tx=base+topX()+lean*pots.length*6, off=drop.x-tx; per[cur]++;
+    const a=audio(); if(a){ tone(a,260,180,.12,'sine',.2); noiseBurst(a,.05,'lowpass',800,.7,.3); } buzz(20);
+    if(Math.abs(off)>PW*.62){ return collapse('미끄러졌다!'); }
+    pots.push({off:pots.length?off:off*.6, col:PAL[cur][0]});
+    // 무게 중심 기울기
+    let sum=0, x=0; pots.forEach((p,i)=>{ x+=p.off; sum+=x; }); const com=sum/pots.length/PW; lean=com; leanV+=com*.8;
+    const risk=Math.abs(com)/tip + pots.length*.012;
+    if(Math.abs(com)>tip||Math.random()<Math.max(0,risk-.75)*.5) return collapse('와르르!');
+    pop.v={txt:Math.abs(off)<6?'딱 맞아!':'휴~',t:0,d:.8}; if(Math.abs(off)<6) fanfare();
+    if(headY()-pots.length*PH+cam<170) cam+=PH;
+    drop=null; cur=(cur+1)%n; phase='aim'; mover={x:Math.random()<.5?40:320,dir:Math.random()<.5?1:-1,sp:110+pots.length*14+Math.random()*40}; paint(); }
+  function collapse(txt){ phase='fall'; drop=null; const a=audio(); if(a){ for(let k=0;k<5;k++) setTimeout(()=>{ tone(a,300-k*30,120,.15,'triangle',.15); noiseBurst(a,.1,'lowpass',900,.7,.4); },k*110); }
+    fall=pots.map((p,i)=>({x:0,y:0,vx:(Math.random()-.5)*200+(lean>0?80:-80),vy:-Math.random()*150,r:0,vr:(Math.random()-.5)*8})); pop.v={txt,t:0,d:1.6,c:'#FF5C7A'};
+    tgLose(sec,cur,'올린 꿀단지',i=>per[i]+'개','꿀단지 탑을 무너뜨렸어요 🍯'); }
+  function step(dt){ t+=dt;
+    if(phase==='aim'){ mover.x+=mover.dir*mover.sp*dt; if(mover.x>330){ mover.dir=-1; } if(mover.x<30){ mover.dir=1; } }
+    if(phase==='drop'){ drop.vy+=1400*dt; drop.y+=drop.vy*dt; const ty=headY()-pots.length*PH-PH/2; if(drop.y>=ty) landed(); }
+    if(fall) fall.forEach(f=>{ f.vy+=900*dt; f.x+=f.vx*dt; f.y+=f.vy*dt; f.r+=f.vr*dt; }); }
+  function pot(x,y,col,rot=0){ ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+    const g=ctx.createLinearGradient(-PW/2,0,PW/2,0); g.addColorStop(0,'#C8742A'); g.addColorStop(.4,'#F2A93B'); g.addColorStop(1,'#B8641E'); ctx.fillStyle=g;
+    ctx.beginPath(); ctx.moveTo(-PW*.32,-PH/2); ctx.quadraticCurveTo(-PW*.6,0,-PW*.4,PH/2); ctx.lineTo(PW*.4,PH/2); ctx.quadraticCurveTo(PW*.6,0,PW*.32,-PH/2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#FFD447'; ctx.beginPath(); ctx.ellipse(0,-PH/2,PW*.36,6,0,0,7); ctx.fill(); ctx.fillStyle='#FFC21A'; ctx.beginPath(); ctx.ellipse(PW*.15,-PH/2+3,6,8,0,0,Math.PI); ctx.fill();
+    ctx.fillStyle=col; ctx.fillRect(-PW*.38,-4,PW*.76,9); ctx.fillStyle='#FFFFFF'; ctx.font='bold 9px "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.fillText('HONEY',0,4);
+    ctx.restore(); }
+  function bear(x,y){ ctx.save(); ctx.translate(x,y); const sleepy=Math.min(1,pots.length/10);
+    ctx.fillStyle='#8B5A3C'; ctx.beginPath(); ctx.ellipse(0,70,70,60,0,0,7); ctx.fill(); ctx.fillStyle='#E8C9A0'; ctx.beginPath(); ctx.ellipse(0,80,40,38,0,0,7); ctx.fill();
+    ctx.fillStyle='#8B5A3C'; ctx.beginPath(); ctx.arc(-58,40,18,0,7); ctx.arc(58,40,18,0,7); ctx.fill();   // 팔 (머리 위로 받치기)
+    ctx.beginPath(); ctx.arc(-40,-8,16,0,7); ctx.arc(40,-8,16,0,7); ctx.fill(); ctx.fillStyle='#C9926A'; ctx.beginPath(); ctx.arc(-40,-8,9,0,7); ctx.arc(40,-8,9,0,7); ctx.fill();
+    ctx.fillStyle='#8B5A3C'; ctx.beginPath(); ctx.ellipse(0,16,52,44,0,0,7); ctx.fill(); ctx.fillStyle='#E8C9A0'; ctx.beginPath(); ctx.ellipse(0,32,24,17,0,0,7); ctx.fill();
+    cuteEyes(ctx,-18,10,5.5,sleepy>.6?(Math.sin(t*2)>0?0:1):1); cuteEyes(ctx,18,10,5.5,sleepy>.6?(Math.sin(t*2)>0?0:1):1); cuteBlush(ctx,-30,26,8); cuteBlush(ctx,30,26,8);
+    ctx.fillStyle='#3A2418'; ctx.beginPath(); ctx.ellipse(0,26,7,5,0,0,7); ctx.fill(); ctx.strokeStyle='#3A2418'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(-4,32,4,0,Math.PI); ctx.arc(4,32,4,0,Math.PI); ctx.stroke();
+    if(sleepy>.6){ ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='16px Jua, sans-serif'; ctx.fillText('zZ',40,-20); }
+    ctx.restore(); }
+  function draw(dt){
+    ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#FFB86B'); bg.addColorStop(1,'#FF7E8A'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.arc(70,80,28,0,7); ctx.fill();
+    ctx.save(); ctx.translate(0,cam);
+    ctx.fillStyle='#5FA04A'; ctx.fillRect(0,440,W,200); ctx.fillStyle='#4C8A3A'; for(let k=0;k<20;k++) ctx.fillRect(k*19,440,3,8);
+    const bx=180+sway(); bear(bx,headY()+16);
+    if(!fall){ let x=0; pots.forEach((p,i)=>{ x+=p.off; pot(bx+x+lean*i*6,headY()-i*PH-PH/2,p.col,lean*.04*i); }); }
+    else fall.forEach((f,i)=>{ let x=0; for(let k=0;k<=i;k++) x+=pots[k].off; pot(bx+x+f.x,headY()-i*PH-PH/2+f.y,pots[i].col,f.r); });
+    ctx.restore();
+    if(phase==='aim'){ pot(mover.x,60,PAL[cur][0]); ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.setLineDash([4,6]); ctx.beginPath(); ctx.moveTo(mover.x,84); ctx.lineTo(mover.x,H); ctx.stroke(); ctx.setLineDash([]); }
+    if(drop) pot(drop.x,drop.y-cam,PAL[cur][0]);
+    ctx.fillStyle='#FFFFFF'; ctx.font='22px Jua, sans-serif'; ctx.textAlign='right'; ctx.fillText(pots.length+'층',344,30);
+    popText(ctx,pop,dt,140);
+  }
+  paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  const stop=spLoop(dt=>{ step(dt); draw(dt); });
+  cleanup=()=>{ stop(); btn.onclick=null; cv.onpointerdown=null; window.removeEventListener('resize',onR); };
+}
+
+/* ── 🔔 고양이 방울 달기: 방울을 살살 끌어 고양이 목에. 고양이를 깨우면 독박 ── */
+function startBell(){
+  show('bell');
+  const W=360, H=480, {cv,ctx,fit,toXY}=spCanvas('bell',W,H), sec=$('#bell'), n=S.n;
+  const COLLAR={x:180,y:178}, START={x:180,y:440}, SEG=4, LIMIT=4.5;
+  let cur=0, bell={...START}, seg=0, drag=false, last=null, noise=0, t=0, turnT=LIMIT, phase='play', wakeAt=.45+Math.random()*.35, round=0, per=Array(n).fill(0), pop={v:null}, ringT=0, stir=0, catOpen=0;
+  const goalY=k=>START.y-(START.y-COLLAR.y)*(k/SEG);
+  function paint(){ tgTurn(sec,cur,(seg+1)+'/'+SEG+' 구간 · '+Math.ceil(turnT)+'초'); sec.querySelector('.sp-board').innerHTML=mkTable(['이름','옮긴 구간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'구간'],color:PAL[i][0]}))); }
+  cv.onpointerdown=e=>{ if(phase!=='play') return; audio(); const [x,y]=toXY(e); if(Math.hypot(x-bell.x,y-bell.y)<46){ drag=true; last={x,y,tm:performance.now()}; try{ cv.setPointerCapture(e.pointerId); }catch(_){} } };
+  cv.onpointermove=e=>{ if(!drag||phase!=='play') return; const [x,y]=toXY(e), now=performance.now(), dtm=Math.max(8,now-last.tm)/1000;
+    const nx=Math.max(40,Math.min(320,x)), ny=Math.max(goalY(seg+1)-4,Math.min(START.y+10,y)); const sp=Math.hypot(nx-bell.x,ny-bell.y)/dtm; bell.x=nx; bell.y=ny; last={x,y,tm:now};
+    if(sp>85){ noise+=(sp-85)*dtm/160; ringT=.25; jingle(Math.min(1,(sp-85)/400)); }
+    if(bell.y<=goalY(seg+1)+2) reach(); };
+  cv.onpointerup=cv.onpointercancel=()=>{ drag=false; };
+  cv.addEventListener('contextmenu',e=>e.preventDefault());
+  let lastJ=0; function jingle(v){ const now=performance.now(); if(now-lastJ<70) return; lastJ=now; const a=audio(); if(!a) return; tone(a,2400+Math.random()*400,2200,.08,'sine',.05+v*.15); tone(a,3600,3300,.06,'sine',.03+v*.08); }
+  function reach(){ per[cur]++; seg++; drag=false; beep(880,.06,'triangle',.06); noise+=.04+Math.random()*.06; ringT=.3; jingle(.5);
+    if(seg>=SEG){ phase='hang'; fanfare(); pop.v={txt:'방울 달기 성공! 🔔',t:0,d:1.6}; setTimeout(()=>{ round++; seg=0; bell={...START}; noise=Math.max(0,noise-.15); wakeAt=Math.max(.25,wakeAt-.08-Math.random()*.06); cur=(cur+1)%n; turnT=LIMIT; phase='play'; paint(); },1600); return; }
+    pop.v={txt:'휴~ 다음 사람',t:0,d:.8}; cur=(cur+1)%n; turnT=LIMIT; paint(); }
+  function wake(why){ phase='over'; drag=false; catOpen=1; const a=audio(); if(a){ tone(a,600,1300,.3,'sawtooth',.12); noiseBurst(a,.3,'bandpass',1500,1,.4); }
+    pop.v={txt:why,t:0,d:1.8,c:'#FF5C7A'}; tgLose(sec,cur,'옮긴 구간',i=>per[i]+'구간','고양이가 깼어요 😾'); }
+  function step(dt){ t+=dt; ringT=Math.max(0,ringT-dt); if(phase!=='play') return;
+    noise=Math.max(0,noise-dt*.015); stir=noise/wakeAt;
+    turnT-=dt; if(Math.floor(turnT+dt)!==Math.floor(turnT)) paint(); if(turnT<=0) return wake('시간 초과! 고양이 기지개…');
+    if(noise>=wakeAt) return wake('딸랑! 깨버렸다');
+    if(Math.random()<dt*.25*stir) { noise+=.05; pop.v={txt:'움찔…',t:0,d:.7}; } }
+  function draw(dt){
+    ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#2C2650'); bg.addColorStop(1,'#1B1835'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#4A3F7A'; ctx.beginPath(); ctx.ellipse(180,250,170,60,0,0,7); ctx.fill();   // 러그
+    // 구간 선
+    for(let k=1;k<=SEG;k++){ const y=goalY(k); ctx.strokeStyle=k<=seg?'rgba(124,227,139,.5)':(k===seg+1?'rgba(255,212,71,.8)':'rgba(255,255,255,.18)'); ctx.lineWidth=2; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(320,y); ctx.stroke(); ctx.setLineDash([]); }
+    // 고양이 (회색 고양이, 정면으로 엎드려 잠)
+    const open=phase==='over'?1:0, br=Math.sin(t*2)*2, shake=stir>.6?(Math.random()-.5)*stir*3:0;
+    ctx.save(); ctx.translate(180+shake,150);
+    ctx.fillStyle='#9AA0B5'; ctx.beginPath(); ctx.ellipse(0,40+br*.3,120,50+br,0,0,7); ctx.fill();
+    ctx.fillStyle='#9AA0B5'; ctx.beginPath(); ctx.moveTo(-64,-30); ctx.lineTo(-58,-86+(stir>.7?-6:0)); ctx.lineTo(-22,-56); ctx.fill(); ctx.beginPath(); ctx.moveTo(64,-30); ctx.lineTo(58,-86); ctx.lineTo(22,-56); ctx.fill();
+    ctx.fillStyle='#F2B8C6'; ctx.beginPath(); ctx.moveTo(-56,-40); ctx.lineTo(-54,-74); ctx.lineTo(-32,-54); ctx.fill(); ctx.beginPath(); ctx.moveTo(56,-40); ctx.lineTo(54,-74); ctx.lineTo(32,-54); ctx.fill();
+    ctx.fillStyle='#A9AFC4'; ctx.beginPath(); ctx.ellipse(0,-14,74,58,0,0,7); ctx.fill(); ctx.fillStyle='#E9ECF5'; ctx.beginPath(); ctx.ellipse(0,6,34,24,0,0,7); ctx.fill();
+    ctx.strokeStyle='#7E8499'; ctx.lineWidth=4; [[-14,-62],[0,-66],[14,-62]].forEach(([x,y])=>{ ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x*.8,y+14); ctx.stroke(); });
+    cuteEyes(ctx,-26,-14,9,open); cuteEyes(ctx,26,-14,9,open); cuteBlush(ctx,-44,6,9); cuteBlush(ctx,44,6,9);
+    ctx.fillStyle='#E0607E'; ctx.beginPath(); ctx.moveTo(-5,0); ctx.lineTo(5,0); ctx.lineTo(0,6); ctx.fill();
+    ctx.strokeStyle='#5A5F72'; ctx.lineWidth=1.3; for(const s of [-1,1]) for(let k=0;k<3;k++){ ctx.beginPath(); ctx.moveTo(s*18,6+k*4); ctx.lineTo(s*56,0+k*7); ctx.stroke(); }
+    // 목걸이
+    ctx.strokeStyle='#FF5C7A'; ctx.lineWidth=7; ctx.beginPath(); ctx.arc(0,-20,60,.25*Math.PI,.75*Math.PI); ctx.stroke();
+    if(!open){ ctx.fillStyle='rgba(255,255,255,.8)'; for(let k=0;k<3;k++){ const ph=(t*.5+k/3)%1; ctx.globalAlpha=(1-ph)*(1-stir*.6); ctx.font='bold '+(14+k*5)+'px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('z',60+ph*30,-70-ph*40); } ctx.globalAlpha=1; }
+    else { ctx.fillStyle='#FF5C7A'; ctx.font='40px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('!!',80,-60); }
+    ctx.restore();
+    // 목 위치 표시
+    ctx.strokeStyle='rgba(255,212,71,.7)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(COLLAR.x,COLLAR.y,16,0,7); ctx.stroke();
+    // 방울
+    const sw=ringT>0?Math.sin(t*60)*.4:Math.sin(t*2)*.05; ctx.save(); ctx.translate(bell.x,bell.y); ctx.rotate(sw);
+    const g=ctx.createRadialGradient(-6,-6,2,0,0,18); g.addColorStop(0,'#FFF4B0'); g.addColorStop(.5,'#FFD447'); g.addColorStop(1,'#C9961A'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,17,0,7); ctx.fill();
+    ctx.strokeStyle='#8A6A10'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-15,2); ctx.lineTo(15,2); ctx.stroke(); ctx.fillStyle='#5A440A'; ctx.beginPath(); ctx.arc(0,8,3.5,0,7); ctx.fill(); ctx.beginPath(); ctx.moveTo(0,8); ctx.lineTo(0,15); ctx.stroke();
+    ctx.strokeStyle=PAL[cur][0]; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,-19,6,0,7); ctx.stroke();
+    ctx.restore();
+    if(ringT>0){ ctx.strokeStyle='rgba(255,212,71,.6)'; ctx.lineWidth=2; for(let k=1;k<=2;k++){ ctx.beginPath(); ctx.arc(bell.x,bell.y,22+k*8,-.8,.8); ctx.stroke(); ctx.beginPath(); ctx.arc(bell.x,bell.y,22+k*8,Math.PI-.8,Math.PI+.8); ctx.stroke(); } }
+    // 소리 게이지 (고양이 잠 깊이)
+    const fr=Math.min(1,noise/Math.max(.001,.95)); ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(334,240,12,180); ctx.fillStyle=fr>.6?'#FF5C7A':fr>.35?'#FFD447':'#7CE38B'; ctx.fillRect(334,420-180*fr,12,180*fr);
+    ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='bold 10px "Noto Sans KR",sans-serif'; ctx.textAlign='center'; ctx.fillText('소리',340,434);
+    if(phase==='play'){ ctx.fillStyle=turnT<2?'#FF5C7A':'#FFFFFF'; ctx.font='24px Jua, sans-serif'; ctx.textAlign='left'; ctx.fillText(Math.ceil(turnT)+'',16,32); }
+    popText(ctx,pop,dt,300);
+  }
+  paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  const stop=spLoop(dt=>{ step(dt); draw(dt); });
+  cleanup=()=>{ stop(); cv.onpointerdown=cv.onpointermove=cv.onpointerup=cv.onpointercancel=null; window.removeEventListener('resize',onR); };
+}
+
+/* ── 🐸 개구리 연잎 점프: 꾹 눌러 힘 모으고 떼서 점프. 물에 빠지면 독박 ── */
+function startFrog(){
+  show('frog');
+  const W=360, H=480, {cv,ctx,fit}=spCanvas('frog',W,H), sec=$('#frog'), btn=$('#fgBtn'), n=S.n;
+  const pads=[]; const gen=()=>{ const last=pads[pads.length-1], z=last?last.z+130+Math.random()*90:0; const r=last?30+Math.random()*16:44;
+    pads.push({z,r,cx:180,amp:last?20+Math.random()*70+pads.length*3:0,sp:.6+Math.random()*1.1+pads.length*.04,ph:Math.random()*6,old:last&&Math.random()<.28}); };
+  for(let i=0;i<8;i++) gen();
+  let at=0, ox=0, cur=0, phase='ready', pw=0, charging=false, jump=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, sinkT=0, ripples=[];
+  const padX=(p,tt)=>p.cx+Math.sin(tt*p.sp+p.ph)*p.amp, scrY=z=>400-(z-cam);
+  function paint(){ tgTurn(sec,cur,phase==='ready'?'차례 · 꾹 눌러 힘 모으기':'…'); btn.disabled=phase!=='ready'&&phase!=='charge'; btn.textContent=phase==='charge'?'떼면 점프!':'꾹 눌러서 점프'; sec.querySelector('.sp-board').innerHTML=mkTable(['이름','점프 성공'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],color:PAL[i][0]}))); }
+  const off=holdBtn(btn,cv,()=>{ if(phase!=='ready') return; phase='charge'; pw=0; paint(); },()=>{ if(phase!=='charge') return; launch(); });
+  function launch(){ const p=pads[at], x0=padX(p,t)+ox, z0=p.z, dist=40+pw*300; jump={x0,z0,dist,t:0,dur:.55+pw*.25}; phase='jump'; paint(); const a=audio(); if(a) tone(a,300,900,.18,'sine',.12); }
+  function land(){ const zL=jump.z0+jump.dist, xL=jump.x0, nx=pads[at+1]; jump=null;
+    const px=padX(nx,t), dz=Math.abs(zL-nx.z), dx=Math.abs(xL-px), ok=Math.hypot(dx,dz*.9)<nx.r+6;
+    const a=audio();
+    if(!ok){ phase='splash'; sinkT=0; ripples.push({x:xL,z:zL,t:0}); if(a){ noiseBurst(a,.5,'lowpass',600,.7,.7); tone(a,400,120,.4,'sine',.3); } pop.v={txt:'풍덩!',t:0,d:1.6,c:'#6FD3FF'}; frogPos={x:xL,z:zL};
+      tgLose(sec,cur,'점프 성공',i=>per[i]+'번','물에 빠졌어요 🐸'); return; }
+    at++; ox=xL-px; per[cur]++; if(a) tone(a,180,120,.12,'sine',.2); buzz(20);
+    if(nx.old&&Math.random()<.45){ phase='sink'; sinkT=0; pop.v={txt:'앗, 연잎이 가라앉아요!',t:0,d:1.5,c:'#FF9F1C'}; setTimeout(()=>{ if(a){ noiseBurst(a,.5,'lowpass',500,.7,.6); } frogPos={x:padX(nx,t)+ox,z:nx.z}; phase='splash'; tgLose(sec,cur,'점프 성공',i=>per[i]+'번','연잎이 가라앉았어요 🐸'); },1100); return; }
+    pop.v={txt:Math.hypot(dx,dz)<12?'정확해!':'착지!',t:0,d:.8}; while(pads.length<at+6) gen(); cur=(cur+1)%n; phase='ready'; paint(); }
+  let frogPos=null;
+  function step(dt){ t+=dt; cam+=((pads[at].z-0)-cam)*Math.min(1,dt*2.5);
+    if(phase==='charge'){ pw=Math.min(1.15,pw+dt*.55); }
+    if(jump){ jump.t+=dt/jump.dur; if(jump.t>=1) land(); }
+    if(phase==='sink'||phase==='splash') sinkT+=dt;
+    ripples.forEach(r=>r.t+=dt); ripples=ripples.filter(r=>r.t<2); }
+  function pad(p,x,y,sinking){ ctx.save(); ctx.translate(x,y); if(sinking) ctx.globalAlpha=Math.max(.2,1-sinkT*.7);
+    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(3,5,p.r,p.r*.55,0,0,7); ctx.fill();
+    ctx.fillStyle=p.old?'#B8B64A':'#4CAF50'; ctx.beginPath(); ctx.moveTo(0,0); ctx.ellipse(0,0,p.r,p.r*.55,0,.3,Math.PI*2-.05); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle=p.old?'#8C8A2E':'#2E7D32'; ctx.lineWidth=1.5; for(let k=0;k<6;k++){ const a=.4+k*1; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*p.r*.85,Math.sin(a)*p.r*.47); ctx.stroke(); }
+    if(p.old){ ctx.fillStyle='rgba(120,90,30,.4)'; ctx.beginPath(); ctx.arc(-p.r*.4,0,4,0,7); ctx.arc(p.r*.3,p.r*.15,3,0,7); ctx.fill(); }
+    ctx.restore(); }
+  function frog(x,y,col,sc,squash){ ctx.save(); ctx.translate(x,y); ctx.scale(sc*(1+squash*.25),sc*(1-squash*.25));
+    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0,6,20,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#6BCB5A'; ctx.beginPath(); ctx.ellipse(-16,2,9,5,0,0,7); ctx.ellipse(16,2,9,5,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,-10,22,17,0,0,7); ctx.fill(); ctx.fillStyle='#C8F0B0'; ctx.beginPath(); ctx.ellipse(0,-4,13,9,0,0,7); ctx.fill();
+    ctx.fillStyle='#6BCB5A'; ctx.beginPath(); ctx.arc(-11,-25,9,0,7); ctx.arc(11,-25,9,0,7); ctx.fill(); ctx.fillStyle='#FFFFFF'; ctx.beginPath(); ctx.arc(-11,-25,6.5,0,7); ctx.arc(11,-25,6.5,0,7); ctx.fill();
+    cuteEyes(ctx,-11,-25,3.6,1); cuteEyes(ctx,11,-25,3.6,1); cuteBlush(ctx,-15,-12,4.5); cuteBlush(ctx,15,-12,4.5);
+    ctx.strokeStyle='#2E6B24'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(0,-13,6,.2,Math.PI-.2); ctx.stroke();
+    ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(-6,-2); ctx.lineTo(0,2); ctx.lineTo(6,-2); ctx.lineTo(0,-6); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(-12,-6); ctx.lineTo(-4,-2); ctx.lineTo(-12,2); ctx.fill(); ctx.beginPath(); ctx.moveTo(12,-6); ctx.lineTo(4,-2); ctx.lineTo(12,2); ctx.fill();   // 리본 = 내 색
+    ctx.restore(); }
+  function draw(dt){
+    ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#1F6F8B'); bg.addColorStop(1,'#2A9D8F'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=2; for(let k=0;k<12;k++){ const y=(k*50+cam*.3)%H; ctx.beginPath(); ctx.moveTo((k*83)%W,y); ctx.quadraticCurveTo((k*83)%W+20,y-5,(k*83)%W+44,y); ctx.stroke(); }
+    ripples.forEach(r=>{ const y=scrY(r.z); ctx.strokeStyle='rgba(255,255,255,'+(1-r.t/2)+')'; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(r.x,y,10+r.t*40,(10+r.t*40)*.4,0,0,7); ctx.stroke(); });
+    for(let i=Math.max(0,at-1);i<pads.length;i++){ const p=pads[i], y=scrY(p.z); if(y<-60) break; pad(p,padX(p,t),y,phase==='sink'&&i===at); }
+    // 목표 표시
+    if(phase==='ready'||phase==='charge'){ const nx=pads[at+1]; ctx.strokeStyle='rgba(255,212,71,.6)'; ctx.setLineDash([4,5]); ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(padX(nx,t),scrY(nx.z),nx.r+6,(nx.r+6)*.55,0,0,7); ctx.stroke(); ctx.setLineDash([]); }
+    // 개구리
+    const col=PAL[cur][0];
+    if(jump){ const k=jump.t, z=jump.z0+jump.dist*k; frog(jump.x0,scrY(z)-Math.sin(k*Math.PI)*(40+jump.dist*.3),col,1+Math.sin(k*Math.PI)*.3,0); }
+    else if(phase==='splash'&&frogPos){ if(sinkT<.6) frog(frogPos.x,scrY(frogPos.z)+sinkT*30,col,1-sinkT,0); }
+    else { const p=pads[at], sink=phase==='sink'?sinkT*12:0; frog(padX(p,t)+ox,scrY(p.z)-6+sink,col,1,phase==='charge'?pw*.8:0); }
+    // 힘 게이지
+    if(phase==='charge'){ const fx=20, fy=440; ctx.fillStyle='rgba(255,255,255,.2)'; ctx.fillRect(fx,fy,320,12); ctx.fillStyle=pw>1?'#FF5C7A':'#FFD447'; ctx.fillRect(fx,fy,Math.min(1,pw/1.15)*320,12); }
+    popText(ctx,pop,dt,90);
+  }
+  paint(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
+  const stop=spLoop(dt=>{ step(dt); draw(dt); });
+  cleanup=()=>{ stop(); off(); window.removeEventListener('resize',onR); };
 }
 
 /* ── 병뚜껑 튕기기 ── */
