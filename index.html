@@ -107,7 +107,7 @@ button{cursor:pointer}
 .tp-card{width:100%;max-width:300px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 20px 18px;border-radius:24px;background:#1A1D3A;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.5);animation:respop .4s cubic-bezier(.2,1.5,.4,1);text-align:center}
 .tp-dot{width:54px;height:54px;border-radius:50%;border:7px solid}
 .tp-name{font-size:34px;line-height:1.1;color:var(--fg);word-break:keep-all}
-.tp-sub{font-size:14px;margin-bottom:6px}
+.tp-sub{font-size:14px;margin-bottom:6px;white-space:pre-line;line-height:1.5}
 .tp-card .btn{width:100%;height:56px;font-size:22px}
 /* 결과 오버레이 */
 .res-top{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,20,.62);animation:resfade .25s ease}
@@ -1074,7 +1074,7 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else start(g); });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else if(TURN.has(g)){ S.game=g; openPeople(); } else start(g); });
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
 function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
 function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
@@ -1100,7 +1100,10 @@ $('#sClose').onclick=()=>$('#setSheet').hidden=true;
 $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=true; };
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
-function start(g){ S.game=g; ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand, hamster:startHamster, penguin:startPenguin, honey:startHoney, bell:startBell, frog:startFrog})[g](); }
+// 차례 돌리기 게임: 인원·이름 먼저 확인하고, 매판 순서를 복불복으로 섞어요
+const TURN=new Set(['water','melon','hamster','penguin','honey','bell','frog']); let TORD=[0], TFIRST=false;
+const nxt=c=>{ const i=TORD.indexOf(c); return TORD[(i+1)%TORD.length]; };
+function start(g){ S.game=g; if(TURN.has(g)){ const a=[...Array(S.n).keys()]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } TORD=a; TFIRST=true; } ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand, hamster:startHamster, penguin:startPenguin, honey:startHoney, bell:startBell, frog:startFrog})[g](); }
 
 /* ── 손가락 폭탄 ── */
 function bombSVG(color,num){
@@ -2426,7 +2429,7 @@ function startStack(){
 }
 
 /* ── 차례 팝업: 다음 사람 확인 후 진행 ── */
-function turnPop(cur,go,sub){ const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=sub||'차례예요';
+function turnPop(cur,go,sub){ const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=TFIRST?('순서 추첨 결과\n'+TORD.map(nameOf).join(' → ')+'\n\n먼저 시작해요'):(sub||'차례예요'); TFIRST=false;
   const d=$('#tpDot'); d.style.borderColor=PAL[cur][0]; d.style.background=PAL[cur][0]+'40'; el.hidden=false; beep(760,.06,'triangle',.05);
   $('#tpGo').onclick=()=>{ el.hidden=true; audio(); go(); }; }
 /* ── 차례 돌리기 공용 (물컵·수박·모래성) ── */
@@ -2440,7 +2443,7 @@ function startWater(){
   const W=360, H=520, {cv,ctx,fit}=spCanvas('water',W,H), sec=$('#water'), btn=$('#wtBtn'), n=S.n;
   const GX0=110, GX1=250, GY0=150, GY1=470;              // 컵 안쪽 (위 넓고 아래 좁음)
   const limit=1+.002+Math.random()*.028;                  // 넘치는 한계 (표면장력으로 아주 살짝 볼록하게 버팀)
-  let level=.3+Math.random()*.15, cur=0, phase='wait', hold=false, holdT=0, flow=0, lag=0, mine=0, per=Array(n).fill(0), t=0, pourSnd=null, drops=[], spill=0, tilt=0;
+  let level=.3+Math.random()*.15, cur=TORD[0], phase='wait', hold=false, holdT=0, flow=0, lag=0, mine=0, per=Array(n).fill(0), t=0, pourSnd=null, drops=[], spill=0, tilt=0;
   const ML=300;   // 컵 300ml · 최소/최대 없음 (살짝 탭하면 한 방울)
   function paint(){ tgTurn(sec,cur, (phase==='ready'&&mine===0)?'차례 · 꾹 눌러서 따르기 (톡 치면 한 방울)':'이번 차례 '+(mine*ML).toFixed(1)+'ml');
     btn.disabled=phase==='lag'||phase==='over'||phase==='wait'; btn.textContent=phase==='pour'?'따르는 중… (떼면 멈춤)':'꾹 눌러서 따르기';
@@ -2462,7 +2465,7 @@ function startWater(){
   function step(dt){ t+=dt; tilt+=((phase==='pour'||phase==='lag'?1:0)-tilt)*Math.min(1,dt*6);
     if(phase==='pour'){ holdT+=dt; flow=holdT<.25?.004+holdT*.03:.012+Math.min(.22,(holdT-.25)*(holdT-.25)*.1); addWater(flow*dt); sndSet(.18+flow,700+level*500); if(phase==='pour') paint(); }
     else if(phase==='lag'){ lag-=dt; flow*=Math.exp(-dt*10); addWater(flow*dt); sndSet(.1*flow*10,700+level*500);
-      if(lag<=0&&phase==='lag'){ sndOff(); phase='ready'; const v=(mine*ML).toFixed(1); pop('+'+v+'ml',.9); beep(660,.06,'triangle',.05); cur=(cur+1)%n; mine=0; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); } }
+      if(lag<=0&&phase==='lag'){ sndOff(); phase='ready'; const v=(mine*ML).toFixed(1); pop('+'+v+'ml',.9); beep(660,.06,'triangle',.05); cur=nxt(cur); mine=0; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); } }
     drops.forEach(d=>{ d.vy+=500*dt; d.x+=d.vx*dt; d.y+=d.vy*dt; d.t-=dt; }); drops=drops.filter(d=>d.t>0&&d.y<H+20); }
   let popT=null; function pop(txt,dur){ popT={txt,t:0,dur}; }
   const gx=y=>{ const f=(y-GY0)/(GY1-GY0); return [GX0+f*14, GX1-f*14]; };
@@ -2509,7 +2512,7 @@ function startMelon(){
   show('melon');
   const W=360, H=480, {cv,ctx,fit}=spCanvas('melon',W,H), sec=$('#melon'), n=S.n, CX=180, CY=250, RX=120, RY=104;
   const limit=16+Math.floor(Math.random()*26);           // 몇 번째 고무줄에서 터질지 (비밀)
-  let bands=[], cur=0, phase='wait', queue=0, qT=0, per=Array(n).fill(0), t=0, shake=0, burst=null, cracks=[], popT=null;
+  let bands=[], cur=TORD[0], phase='wait', queue=0, qT=0, per=Array(n).fill(0), t=0, shake=0, burst=null, cracks=[], popT=null;
   const btns=$$('#mlBtns button');
   const squeeze=()=>Math.min(.45,bands.length*.014);
   function paint(){ tgTurn(sec,cur,phase==='ready'?'차례 · 고무줄 몇 개 감을까?':'감는 중…'); btns.forEach(b=>b.disabled=phase!=='ready');
@@ -2524,7 +2527,7 @@ function startMelon(){
     burst={t:0,parts:[...Array(70)].map(()=>{ const ang=Math.random()*6.28, sp=150+Math.random()*420; return {x:CX+Math.cos(ang)*RX*.5,y:CY+Math.sin(ang)*RY*.5,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp-140,r:4+Math.random()*12,k:Math.random(),rot:Math.random()*6}; })};
     tgLose(sec,cur,'감은 고무줄',i=>per[i]+'개','수박을 터뜨렸어요 🍉 ('+bands.length+'번째 고무줄)'); }
   function step(dt){ t+=dt; shake=Math.max(0,shake-dt*1.5);
-    if(phase==='wrap'){ qT-=dt; if(qT<=0){ queue--; if(!addBand()) return; qT=.55; if(queue<=0){ phase='wait'; popT={txt:'휴…',t:0}; cur=(cur+1)%n; setTimeout(()=>{ paint(); turnPop(cur,()=>{ phase='ready'; paint(); }); },700); } } }
+    if(phase==='wrap'){ qT-=dt; if(qT<=0){ queue--; if(!addBand()) return; qT=.55; if(queue<=0){ phase='wait'; popT={txt:'휴…',t:0}; cur=nxt(cur); setTimeout(()=>{ paint(); turnPop(cur,()=>{ phase='ready'; paint(); }); },700); } } }
     if(burst){ burst.t+=dt; burst.parts.forEach(p=>{ p.vy+=900*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.rot+=dt*5; }); } }
   function draw(dt){
     ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#16301F'); bg.addColorStop(1,'#0F1A14'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
@@ -2627,8 +2630,8 @@ function startHamster(){
   show('hamster');
   // 한 사람씩 씨앗 하나 훔쳐서 집까지. 들키면 그 자리에서 독박. 모두 성공하면 가장 오래 걸린 사람이 독박.
   const W=360, H=480, {cv,ctx,fit}=spCanvas('hamster',W,H), sec=$('#hamster'), btn=$('#hmBtn'), n=S.n;
-  const HOME=60, PILE=232, FLOOR=380;
-  let cur=0, hx=HOME, carry=false, holding=false, moveT=0, times=Array(n).fill(null), t=0, cat='sleep', catT=2, awakeT=0, over=false, pop={v:null}, step0=0, zz=0, look=0, phase='wait', clock=0, started=false;
+  const HOME=56, PILE=150, FLOOR=380;
+  let cur=TORD[0], hx=HOME, carry=false, holding=false, moveT=0, times=Array(n).fill(null), t=0, cat='sleep', catT=2, awakeT=0, over=false, pop={v:null}, step0=0, zz=0, look=0, phase='wait', clock=0, started=false;
   const fmt=v=>v.toFixed(1)+'초';
   function paint(){ tgTurn(sec,cur, phase==='wait'?'차례':(carry?'씨앗 들고 집으로! · '+fmt(clock):'씨앗 훔치러 가기 · '+fmt(clock))); btn.disabled=phase!=='play'; }
   const off=holdBtn(btn,cv,()=>{ if(phase==='play'){ holding=true; started=true; } },()=>{ holding=false; });
@@ -2641,12 +2644,12 @@ function startHamster(){
     else if(cat==='fake'&&catT<=0){ cat='sleep'; catT=nextWake(); }
     else if(cat==='twitch'&&catT<=0){ cat='awake'; awakeT=0; catT=1+Math.random()*1.2; const a=audio(); if(a) tone(a,700,900,.12,'triangle',.06); look=hx<180?-3:3; }
     else if(cat==='awake'){ awakeT+=dt; if(holding&&awakeT>.12){ caught(); return; } if(catT<=0){ cat='sleep'; catT=nextWake(); } }
-    if(holding){ moveT+=dt; hx+=(carry?-1:1)*66*dt; if(Math.floor(moveT*7)!==step0){ step0=Math.floor(moveT*7); const a=audio(); if(a) tone(a,1500+Math.random()*300,1200,.025,'sine',.03); }
+    if(holding){ moveT+=dt; hx+=(carry?-1:1)*46*dt; if(Math.floor(moveT*7)!==step0){ step0=Math.floor(moveT*7); const a=audio(); if(a) tone(a,1500+Math.random()*300,1200,.025,'sine',.03); }
       if(!carry&&hx>=PILE){ hx=PILE; carry=true; holding=false; beep(980,.06,'triangle',.06); pop.v={txt:'냠! 씨앗 겟',t:0,d:.9}; }
       if(carry&&hx<=HOME){ hx=HOME; carry=false; holding=false; done(); } } }
   function done(){ times[cur]=clock; phase='wait'; fanfare(); pop.v={txt:'성공! '+fmt(clock),t:0,d:1.3}; paint();
-    const nx=times.findIndex(v=>v===null);
-    if(nx<0){ let L=0; times.forEach((v,i)=>{ if(v>times[L]) L=i; }); cur=L; setTimeout(()=>tgLose(sec,L,'걸린 시간',i=>fmt(times[i]),'모두 성공! 가장 느렸어요 ('+fmt(times[L])+')'),900); return; }
+    const nx=TORD.find(i=>times[i]===null);
+    if(nx===undefined){ let L=0; times.forEach((v,i)=>{ if(v>times[L]) L=i; }); cur=L; setTimeout(()=>tgLose(sec,L,'걸린 시간',i=>fmt(times[i]),'모두 성공! 가장 느렸어요 ('+fmt(times[L])+')'),900); return; }
     setTimeout(()=>{ cur=nx; hx=HOME; paint(); turnPop(cur,begin,'씨앗 훔칠 차례예요'); },1300); }
   function caught(){ phase='over'; holding=false; cat='pounce'; const a=audio(); if(a){ tone(a,500,1200,.25,'sawtooth',.12); noiseBurst(a,.3,'bandpass',1200,1,.4); } pop.v={txt:'들켰다!',t:0,d:1.6,c:'#FF5C7A'};
     tgLose(sec,cur,'걸린 시간',i=>times[i]===null?(i===cur?'들킴':'-'):fmt(times[i]),'고양이한테 들켰어요 🐱'); }
@@ -2691,11 +2694,11 @@ function startHamster(){
     ctx.clearRect(0,0,W,H); const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#3D2E5C'); bg.addColorStop(1,'#2A2142'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
     ctx.fillStyle='#8B5A3C'; ctx.fillRect(0,FLOOR,W,H-FLOOR); ctx.fillStyle='#A06B48'; for(let k=0;k<6;k++) ctx.fillRect(0,FLOOR+k*18,W,2);
     ctx.fillStyle='#6FD3FF'; ctx.beginPath(); ctx.moveTo(10,FLOOR); ctx.lineTo(10,FLOOR-70); ctx.lineTo(55,FLOOR-104); ctx.lineTo(100,FLOOR-70); ctx.lineTo(100,FLOOR); ctx.fill(); ctx.fillStyle='#2A2142'; ctx.beginPath(); ctx.arc(55,FLOOR,24,Math.PI,0); ctx.fill();
+    drawCat(258,FLOOR-62);
     // 해바라기씨 더미 (작은 그릇)
     ctx.fillStyle='#D9D2C5'; ctx.beginPath(); ctx.ellipse(PILE+38,FLOOR-4,52,13,0,0,Math.PI); ctx.fill(); ctx.fillStyle='#BFB6A6'; ctx.beginPath(); ctx.ellipse(PILE+38,FLOOR-9,50,9,0,0,7); ctx.fill();
     const left=Math.max(4,12-times.filter(v=>v!==null).length);
     for(let k=0;k<left;k++){ const row=Math.floor(k/5), col=k%5; seed(PILE+8+col*15+(row%2)*7,FLOOR-14-row*11,(k*1.7)%3-1.5,1.5); }
-    drawCat(256,FLOOR-130);
     drawHamster(hx,FLOOR-26);
     ctx.fillStyle='rgba(255,255,255,.15)'; ctx.fillRect(HOME,FLOOR+50,PILE-HOME,6); ctx.fillStyle=PAL[cur][0]; ctx.fillRect(HOME,FLOOR+50,hx-HOME,6);
     // 기록
@@ -2716,7 +2719,7 @@ function startPenguin(){
   const PB=[.03,.1,.22,.42];
   const tiles=[{c:0,x:180}]; const gen=()=>{ const r=Math.random(), c=r<.32?0:r<.62?1:r<.86?2:3; tiles.push({c,x:120+Math.random()*120}); };
   for(let i=0;i<12;i++) gen();
-  let pos=0, cur=0, phase='wait', jump=null, cam=0, t=0, hops=Array(n).fill(0), pop={v:null}, sink=0, splash=[];
+  let pos=0, cur=TORD[0], phase='wait', jump=null, cam=0, t=0, hops=Array(n).fill(0), pop={v:null}, sink=0, splash=[];
   const tileY=i=>400-(i-cam)*78;
   function paint(){ tgTurn(sec,cur,'차례 · 1칸? 2칸?'); btns.forEach(b=>b.disabled=phase!=='ready'); sec.querySelector('.sp-board').innerHTML=mkTable(['이름','건넌 칸'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),hops[i]+'칸'],color:PAL[i][0]}))); }
   btns.forEach(b=>b.onclick=()=>{ if(phase!=='ready') return; audio(); const k=+b.dataset.k; while(tiles.length<pos+k+10) gen(); jump={from:pos,to:pos+k,t:0}; phase='jump'; paint(); const a=audio(); if(a) tone(a,500,900,.15,'sine',.08); });
@@ -2725,7 +2728,7 @@ function startPenguin(){
     if(Math.random()<PB[tl.c]){ phase='break'; sink=0; tl.broken=true; if(a){ noiseBurst(a,.3,'highpass',2000,.8,.6); setTimeout(()=>{ noiseBurst(a,.5,'lowpass',500,.7,.7); tone(a,300,80,.4,'sine',.3); },300); }
       for(let k=0;k<24;k++) splash.push({x:tl.x,y:tileY(pos),vx:(Math.random()-.5)*160,vy:-80-Math.random()*160,t:1});
       pop.v={txt:'쩌억… 풍덩!',t:0,d:1.6,c:'#6FD3FF'}; tgLose(sec,cur,'건넌 칸',i=>hops[i]+'칸','얼음이 깨져 풍덩 🐧'); return; }
-    tl.c=Math.min(3,tl.c+1); phase='wait'; pop.v={txt:'휴~',t:0,d:.8}; cur=(cur+1)%n; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
+    tl.c=Math.min(3,tl.c+1); phase='wait'; pop.v={txt:'휴~',t:0,d:.8}; cur=nxt(cur); paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
   function step(dt){ t+=dt; cam+=((pos-0)-cam)*Math.min(1,dt*3);
     if(jump){ jump.t+=dt/.55; if(jump.t>=1){ pos=jump.to; land(); } }
     if(phase==='break') sink=Math.min(1,sink+dt*.8);
@@ -2767,7 +2770,7 @@ function startPenguin(){
 function startHoney(){
   show('honey');
   const W=360, H=480, {cv,ctx,fit}=spCanvas('honey',W,H), sec=$('#honey'), btn=$('#hnBtn'), n=S.n, PW=58, PH=40;
-  let pots=[], cur=0, phase='wait', mover={x:60,dir:1,sp:120}, drop=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, fall=null, lean=0, leanV=0;
+  let pots=[], cur=TORD[0], phase='wait', mover={x:60,dir:1,sp:120}, drop=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, fall=null, lean=0, leanV=0;
   const tip=.45+Math.random()*.3;   // 무너지는 기울기 한계 (비밀)
   const sway=()=>Math.sin(t*1.3)*(8+pots.length*2.2)+Math.sin(t*3.1)*pots.length*.6;
   const headY=()=>392-120;
@@ -2785,7 +2788,7 @@ function startHoney(){
     if(Math.abs(com)>tip||Math.random()<Math.max(0,risk-.75)*.5) return collapse('와르르!');
     pop.v={txt:Math.abs(off)<6?'딱 맞아!':'휴~',t:0,d:.8}; if(Math.abs(off)<6) fanfare();
     if(headY()-pots.length*PH+cam<170) cam+=PH;
-    drop=null; cur=(cur+1)%n; phase='wait'; mover={x:Math.random()<.5?40:320,dir:Math.random()<.5?1:-1,sp:110+pots.length*14+Math.random()*40}; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='aim'; paint(); }),700); }
+    drop=null; cur=nxt(cur); phase='wait'; mover={x:Math.random()<.5?40:320,dir:Math.random()<.5?1:-1,sp:110+pots.length*14+Math.random()*40}; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='aim'; paint(); }),700); }
   function collapse(txt){ phase='fall'; drop=null; const a=audio(); if(a){ for(let k=0;k<5;k++) setTimeout(()=>{ tone(a,300-k*30,120,.15,'triangle',.15); noiseBurst(a,.1,'lowpass',900,.7,.4); },k*110); }
     fall=pots.map((p,i)=>({x:0,y:0,vx:(Math.random()-.5)*200+(lean>0?80:-80),vy:-Math.random()*150,r:0,vr:(Math.random()-.5)*8})); pop.v={txt,t:0,d:1.6,c:'#FF5C7A'};
     tgLose(sec,cur,'올린 꿀단지',i=>per[i]+'개','꿀단지 탑을 무너뜨렸어요 🍯'); }
@@ -2832,7 +2835,7 @@ function startBell(){
   show('bell');
   const W=360, H=480, {cv,ctx,fit,toXY}=spCanvas('bell',W,H), sec=$('#bell'), n=S.n;
   const COLLAR={x:180,y:178}, START={x:180,y:440}, SEG=4, LIMIT=4.5;
-  let cur=0, bell={...START}, seg=0, drag=false, last=null, noise=0, t=0, turnT=LIMIT, phase='wait', wakeAt=.45+Math.random()*.35, round=0, per=Array(n).fill(0), pop={v:null}, ringT=0, stir=0, catOpen=0;
+  let cur=TORD[0], bell={...START}, seg=0, drag=false, last=null, noise=0, t=0, turnT=LIMIT, phase='wait', wakeAt=.45+Math.random()*.35, round=0, per=Array(n).fill(0), pop={v:null}, ringT=0, stir=0, catOpen=0;
   const goalY=k=>START.y-(START.y-COLLAR.y)*(k/SEG);
   function paint(){ tgTurn(sec,cur,(seg+1)+'/'+SEG+' 구간 · '+Math.ceil(turnT)+'초'); sec.querySelector('.sp-board').innerHTML=mkTable(['이름','옮긴 구간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'구간'],color:PAL[i][0]}))); }
   cv.onpointerdown=e=>{ if(phase!=='play') return; audio(); const [x,y]=toXY(e); if(Math.hypot(x-bell.x,y-bell.y)<46){ drag=true; last={x,y,tm:performance.now()}; try{ cv.setPointerCapture(e.pointerId); }catch(_){} } };
@@ -2844,8 +2847,8 @@ function startBell(){
   cv.addEventListener('contextmenu',e=>e.preventDefault());
   let lastJ=0; function jingle(v){ const now=performance.now(); if(now-lastJ<70) return; lastJ=now; const a=audio(); if(!a) return; tone(a,2400+Math.random()*400,2200,.08,'sine',.05+v*.15); tone(a,3600,3300,.06,'sine',.03+v*.08); }
   function reach(){ per[cur]++; seg++; drag=false; beep(880,.06,'triangle',.06); noise+=.04+Math.random()*.06; ringT=.3; jingle(.5);
-    if(seg>=SEG){ phase='hang'; fanfare(); pop.v={txt:'방울 달기 성공! 🔔',t:0,d:1.6}; setTimeout(()=>{ round++; seg=0; bell={...START}; noise=Math.max(0,noise-.15); wakeAt=Math.max(.25,wakeAt-.08-Math.random()*.06); cur=(cur+1)%n; turnT=LIMIT; phase='wait'; paint(); turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }); },1600); return; }
-    pop.v={txt:'휴~ 다음 사람',t:0,d:.8}; cur=(cur+1)%n; turnT=LIMIT; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }),600); }
+    if(seg>=SEG){ phase='hang'; fanfare(); pop.v={txt:'방울 달기 성공! 🔔',t:0,d:1.6}; setTimeout(()=>{ round++; seg=0; bell={...START}; noise=Math.max(0,noise-.15); wakeAt=Math.max(.25,wakeAt-.08-Math.random()*.06); cur=nxt(cur); turnT=LIMIT; phase='wait'; paint(); turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }); },1600); return; }
+    pop.v={txt:'휴~ 다음 사람',t:0,d:.8}; cur=nxt(cur); turnT=LIMIT; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }),600); }
   function wake(why){ phase='over'; drag=false; catOpen=1; const a=audio(); if(a){ tone(a,600,1300,.3,'sawtooth',.12); noiseBurst(a,.3,'bandpass',1500,1,.4); }
     pop.v={txt:why,t:0,d:1.8,c:'#FF5C7A'}; tgLose(sec,cur,'옮긴 구간',i=>per[i]+'구간','고양이가 깼어요 😾'); }
   function step(dt){ t+=dt; ringT=Math.max(0,ringT-dt); if(phase!=='play') return;
@@ -2901,7 +2904,7 @@ function startFrog(){
   const pads=[]; const gen=()=>{ const last=pads[pads.length-1], z=last?last.z+130+Math.random()*90:0; const r=last?30+Math.random()*16:44;
     pads.push({z,r,cx:180,amp:last?20+Math.random()*70+pads.length*3:0,sp:.6+Math.random()*1.1+pads.length*.04,ph:Math.random()*6,old:last&&Math.random()<.28}); };
   for(let i=0;i<8;i++) gen();
-  let at=0, ox=0, cur=0, phase='wait', pw=0, charging=false, jump=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, sinkT=0, ripples=[];
+  let at=0, ox=0, cur=TORD[0], phase='wait', pw=0, charging=false, jump=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, sinkT=0, ripples=[];
   const padX=(p,tt)=>p.cx+Math.sin(tt*p.sp+p.ph)*p.amp, scrY=z=>400-(z-cam);
   function paint(){ tgTurn(sec,cur,phase==='ready'?'차례 · 꾹 눌러 힘 모으기':'…'); btn.disabled=phase!=='ready'&&phase!=='charge'; btn.textContent=phase==='charge'?'떼면 점프!':'꾹 눌러서 점프'; sec.querySelector('.sp-board').innerHTML=mkTable(['이름','점프 성공'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],color:PAL[i][0]}))); }
   const off=holdBtn(btn,cv,()=>{ if(phase!=='ready') return; phase='charge'; pw=0; paint(); },()=>{ if(phase!=='charge') return; launch(); });
@@ -2913,7 +2916,7 @@ function startFrog(){
       tgLose(sec,cur,'점프 성공',i=>per[i]+'번','물에 빠졌어요 🐸'); return; }
     at++; ox=xL-px; per[cur]++; if(a) tone(a,180,120,.12,'sine',.2); buzz(20);
     if(nx.old&&Math.random()<.45){ phase='sink'; sinkT=0; pop.v={txt:'앗, 연잎이 가라앉아요!',t:0,d:1.5,c:'#FF9F1C'}; setTimeout(()=>{ if(a){ noiseBurst(a,.5,'lowpass',500,.7,.6); } frogPos={x:padX(nx,t)+ox,z:nx.z}; phase='splash'; tgLose(sec,cur,'점프 성공',i=>per[i]+'번','연잎이 가라앉았어요 🐸'); },1100); return; }
-    pop.v={txt:Math.hypot(dx,dz)<12?'정확해!':'착지!',t:0,d:.8}; while(pads.length<at+6) gen(); cur=(cur+1)%n; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
+    pop.v={txt:Math.hypot(dx,dz)<12?'정확해!':'착지!',t:0,d:.8}; while(pads.length<at+6) gen(); cur=nxt(cur); phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
   let frogPos=null;
   function step(dt){ t+=dt; cam+=((pads[at].z-0)-cam)*Math.min(1,dt*2.5);
     if(phase==='charge'){ pw=Math.min(1.15,pw+dt*.55); }
