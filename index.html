@@ -60,6 +60,7 @@ button{cursor:pointer}
 .tabs{display:flex;gap:8px;flex:none}
 .tab{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);background:var(--card);color:var(--mute);font-weight:900;font-size:15px}
 .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.tab-lotto{color:#FFD447;border-color:#5A4A1E;background:#2A2410}
 .panel{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
 /* 12개 넘으면 옆으로 넘기는 페이지 */
 .pager{flex:1;min-height:0;display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
@@ -361,7 +362,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 
   <div class="tabs" role="tablist" aria-label="메뉴">
     <button class="tab" role="tab" id="tabGame" aria-selected="true" aria-controls="panelGame"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg>게임</button>
-    <button class="tab" role="tab" id="tabLotto" aria-selected="false" aria-controls="panelLotto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"></path><path d="M9 7v10" stroke-dasharray="2 2"></path></svg>복권</button>
+    <button class="tab tab-lotto" id="tabLotto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="9" r="4.5"></circle><circle cx="16" cy="9" r="4.5"></circle><circle cx="12" cy="16.5" r="4.5"></circle></svg>로또 추첨기</button>
   </div>
   <div class="panel" id="panelGame" role="tabpanel" aria-labelledby="tabGame">
   <div class="games" data-tab="game">
@@ -3337,8 +3338,8 @@ $$('#home .games').forEach(src=>{ const cards=[...src.children], PER=12, pages=M
     pager.addEventListener('scroll',()=>{ const k=Math.round(pager.scrollLeft/pager.clientWidth); [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===k)); },{passive:true}); }
 });
 function setTab(t){ const g=t==='game'; $('#tabGame').setAttribute('aria-selected',g); $('#tabLotto').setAttribute('aria-selected',!g); $('#panelGame').hidden=!g; $('#panelLotto').hidden=g; try{ localStorage.setItem('dokbakTab',t); }catch(e){} }
-$('#tabGame').onclick=()=>setTab('game'); $('#tabLotto').onclick=()=>setTab('lotto');
-try{ if(localStorage.getItem('dokbakTab')==='lotto') setTab('lotto'); }catch(e){}
+$('#tabGame').onclick=()=>setTab('game'); $('#tabLotto').onclick=()=>{ audio(); start('lotto'); };   // 로또 추첨기는 탭 대신 바로 열기
+setTab('game');
 load(); renderHome(); show('home');
 })();
 </script>
