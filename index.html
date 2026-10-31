@@ -102,6 +102,14 @@ button{cursor:pointer}
 .pbtn{margin-left:auto;height:40px;padding:0 12px;border-radius:12px;border:1px solid #2A4870;background:#172440;color:#6FD3FF;display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:14px;flex:none}
 #peopleSheet .sheet{max-height:92%;overflow-y:auto}
 
+/* 구석 차례 표시 (화면 가리지 않음) */
+.tchip{position:absolute;top:calc(74px + env(safe-area-inset-top,0px));left:16px;z-index:5;display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:14px;background:rgba(20,22,43,.88);border:1px solid var(--line);pointer-events:none}
+.tchip .tc-now{display:flex;align-items:center;gap:6px;font:400 20px Jua,sans-serif;color:var(--fg)}
+.tchip .tc-now i{width:12px;height:12px;border-radius:50%}
+.tchip .tc-next{font-size:12px;color:var(--mute)}
+.tchip.tcf{animation:tcflash .5s ease}
+@keyframes tcflash{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+#croc,#pirate{position:relative}
 /* 차례 팝업 */
 .turn-pop{position:fixed;inset:0;z-index:38;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,20,.55);animation:resfade .2s ease}
 .turn-pop[hidden]{display:none}
@@ -2438,6 +2446,9 @@ function startStack(){
 }
 
 /* ── 차례 팝업: 다음 사람 확인 후 진행 ── */
+function turnChip(sec,cur){ let el=sec.querySelector('.tchip'); if(!el){ el=document.createElement('div'); el.className='tchip'; el.setAttribute('aria-live','polite'); sec.appendChild(el); }
+  el.innerHTML='<div class="tc-now"><i style="background:'+PAL[cur][0]+'"></i>'+esc(nameOf(cur))+' 차례</div><div class="tc-next">다음 '+esc(nameOf(nxt(cur)))+'</div>';
+  el.classList.remove('tcf'); el.getBoundingClientRect(); el.classList.add('tcf'); }
 function turnPop(cur,go,sub){ const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=TFIRST?('순서 추첨 결과\n'+TORD.map(nameOf).join(' → ')+'\n\n먼저 시작해요'):(sub||'차례예요'); TFIRST=false;
   const d=$('#tpDot'); d.style.borderColor=PAL[cur][0]; d.style.background=PAL[cur][0]+'40'; el.hidden=false; beep(760,.06,'triangle',.05);
   $('#tpGo').onclick=()=>{ el.hidden=true; audio(); go(); }; }
@@ -3250,7 +3261,7 @@ function startCroc(){
   let pressed=0, done=false, timers=[];
   let ready=false, cur=TORD[0]; $('#crStart').hidden=true;
   const crLabel=()=>{ $('#crLeft').innerHTML='<b style="color:'+PAL[cur][0]+'">'+esc(nameOf(cur))+'</b> 차례 · 이빨 하나 누르기'; };
-  const crTurn=()=>turnPop(cur,()=>{ ready=true; crLabel(); },'이빨 누를 차례예요');
+  const crTurn=()=>{ ready=true; crLabel(); turnChip($('#croc'),cur); beep(760,.05,'triangle',.04); };
   top.classList.remove('bite'); bang.setAttribute('opacity','0'); $('#crSvg').classList.remove('chomp','shut');
   crLabel(); setTimeout(crTurn,0);
   let h='';
@@ -3286,7 +3297,7 @@ function startPirate(){
   let used=0, done=false, timers=[];
   let ready=false, cur=TORD[0]; $('#prStart').hidden=true;
   const prLabel=()=>{ $('#prLeft').innerHTML='<b style="color:'+PAL[cur][0]+'">'+esc(nameOf(cur))+'</b> 차례 · 칼 하나 꽂기'; };
-  const prTurn=()=>turnPop(cur,()=>{ ready=true; prLabel(); },'칼 꽂을 차례예요');
+  const prTurn=()=>{ ready=true; prLabel(); turnChip($('#pirate'),cur); beep(760,.05,'triangle',.04); };
   bang.setAttribute('opacity','0');
   man.classList.remove('pop'); svg.insertBefore(man, $('#prFront')); const ofx=$('#prFx'); if(ofx) ofx.remove();
   prLabel(); setTimeout(prTurn,0);
