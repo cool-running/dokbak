@@ -1003,7 +1003,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
     <div class="names" id="names"></div>
   </div>
 
-    <button class="btn" id="pApply">이대로 시작</button>
+    <div class="row2"><button class="btn ghost" id="pCancel">다른 게임</button><button class="btn" id="pApply">이대로 시작</button></div>
   </div>
 </div>
 
@@ -1078,14 +1078,16 @@ $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
 $$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='bomb') openMode(g); else if(g==='finger') start(g); else { S.game=g; S.fresh=true; openPeople(); } });   // 손가락 폭탄 빼고는 참가자 먼저
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
-function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
+function openPeople(){ renderHome(); $('#pCancel').textContent=S.fresh?'다른 게임':'닫기'; $('#peopleSheet').hidden=false; }
+function cancelPeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); S.fresh=false; }   // 처음 들어올 땐 홈에 그대로, 게임 중엔 시트만 닫기
 function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game);
   if(S.fresh&&!TURN.has(S.game)&&S.game!=='finger'){ const sec=$('#'+S.game), title=sec&&sec.querySelector('.top .disp')?sec.querySelector('.top .disp').textContent:''; startPop(title); }
   S.fresh=false; }
 function startPop(title){ const el=$('#turnPop'); $('#tpName').textContent=title; $('#tpSub').textContent='참가자 '+S.n+'명\n'+[...Array(S.n).keys()].map(nameOf).join(' · ');
   const d=$('#tpDot'); d.style.borderColor='#FFD447'; d.style.background='#FFD44740'; el.hidden=false; $('#tpGo').onclick=()=>{ el.hidden=true; audio(); }; }
 $('#pApply').onclick=closePeople;
-$('#peopleSheet').onclick=e=>{ if(e.target.id==='peopleSheet') closePeople(); };
+$('#pCancel').onclick=cancelPeople;
+$('#peopleSheet').onclick=e=>{ if(e.target.id==='peopleSheet') cancelPeople(); };
 $$('.pbtn').forEach(b=>b.onclick=openPeople);
 
 /* 참여 방식 시트 */
