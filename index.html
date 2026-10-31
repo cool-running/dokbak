@@ -1109,7 +1109,7 @@ $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=t
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
 // 차례 돌리기 게임: 인원·이름 먼저 확인하고, 매판 순서를 복불복으로 섞어요
-const TURN=new Set(['water','melon','hamster','penguin','honey','bell','frog']); let TORD=[0], TFIRST=false;
+const TURN=new Set(['water','melon','hamster','penguin','honey','bell','frog','croc','pirate']); let TORD=[0], TFIRST=false;
 const nxt=c=>{ const i=TORD.indexOf(c); return TORD[(i+1)%TORD.length]; };
 function start(g){ S.game=g; if(TURN.has(g)){ const a=[...Array(S.n).keys()]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } TORD=a; TFIRST=true; } ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand, hamster:startHamster, penguin:startPenguin, honey:startHoney, bell:startBell, frog:startFrog})[g](); }
 
@@ -3248,9 +3248,11 @@ function startCroc(){
   show('croc');
   const N=12, trap=Math.floor(Math.random()*N), top=$('#crTop'), box=$('#crTeeth'), bang=$('#crBang');
   let pressed=0, done=false, timers=[];
-  let ready=false; $('#crStart').hidden=false; $('#crStart').onclick=()=>{ audio(); ready=true; $('#crStart').hidden=true; beep(660,.08,'triangle',.08); $('#crLeft').textContent='돌아가며 이빨을 하나씩 눌러요'; };
+  let ready=false, cur=TORD[0]; $('#crStart').hidden=true;
+  const crLabel=()=>{ $('#crLeft').innerHTML='<b style="color:'+PAL[cur][0]+'">'+esc(nameOf(cur))+'</b> 차례 · 이빨 하나 누르기'; };
+  const crTurn=()=>turnPop(cur,()=>{ ready=true; crLabel(); },'이빨 누를 차례예요');
   top.classList.remove('bite'); bang.setAttribute('opacity','0'); $('#crSvg').classList.remove('chomp','shut');
-  $('#crLeft').textContent='폰을 돌려가며 한 사람씩 이빨을 눌러요';
+  crLabel(); setTimeout(crTurn,0);
   let h='';
   // 입 안쪽 가장자리를 따라 왼쪽 4 · 아래 4 · 오른쪽 4
   const POS=[[76,250],[76,286],[82,320],[96,350],[124,370],[160,378],[200,378],[236,370],[264,350],[278,320],[284,286],[284,250]];
@@ -3266,12 +3268,12 @@ function startCroc(){
     if(k===trap){
       done=true; top.classList.add('bite'); setTimeout(()=>$('#crSvg').classList.add('shut'),140);
       timers.push(setTimeout(()=>{ sChomp(); buzz([250,60,120]); bang.setAttribute('opacity','1'); const sv=$('#crSvg'); sv.classList.remove('chomp'); sv.getBoundingClientRect(); sv.classList.add('chomp'); },150));
-      timers.push(setTimeout(()=>result({name:'걸린 사람', color:'#22B048', sub:'악어에게 물렸어요!', n:S.n, table:mkTable(['기록','값'],[{cells:['물린 이빨',(pressed+1)+'번째'],lose:true},{cells:['무사히 누른 이빨',pressed+'개']},{cells:['남은 이빨',(N-pressed-1)+'개']}])}),1600));
+      timers.push(setTimeout(()=>result({name:nameOf(cur), color:PAL[cur][0], sub:'악어에게 물렸어요! ('+(pressed+1)+'번째 이빨)', n:S.n, table:mkTable(['기록','값'],[{cells:['물린 이빨',(pressed+1)+'번째'],lose:true},{cells:['무사히 누른 이빨',pressed+'개']},{cells:['남은 이빨',(N-pressed-1)+'개']}])}),1600));
       return;
     }
     t.classList.add('down');
     pressed++; sToothClick(); buzz(15);
-    $('#crLeft').textContent='남은 이빨 '+(N-pressed)+'개 · 다음 사람에게';
+    ready=false; $('#crLeft').textContent='휴~ 남은 이빨 '+(N-pressed)+'개'; cur=nxt(cur); timers.push(setTimeout(crTurn,600));
   }));
   cleanup=()=>timers.forEach(clearTimeout);
 }
@@ -3282,10 +3284,12 @@ function startPirate(){
   const svg=$('#prSvg'), man=$('#prMan'), box=$('#prSlots'), bang=$('#prBang');
   const rows=[238,308,378,448], N=20, trap=Math.floor(Math.random()*N);
   let used=0, done=false, timers=[];
-  let ready=false; $('#prStart').hidden=false; $('#prStart').onclick=()=>{ audio(); ready=true; $('#prStart').hidden=true; beep(660,.08,'triangle',.08); $('#prLeft').textContent='돌아가며 칼을 하나씩 꽂아요'; };
+  let ready=false, cur=TORD[0]; $('#prStart').hidden=true;
+  const prLabel=()=>{ $('#prLeft').innerHTML='<b style="color:'+PAL[cur][0]+'">'+esc(nameOf(cur))+'</b> 차례 · 칼 하나 꽂기'; };
+  const prTurn=()=>turnPop(cur,()=>{ ready=true; prLabel(); },'칼 꽂을 차례예요');
   bang.setAttribute('opacity','0');
   man.classList.remove('pop'); svg.insertBefore(man, $('#prFront')); const ofx=$('#prFx'); if(ofx) ofx.remove();
-  $('#prLeft').textContent='폰을 돌려가며 한 사람씩 칼을 꽂아요';
+  prLabel(); setTimeout(prTurn,0);
   let h='';
   rows.forEach((y0,ri)=>{ const half=[96,108,110,104][ri]; for(let c=0;c<5;c++){ const x=Math.round(180-half+c*(half/2)), y=Math.round(y0+15*(1-Math.pow((x-180)/118,2)));
     h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*5+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-5)+'" y="'+(y-13)+'" width="10" height="26" rx="5" fill="#0F0905" stroke="#C08A55" stroke-width="1.5"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
@@ -3308,11 +3312,11 @@ function startPirate(){
         fx+= star ? '<polygon class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px;animation-delay:'+(q*30)+'ms" points="'+[0,1,2,3,4,5,6,7,8,9].map(m=>{ const r=m%2?6:14, an=m*Math.PI/5-Math.PI/2; return (cx+r*Math.cos(an)).toFixed(1)+','+(212+r*Math.sin(an)).toFixed(1); }).join(' ')+'" fill="#FFD447" stroke="#0B0C18" stroke-width="2"></polygon>'
                    : '<circle class="pfx" style="--dx:'+dx+'px;--dy:'+dy+'px" cx="'+cx.toFixed(1)+'" cy="212" r="'+(10+Math.random()*10).toFixed(1)+'" fill="#C9C3B8" opacity=".9"></circle>'; }
       const fxg=document.createElementNS('http://www.w3.org/2000/svg','g'); fxg.id='prFx'; fxg.innerHTML=fx; svg.appendChild(fxg);
-      timers.push(setTimeout(()=>result({name:'걸린 사람', color:'#D7261E', sub:'해적이 날아갔어요!', n:S.n, table:mkTable(['기록','값'],[{cells:['튀어나온 칼',(used+1)+'번째'],lose:true},{cells:['무사히 꽂은 칼',used+'개']},{cells:['남은 구멍',(N-used-1)+'개']}])}),1700));
+      timers.push(setTimeout(()=>result({name:nameOf(cur), color:PAL[cur][0], sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n, table:mkTable(['기록','값'],[{cells:['튀어나온 칼',(used+1)+'번째'],lose:true},{cells:['무사히 꽂은 칼',used+'개']},{cells:['남은 구멍',(N-used-1)+'개']}])}),1700));
       return;
     }
     used++; sThunk(); buzz(20);
-    $('#prLeft').textContent='남은 구멍 '+(N-used)+'개 · 다음 사람에게';
+    ready=false; $('#prLeft').textContent='휴~ 남은 구멍 '+(N-used)+'개'; cur=nxt(cur); timers.push(setTimeout(prTurn,600));
   }));
   cleanup=()=>timers.forEach(clearTimeout);
 }
