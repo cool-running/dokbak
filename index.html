@@ -194,7 +194,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 #wtBtn{touch-action:none}
 .screen.fixed input,.screen.fixed textarea{-webkit-user-select:text;user-select:text}
 #penguin .sp-board,#water .sp-board,#melon .sp-board,#hamster .sp-board,#honey .sp-board,#bell .sp-board,#frog .sp-board{display:none!important}
-#water .sp-board,#melon .sp-board,#sand .sp-board,#hamster .sp-board,#penguin .sp-board,#honey .sp-board,#bell .sp-board,#frog .sp-board{height:auto;max-height:15%}
+#stack .sp-board,#water .sp-board,#melon .sp-board,#sand .sp-board,#hamster .sp-board,#penguin .sp-board,#honey .sp-board,#bell .sp-board,#frog .sp-board{height:auto;max-height:15%}
 .ml-btns{display:flex;gap:10px;flex:none}.ml-btns .btn{flex:1;height:58px;font-size:22px}
 /* 볼링 탭 UI */
 #bowling .sp-board{height:auto;max-height:55vh}
@@ -729,7 +729,8 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
   <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="탑 쌓기 판"></canvas></div>
   <div class="sc-wrap sp-board"></div>
-  <div class="mute sp-hint" style="text-align:center;font-size:13px;flex:none">움직이는 블록을 타이밍 맞춰 탭!</div>
+  <button class="btn bw-tap" id="stBtn">멈춤!</button>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">움직이는 블록이 아래 블록과 겹칠 때 멈춤!</div>
 </section>
 
 <!-- 병뚜껑 튕기기 -->
@@ -738,7 +739,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
   <div class="turn sp-turn"><span class="dot"></span><b>1번</b><span class="mute sp-info">차례</span></div>
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="병뚜껑 튕기기 판"></canvas></div>
   <div class="sc-wrap sp-board"></div>
-  <div class="mute sp-hint" style="text-align:center;font-size:13px;flex:none">위로 휙 튕겨서 흰 라인에 가장 가깝게! · 앞사람 뚜껑은 그림자라 안 부딪혀요</div>
+  <div class="mute sp-hint" hidden></div>
 </section>
 
 <!-- 물컵 넘치기 -->
@@ -1075,10 +1076,14 @@ function renderHome(){
 }
 $('#minus').onclick=()=>{ if(S.n>MINN){ S.n--; save(); renderHome(); } };
 $('#plus').onclick=()=>{ if(S.n<MAXN){ S.n++; save(); renderHome(); } };
-$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='ladder'||g==='bomb') openMode(g); else if(TURN.has(g)){ S.game=g; openPeople(); } else start(g); });
+$$('.game').forEach(b=>b.onclick=()=>{ audio(); const g=b.dataset.game; if(g==='bomb') openMode(g); else if(g==='finger') start(g); else { S.game=g; S.fresh=true; openPeople(); } });   // 손가락 폭탄 빼고는 참가자 먼저
 /* 참가자 시트: 게임 안에서 인원·이름 정하기 */
 function openPeople(){ renderHome(); $('#peopleSheet').hidden=false; }
-function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game); }
+function closePeople(){ $('#peopleSheet').hidden=true; save(); renderHome(); start(S.game);
+  if(S.fresh&&!TURN.has(S.game)&&S.game!=='finger'){ const sec=$('#'+S.game), title=sec&&sec.querySelector('.top .disp')?sec.querySelector('.top .disp').textContent:''; startPop(title); }
+  S.fresh=false; }
+function startPop(title){ const el=$('#turnPop'); $('#tpName').textContent=title; $('#tpSub').textContent='참가자 '+S.n+'명\n'+[...Array(S.n).keys()].map(nameOf).join(' · ');
+  const d=$('#tpDot'); d.style.borderColor='#FFD447'; d.style.background='#FFD44740'; el.hidden=false; $('#tpGo').onclick=()=>{ el.hidden=true; audio(); }; }
 $('#pApply').onclick=closePeople;
 $('#peopleSheet').onclick=e=>{ if(e.target.id==='peopleSheet') closePeople(); };
 $$('.pbtn').forEach(b=>b.onclick=openPeople);
@@ -2413,6 +2418,7 @@ function startStack(){
     buzz(15); tower.push({x,w}); if(yOf(tower.length)<200) cam+=BH; newMover(); }
   function endRun(){ const h=tower.length-1; pop={txt:h+'층!',t:0}; const r=T.record(h);
     setTimeout(()=>{ if(r==='done'){ phase='done'; T.finish((L,t)=>t+'층에서 멈췄어요 · 가장 낮아요'); return; } if(r==='tie') pop={txt:'동점! 한 판 더',t:0}; chips=[]; reset(); },1500); }
+  const stBtn=$('#stBtn'); stBtn.onpointerdown=e=>{ e.preventDefault(); tapIt(); }; stBtn.oncontextmenu=e=>e.preventDefault();
   cv.onpointerdown=e=>{ e.preventDefault(); tapIt(); };
   function step(dt){ if(phase==='play'){ mover.x+=mover.dir*mover.sp*dt; if(mover.x>W-mover.w*.2&&mover.dir>0) mover.dir=-1; if(mover.x<-mover.w*.8&&mover.dir<0) mover.dir=1; }
     for(const c of chips){ c.vy+=1200*dt; c.y+=c.vy*dt; c.r+=dt*2; } chips=chips.filter(c=>c.y<H+60); }
@@ -2426,7 +2432,7 @@ function startStack(){
     if(pop){ pop.t+=dt; const al=Math.max(0,1-pop.t/1.2); ctx.save(); ctx.globalAlpha=al; ctx.font='30px Jua, sans-serif'; ctx.lineWidth=6; ctx.strokeStyle='#14162B'; ctx.fillStyle='#FFFFFF'; ctx.strokeText(pop.txt,180,110-pop.t*20); ctx.fillText(pop.txt,180,110-pop.t*20); ctx.restore(); if(pop.t>1.2) pop=null; } }
   reset(); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
   const stop=spLoop(dt=>{ step(dt); draw(dt); });
-  cleanup=()=>{ stop(); cv.onpointerdown=null; window.removeEventListener('resize',onR); };
+  cleanup=()=>{ stop(); cv.onpointerdown=null; stBtn.onpointerdown=null; window.removeEventListener('resize',onR); };
 }
 
 /* ── 차례 팝업: 다음 사람 확인 후 진행 ── */
