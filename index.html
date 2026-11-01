@@ -834,7 +834,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
   <div class="mb-wrap sp-wrap"><canvas class="sp-cv" aria-label="고양이 방울 달기"></canvas></div>
   <div class="sc-wrap sp-board"></div>
   
-  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">방울을 손가락으로 살살 끌어 노란 선까지 · 빠르면 딸랑! · 4.5초 안에</div>
+  <div class="mute sp-hint" style="text-align:center;font-size:12px;flex:none">방울을 살살 끌어 노란 선까지 · 빠르면 딸랑! · 방울을 잡으면 4.5초 시작</div>
 </section>
 
 <section class="screen fixed" id="frog" hidden>
@@ -2487,7 +2487,7 @@ function turnChip(sec,cur,extra){ let el=sec.querySelector('.tchip'); if(!el){ e
   el.innerHTML='<div class="tc-now"><i style="background:'+PAL[cur][0]+'"></i>'+esc(nameOf(cur))+' 차례</div><div class="tc-next">다음 '+esc(nameOf(nxt(cur)))+(extra?' · '+extra:'')+'</div>';
   el.classList.remove('tcf'); el.getBoundingClientRect(); el.classList.add('tcf'); }
 function turnPop(cur,go,sub){
-  if(!TFIRST&&S.game==='penguin'){ go(); callout(nameOf(cur)+' 차례!',PAL[cur][0]); buzz([60,40,60]); beep(660,.07,'triangle',.07); setTimeout(()=>beep(990,.09,'triangle',.07),90); return; }   // 첫 순서 안내만 팝업, 그 뒤 차례는 끊기지 않게 알림만
+  if(!TFIRST){ go(); callout(nameOf(cur)+' 차례!',PAL[cur][0]); buzz([60,40,60]); beep(660,.07,'triangle',.07); setTimeout(()=>beep(990,.09,'triangle',.07),90); return; }   // 첫 순서 안내만 팝업, 그 뒤 차례는 끊기지 않게 알림만
   const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=TFIRST?('순서 추첨 결과\n'+TORD.map(nameOf).join(' → ')+'\n\n먼저 시작해요'):(sub||'차례예요'); TFIRST=false;
   const d=$('#tpDot'); d.style.borderColor=PAL[cur][0]; d.style.background=PAL[cur][0]+'40'; el.hidden=false; beep(760,.06,'triangle',.05);
   $('#tpGo').onclick=()=>{ el.hidden=true; audio(); go(); }; }
@@ -2914,10 +2914,10 @@ function startBell(){
   show('bell');
   const W=360, H=480, {cv,ctx,fit,toXY}=spCanvas('bell',W,H), sec=$('#bell'), n=S.n;
   const COLLAR={x:180,y:178}, START={x:180,y:440}, SEG=4, LIMIT=4.5;
-  let cur=TORD[0], bell={...START}, seg=0, drag=false, last=null, noise=0, t=0, turnT=LIMIT, phase='wait', wakeAt=.45+Math.random()*.35, round=0, per=Array(n).fill(0), pop={v:null}, ringT=0, stir=0, catOpen=0;
+  let touched=false, cur=TORD[0], bell={...START}, seg=0, drag=false, last=null, noise=0, t=0, turnT=LIMIT, phase='wait', wakeAt=.45+Math.random()*.35, round=0, per=Array(n).fill(0), pop={v:null}, ringT=0, stir=0, catOpen=0;
   const goalY=k=>START.y-(START.y-COLLAR.y)*(k/SEG);
   function paint(){ tgTurn(sec,cur,(seg+1)+'/'+SEG+' 구간 · '+Math.ceil(turnT)+'초'); sec.querySelector('.sp-board').innerHTML=mkTable(['이름','옮긴 구간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'구간'],color:PAL[i][0]}))); }
-  cv.onpointerdown=e=>{ if(phase!=='play') return; audio(); const [x,y]=toXY(e); if(Math.hypot(x-bell.x,y-bell.y)<46){ drag=true; last={x,y,tm:performance.now()}; try{ cv.setPointerCapture(e.pointerId); }catch(_){} } };
+  cv.onpointerdown=e=>{ if(phase!=='play') return; audio(); const [x,y]=toXY(e); if(Math.hypot(x-bell.x,y-bell.y)<46){ drag=true; touched=true; last={x,y,tm:performance.now()}; try{ cv.setPointerCapture(e.pointerId); }catch(_){} } };
   cv.onpointermove=e=>{ if(!drag||phase!=='play') return; const [x,y]=toXY(e), now=performance.now(), dtm=Math.max(8,now-last.tm)/1000;
     const nx=Math.max(40,Math.min(320,x)), ny=Math.max(goalY(seg+1)-4,Math.min(START.y+10,y)); const sp=Math.hypot(nx-bell.x,ny-bell.y)/dtm; bell.x=nx; bell.y=ny; last={x,y,tm:now};
     if(sp>85){ noise+=(sp-85)*dtm/160; ringT=.25; jingle(Math.min(1,(sp-85)/400)); }
@@ -2925,14 +2925,14 @@ function startBell(){
   cv.onpointerup=cv.onpointercancel=()=>{ drag=false; };
   cv.addEventListener('contextmenu',e=>e.preventDefault());
   let lastJ=0; function jingle(v){ const now=performance.now(); if(now-lastJ<70) return; lastJ=now; const a=audio(); if(!a) return; tone(a,2400+Math.random()*400,2200,.08,'sine',.05+v*.15); tone(a,3600,3300,.06,'sine',.03+v*.08); }
-  function reach(){ per[cur]++; seg++; drag=false; beep(880,.06,'triangle',.06); noise+=.04+Math.random()*.06; ringT=.3; jingle(.5);
+  function reach(){ per[cur]++; seg++; drag=false; touched=false; beep(880,.06,'triangle',.06); noise+=.04+Math.random()*.06; ringT=.3; jingle(.5);
     if(seg>=SEG){ phase='hang'; fanfare(); pop.v={txt:'방울 달기 성공! 🔔',t:0,d:1.6}; setTimeout(()=>{ round++; seg=0; bell={...START}; noise=Math.max(0,noise-.15); wakeAt=Math.max(.25,wakeAt-.08-Math.random()*.06); cur=nxt(cur); turnT=LIMIT; phase='wait'; paint(); turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }); },1600); return; }
     pop.v={txt:'휴~ 다음 사람',t:0,d:.8}; cur=nxt(cur); turnT=LIMIT; phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='play'; turnT=LIMIT; paint(); }),600); }
   function wake(why){ phase='over'; drag=false; catOpen=1; const a=audio(); if(a){ tone(a,600,1300,.3,'sawtooth',.12); noiseBurst(a,.3,'bandpass',1500,1,.4); }
     pop.v={txt:why,t:0,d:1.8,c:'#FF5C7A'}; tgLose(sec,cur,'옮긴 구간',i=>per[i]+'구간','고양이가 깼어요 😾'); }
   function step(dt){ t+=dt; ringT=Math.max(0,ringT-dt); if(phase!=='play') return;
     noise=Math.max(0,noise-dt*.015); stir=noise/wakeAt;
-    turnT-=dt; if(Math.floor(turnT+dt)!==Math.floor(turnT)) paint(); if(turnT<=0) return wake('시간 초과! 고양이 기지개…');
+    if(touched){ turnT-=dt; if(Math.floor(turnT+dt)!==Math.floor(turnT)) paint(); } if(turnT<=0) return wake('시간 초과! 고양이 기지개…');
     if(noise>=wakeAt) return wake('딸랑! 깨버렸다');
     if(Math.random()<dt*.25*stir) { noise+=.05; pop.v={txt:'움찔…',t:0,d:.7}; } }
   function draw(dt){
