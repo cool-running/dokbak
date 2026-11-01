@@ -111,11 +111,19 @@ button{cursor:pointer}
 @keyframes tcflash{0%{transform:scale(1.18)}100%{transform:scale(1)}}
 #crLeft,#prLeft,#crStart,#prStart,#blBoard{display:none!important}
 #blTurn.tcf{animation:tcflash .5s ease}
+#blPass.bl-short{opacity:.6}
+#balloon{position:relative}
+.bl-min{position:absolute;right:16px;top:calc(140px + env(safe-area-inset-top,0px));z-index:3;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.bl-min svg{width:56px;height:56px}
+.bl-min span{font:700 12px "Noto Sans KR",sans-serif;color:var(--mute)}
+.bl-min.ok span{color:#7CE38B}
+#blPass.bl-nope{animation:blnope .35s ease}
+@keyframes blnope{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 #croc .play-wrap,#pirate .play-wrap{margin:0 -8px auto;flex:0 1 auto;min-height:0}   /* 남는 공간을 위·가운데·아래로 고르게 */
 #croc .play-wrap svg,#pirate .play-wrap svg{height:auto;max-height:100%}
 #croc .tchip,#pirate .tchip{margin:auto 0}   /* 제목과 그림 사이 가운데 */
 /* 화면 가운데 잠깐 뜨는 알림 (터치 막지 않음) */
-.callout{position:fixed;left:0;right:0;top:38%;z-index:45;text-align:center;font:400 44px Jua,sans-serif;-webkit-text-stroke:2px #14162B;paint-order:stroke;text-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;animation:callout 1.2s ease forwards}
+.callout{position:fixed;left:0;right:0;top:36%;z-index:45;padding:0 16px;white-space:pre-line;line-height:1.15;text-align:center;font:400 40px Jua,sans-serif;-webkit-text-stroke:2px #14162B;paint-order:stroke;text-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;animation:callout 1.2s ease forwards}
 @keyframes callout{0%{transform:scale(.5);opacity:0}15%{transform:scale(1.15);opacity:1}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 /* 차례 팝업 */
 .turn-pop{position:fixed;inset:0;z-index:38;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,20,.55);animation:resfade .2s ease}
@@ -624,6 +632,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 <section class="screen fixed" id="balloon" hidden>
   <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">풍선 불기</div><button class="pbtn" aria-label="참가자 설정"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"></path></svg><span class="pn">4명</span></button></div>
   <div class="turn" id="blTurn"><span class="dot"></span><b>1번</b><span class="mute" id="blInfo">차례 · 한 번 이상 펌프</span></div>
+  <div class="bl-min" id="blMin" aria-label="최소 불기"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="6"></circle><circle id="blMinArc" cx="22" cy="22" r="18" fill="none" stroke="#FF9F1C" stroke-width="6" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)"></circle></svg><span id="blMinTxt">최소</span></div>
   <div class="bl-stage" id="blStage">
     <svg viewBox="0 0 300 380" aria-hidden="true">
       <defs><radialGradient id="gBal" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#FF9AA8"></stop><stop offset=".55" stop-color="#FF4D63"></stop><stop offset="1" stop-color="#B8162E"></stop></radialGradient></defs>
@@ -1444,7 +1453,7 @@ function startBalloon(){
   const sec=v=>v.toFixed(1)+'초';
   const table=lose=>mkTable(['이름','분 시간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),sec(per[i])],lose:i===lose,color:PAL[i][0]})));
   function paint(){ body.style.transform='scale('+size()+')'; $('#blTurn .dot').style.background=PAL[cur][0]; $('#blTurn b').textContent=nameOf(cur);
-    $('#blInfo').textContent='차례 · 다음 '+nameOf(nxt(cur)); $('#blPass').disabled=mine<.3||done||holding; btn.disabled=done;
+    $('#blInfo').textContent='차례 · 다음 '+nameOf(nxt(cur)); const MIN=.5, ok=mine>=MIN; $('#blMinArc').setAttribute('stroke-dashoffset',(113.1*(1-Math.min(1,mine/MIN))).toFixed(1)); $('#blMinArc').setAttribute('stroke',ok?'#7CE38B':'#FF9F1C'); $('#blMin').classList.toggle('ok',ok); $('#blMinTxt').textContent=ok?'통과 OK':'최소 불기'; $('#blPass').disabled=done||holding; $('#blPass').textContent=ok?'다음 사람 ▶':'더 불어야 넘겨요'; $('#blPass').classList.toggle('bl-short',!ok); btn.disabled=done;
     body.classList.toggle('bl-wob', air>limit*.65); $('#blBoard').innerHTML=table(); }
   function hissOn(){ const a=audio(); if(!a||hiss) return; const len=a.sampleRate*2, buf=a.createBuffer(1,len,a.sampleRate), ch=buf.getChannelData(0); for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
     const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); src.buffer=buf; src.loop=true; f.type='bandpass'; f.Q.value=1.2; f.frequency.value=700; g.gain.setValueAtTime(0,a.currentTime); g.gain.linearRampToValueAtTime(.28,a.currentTime+.08);
@@ -1469,7 +1478,8 @@ function startBalloon(){
   const up=()=>{ if(!holding) return; holding=false; hissOff(); handle.style.transform=''; paint(); };
   btn.onclick=null; btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('lostpointercapture',up);
   btn.oncontextmenu=e=>e.preventDefault();
-  $('#blPass').onclick=()=>{ if(mine<.3||done) return; cur=nxt(cur); mine=0; paint();
+  $('#blPass').onclick=()=>{ if(done) return;
+    if(mine<.5){ buzz([40,40,40]); beep(220,.12,'square',.05); callout(mine>0?'불기 미달!\n조금만 더 불어요':'아직 안 불었어요!\n펌프를 꾹 눌러요','#FF9F1C'); const pb=$('#blPass'); pb.classList.remove('bl-nope'); pb.getBoundingClientRect(); pb.classList.add('bl-nope'); return; } cur=nxt(cur); mine=0; paint();
     // 다음 사람이 확실히 알도록: 진동 + 소리 + 차례 표시 반짝 + 가운데 알림
     buzz([70,50,70]); beep(660,.07,'triangle',.07); setTimeout(()=>beep(990,.09,'triangle',.07),90);
     const tb=$('#blTurn'); tb.style.boxShadow='0 0 0 3px '+PAL[cur][0]; tb.classList.remove('tcf'); tb.getBoundingClientRect(); tb.classList.add('tcf'); setTimeout(()=>tb.style.boxShadow='',900);
