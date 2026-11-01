@@ -2486,7 +2486,9 @@ function callout(txt,col){ const el=document.createElement('div'); el.className=
 function turnChip(sec,cur,extra){ let el=sec.querySelector('.tchip'); if(!el){ el=document.createElement('div'); el.className='tchip'; el.setAttribute('aria-live','polite'); const pw=sec.querySelector('.play-wrap'); pw?sec.insertBefore(el,pw):sec.appendChild(el); }
   el.innerHTML='<div class="tc-now"><i style="background:'+PAL[cur][0]+'"></i>'+esc(nameOf(cur))+' 차례</div><div class="tc-next">다음 '+esc(nameOf(nxt(cur)))+(extra?' · '+extra:'')+'</div>';
   el.classList.remove('tcf'); el.getBoundingClientRect(); el.classList.add('tcf'); }
-function turnPop(cur,go,sub){ const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=TFIRST?('순서 추첨 결과\n'+TORD.map(nameOf).join(' → ')+'\n\n먼저 시작해요'):(sub||'차례예요'); TFIRST=false;
+function turnPop(cur,go,sub){
+  if(!TFIRST&&S.game==='penguin'){ go(); callout(nameOf(cur)+' 차례!',PAL[cur][0]); buzz([60,40,60]); beep(660,.07,'triangle',.07); setTimeout(()=>beep(990,.09,'triangle',.07),90); return; }   // 첫 순서 안내만 팝업, 그 뒤 차례는 끊기지 않게 알림만
+  const el=$('#turnPop'); $('#tpName').textContent=nameOf(cur); $('#tpSub').textContent=TFIRST?('순서 추첨 결과\n'+TORD.map(nameOf).join(' → ')+'\n\n먼저 시작해요'):(sub||'차례예요'); TFIRST=false;
   const d=$('#tpDot'); d.style.borderColor=PAL[cur][0]; d.style.background=PAL[cur][0]+'40'; el.hidden=false; beep(760,.06,'triangle',.05);
   $('#tpGo').onclick=()=>{ el.hidden=true; audio(); go(); }; }
 /* ── 차례 돌리기 공용 (물컵·수박·모래성) ── */
