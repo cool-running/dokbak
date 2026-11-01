@@ -109,10 +109,14 @@ button{cursor:pointer}
 .tchip .tc-next{font-size:13px;color:var(--mute)}
 .tchip.tcf{animation:tcflash .5s ease}
 @keyframes tcflash{0%{transform:scale(1.18)}100%{transform:scale(1)}}
-#crLeft,#prLeft,#crStart,#prStart{display:none!important}
+#crLeft,#prLeft,#crStart,#prStart,#blBoard{display:none!important}
+#blTurn.tcf{animation:tcflash .5s ease}
 #croc .play-wrap,#pirate .play-wrap{margin:0 -8px auto;flex:0 1 auto;min-height:0}   /* 남는 공간을 위·가운데·아래로 고르게 */
 #croc .play-wrap svg,#pirate .play-wrap svg{height:auto;max-height:100%}
 #croc .tchip,#pirate .tchip{margin:auto 0}   /* 제목과 그림 사이 가운데 */
+/* 화면 가운데 잠깐 뜨는 알림 (터치 막지 않음) */
+.callout{position:fixed;left:0;right:0;top:38%;z-index:45;text-align:center;font:400 44px Jua,sans-serif;-webkit-text-stroke:2px #14162B;paint-order:stroke;text-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;animation:callout 1.2s ease forwards}
+@keyframes callout{0%{transform:scale(.5);opacity:0}15%{transform:scale(1.15);opacity:1}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 /* 차례 팝업 */
 .turn-pop{position:fixed;inset:0;z-index:38;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,20,.55);animation:resfade .2s ease}
 .turn-pop[hidden]{display:none}
@@ -1120,7 +1124,7 @@ $('#setSheet').onclick=e=>{ if(e.target.id==='setSheet') $('#setSheet').hidden=t
 $$('.back').forEach(b=>b.onclick=()=>{ show('home'); renderHome(); });
 
 // 차례 돌리기 게임: 인원·이름 먼저 확인하고, 매판 순서를 복불복으로 섞어요
-const TURN=new Set(['water','melon','hamster','penguin','honey','bell','frog','croc','pirate']); let TORD=[0], TFIRST=false;
+const TURN=new Set(['water','melon','hamster','penguin','honey','bell','frog','croc','pirate','balloon']); let TORD=[0], TFIRST=false;
 const nxt=c=>{ const i=TORD.indexOf(c); return TORD[(i+1)%TORD.length]; };
 function start(g){ S.game=g; if(TURN.has(g)){ const a=[...Array(S.n).keys()]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } TORD=a; TFIRST=true; } ({finger:startFinger, wheel:startWheel, ladder:startLadder, bomb:startBomb, croc:startCroc, pirate:startPirate, marble:startMarble, archery:startArchery, dice:startDice, timer:startTimer, balloon:startBalloon, updown:startUpdown, lotto:startLotto, bowling:startBowling, curling:startCurling, pong:startPong, jenga:startJenga, stack:startStack, cap:startCap, water:startWater, melon:startMelon, sand:startSand, hamster:startHamster, penguin:startPenguin, honey:startHoney, bell:startBell, frog:startFrog})[g](); }
 
@@ -1282,7 +1286,11 @@ function startWheel(){
         if(Math.abs(vel)<.55){ vel=-vel*.35; wRot+=vel*dt*2; } else vel-=Math.sign(vel)*.05;
       }
       lastSeg=segAt(wRot);
-      if(Math.abs(vel)<.02){ stillT+=dt; if(stillT>.35 && !done) finish(); } else stillT=0;
+      if(Math.abs(vel)<.02){ stillT+=dt;
+        if(stillT>.25 && !done){   // 경계선에 걸치면 판정 시비가 생기니, 한 칸 안쪽으로 살짝 밀어 넣고 판정
+          const pos=(((-wRot)%TAU)+TAU)%TAU, w=pos%A, edge=Math.min(w,A-w), M=Math.min(.14,A*.22);
+          if(edge<M){ vel=(w<A/2?-1:1)*(.22+(M-edge)*2.2); stillT=0; } else if(stillT>.35) finish(); } }
+      else stillT=0;
     }
     // 화살표 스프링
     deflV+=(-90*defl-9*deflV)*dt; defl+=deflV*dt;
@@ -1428,7 +1436,7 @@ function startBalloon(){
   show('balloon');
   // 펌프 버튼을 꾹 누르고 있는 동안 바람이 들어감. 손을 떼면 멈춤.
   const n=S.n, limit=4+Math.random()*12, per=Array(n).fill(0), RATE=1;
-  let cur=0, air=0, mine=0, done=false, holding=false, raf=0, last=0, hiss=null, creakT=0, stroke=0;
+  let cur=TORD[0], air=0, mine=0, done=false, holding=false, raf=0, last=0, hiss=null, creakT=0, stroke=0;
   const body=$('#blBody'), bits=$('#blBits'), handle=$('#blHandle'), btn=$('#blPump');
   body.style.display=''; $('#blString').style.display=''; bits.innerHTML=''; body.classList.remove('bl-wob');
   btn.textContent='꾹 눌러서 불기'; btn.style.touchAction='none'; btn.style.userSelect='none'; btn.style.webkitUserSelect='none';
@@ -1436,7 +1444,7 @@ function startBalloon(){
   const sec=v=>v.toFixed(1)+'초';
   const table=lose=>mkTable(['이름','분 시간'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),sec(per[i])],lose:i===lose,color:PAL[i][0]})));
   function paint(){ body.style.transform='scale('+size()+')'; $('#blTurn .dot').style.background=PAL[cur][0]; $('#blTurn b').textContent=nameOf(cur);
-    $('#blInfo').textContent= mine>0?('차례 · 이번에 '+sec(mine)):'차례 · 펌프를 꾹 눌러요'; $('#blPass').disabled=mine<.3||done||holding; btn.disabled=done;
+    $('#blInfo').textContent='차례 · 다음 '+nameOf(nxt(cur)); $('#blPass').disabled=mine<.3||done||holding; btn.disabled=done;
     body.classList.toggle('bl-wob', air>limit*.65); $('#blBoard').innerHTML=table(); }
   function hissOn(){ const a=audio(); if(!a||hiss) return; const len=a.sampleRate*2, buf=a.createBuffer(1,len,a.sampleRate), ch=buf.getChannelData(0); for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
     const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); src.buffer=buf; src.loop=true; f.type='bandpass'; f.Q.value=1.2; f.frequency.value=700; g.gain.setValueAtTime(0,a.currentTime); g.gain.linearRampToValueAtTime(.28,a.currentTime+.08);
@@ -1461,7 +1469,11 @@ function startBalloon(){
   const up=()=>{ if(!holding) return; holding=false; hissOff(); handle.style.transform=''; paint(); };
   btn.onclick=null; btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('lostpointercapture',up);
   btn.oncontextmenu=e=>e.preventDefault();
-  $('#blPass').onclick=()=>{ if(mine<.3||done) return; cur=(cur+1)%n; mine=0; beep(600,.06,'triangle',.06); paint(); };
+  $('#blPass').onclick=()=>{ if(mine<.3||done) return; cur=nxt(cur); mine=0; paint();
+    // 다음 사람이 확실히 알도록: 진동 + 소리 + 차례 표시 반짝 + 가운데 알림
+    buzz([70,50,70]); beep(660,.07,'triangle',.07); setTimeout(()=>beep(990,.09,'triangle',.07),90);
+    const tb=$('#blTurn'); tb.style.boxShadow='0 0 0 3px '+PAL[cur][0]; tb.classList.remove('tcf'); tb.getBoundingClientRect(); tb.classList.add('tcf'); setTimeout(()=>tb.style.boxShadow='',900);
+    callout(nameOf(cur)+' 차례!',PAL[cur][0]); };
   paint(); raf=requestAnimationFrame(loop);
   cleanup=()=>{ cancelAnimationFrame(raf); hissOff(); btn.removeEventListener('pointerdown',down); btn.removeEventListener('pointerup',up); btn.removeEventListener('pointercancel',up); btn.removeEventListener('lostpointercapture',up); btn.textContent='펌프!'; };
 }
@@ -2449,6 +2461,7 @@ function startStack(){
 }
 
 /* ── 차례 팝업: 다음 사람 확인 후 진행 ── */
+function callout(txt,col){ const el=document.createElement('div'); el.className='callout'; el.textContent=txt; el.style.color=col||'#FFD447'; document.body.appendChild(el); setTimeout(()=>el.remove(),1200); }
 function turnChip(sec,cur,extra){ let el=sec.querySelector('.tchip'); if(!el){ el=document.createElement('div'); el.className='tchip'; el.setAttribute('aria-live','polite'); const pw=sec.querySelector('.play-wrap'); pw?sec.insertBefore(el,pw):sec.appendChild(el); }
   el.innerHTML='<div class="tc-now"><i style="background:'+PAL[cur][0]+'"></i>'+esc(nameOf(cur))+' 차례</div><div class="tc-next">다음 '+esc(nameOf(nxt(cur)))+(extra?' · '+extra:'')+'</div>';
   el.classList.remove('tcf'); el.getBoundingClientRect(); el.classList.add('tcf'); }
