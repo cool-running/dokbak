@@ -60,7 +60,10 @@ button{cursor:pointer}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--bg);color:var(--mute);font-weight:700;font-size:13px}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.rules{font-size:13px;line-height:1.6;color:var(--mute)}
+.rules{font-size:14px;line-height:1.7;color:var(--mute)}
+.howto{align-self:flex-start;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;font-size:13px}
+.pop{position:fixed;inset:0;z-index:50;background:rgba(5,6,14,.72);display:flex;align-items:center;justify-content:center;padding:20px}
+.pop-in{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;animation:pop .2s ease-out}
 .rules b{color:var(--fg)}
 .wait{text-align:center;color:var(--mute);font-size:14px;padding:6px 0}
 .stage{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;align-items:stretch;justify-content:center}
@@ -68,6 +71,14 @@ button{cursor:pointer}
 .bigbtn{flex:none;width:min(240px,62vw);aspect-ratio:1;border-radius:50%;border:none;margin:0 auto;background:radial-gradient(circle at 35% 30%,#FFE58A,var(--accent) 55%,#C99A00);color:var(--bg);font-family:var(--display);font-size:46px;box-shadow:0 10px 0 #8A6A00,0 18px 30px rgba(0,0,0,.4);transition:transform .08s,box-shadow .08s}
 .bigbtn:active:not(:disabled){transform:translateY(8px);box-shadow:0 2px 0 #8A6A00,0 6px 12px rgba(0,0,0,.4)}
 .bigbtn:disabled{filter:grayscale(.7) brightness(.7)}
+.arena{flex:1;min-height:240px;position:relative;border-radius:22px;background:radial-gradient(circle at 50% 40%,#22264A,var(--deep) 75%);border:1px dashed var(--line);overflow:hidden}
+.arena .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mute);font-size:14px;padding:20px;pointer-events:none}
+.dotbtn{position:absolute;width:64px;height:64px;border-radius:50%;border:none;background:radial-gradient(circle at 35% 30%,#FFE58A,var(--accent) 60%,#C99A00);color:var(--bg);font-family:var(--display);font-size:28px;box-shadow:0 5px 0 #8A6A00,0 8px 16px rgba(0,0,0,.45);animation:pop .25s ease-out;touch-action:none}
+.dotbtn:disabled{filter:grayscale(.6) brightness(.75)}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+.mine{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.mine b{font-family:var(--display);font-weight:400;font-size:72px;color:var(--accent);line-height:1}
+.calls.sm{max-height:24vh}
 .calls{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow:auto}
 .call{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:700}
 .call .n{font-family:var(--display);font-size:22px;width:30px;color:var(--accent)}
@@ -120,7 +131,7 @@ button{cursor:pointer}
   <div class="players" id="players"></div>
   <div class="games" id="gPick"></div>
   <div class="card" id="liarOpt" hidden><div class="mute" style="font-size:13px;font-weight:700;margin-bottom:8px" id="tTopic">주제</div><div class="chips" id="cats"></div></div>
-  <div class="card rules" id="rules"></div>
+  <button class="howto" id="bHow">❔ <span id="tHow">게임 방법</span></button>
   <div style="flex:1"></div>
   <div class="wait" id="lWait"></div>
   <button class="btn" id="bStart">시작</button>
@@ -135,6 +146,7 @@ button{cursor:pointer}
 
 </div>
 <div class="toast" id="toast" hidden></div>
+<div class="pop" id="howPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="howTitle"></div><div class="rules" id="rules"></div><button class="btn" id="howOk">확인</button></div></div>
 
 <script>
 //---------------------------------------------------------------------
@@ -2464,7 +2476,7 @@ function applyText(){
   set('#tName','내 이름','My name'); set('#tCode','방 번호','Room number');
   set('#bCreate','방 만들기','Create room'); set('#bJoin','방 번호로 참여','Join with number');
   set('#tLobby','대기실','Lobby'); set('#tRoomNo','방 번호','Room number'); set('#tScan','카메라로 QR을 찍으면<br>바로 들어와요','Scan the QR with<br>your camera to join',1);
-  set('#tTopic','주제','Topic'); set('#bLobby','다른 게임','Other games'); set('#bAgain','한 판 더','Again');
+  set('#tTopic','주제','Topic'); set('#tHow','게임 방법','How to play'); set('#howOk','확인','OK'); set('#bLobby','다른 게임','Other games'); set('#bAgain','한 판 더','Again');
   $('#nameIn').placeholder=T('예: 민수','e.g. Alex');
 }
 
@@ -2585,8 +2597,8 @@ function drawQR(c){ const box=$('#qr'); box.innerHTML='';
 const GAMES={
   nunchi:{ko:'눈치게임',en:'Nunchi',min:3,
     sub:()=>T('1부터 차례로 눌러요. 동시에 누르거나 꼴찌면 독박!','Tap in order from 1. Tap together or tap last = lose!'),
-    rules:()=>T('<b>1부터 순서대로</b> 버튼을 눌러요. 누르는 순간 내 숫자가 정해져요.<br>· <b>0.4초 안에 동시에</b> 누른 사람들 → 모두 독박<br>· <b>끝까지 못 누른 1명</b> → 독박<br>· 시작 신호 전에는 누를 수 없어요',
-      'Tap the button <b>in order, starting from 1</b>. Your number is set the moment you tap.<br>· Tap <b>within 0.4s of someone else</b> → both lose<br>· <b>The one who never taps</b> → loses<br>· You can\'t tap before the start signal')},
+    rules:()=>T('시작하면 각자 화면 어딘가에 <b>숫자 공</b>이 나와요. 눈치껏 <b>1부터 순서대로</b> 톡! 누르는 순간 내 번호가 정해져요.<br>· <b>0.4초 안에 동시에</b> 누른 사람들 → 걸림<br>· <b>끝까지 못 누른 1명</b> → 독박<br>· 2명 이상 걸리면 <b>그 사람들끼리 결승</b>, 1명이 남을 때까지!<br>· 공 위치는 사람마다, 판마다 달라요',
+      'A <b>number ball</b> appears somewhere on each screen. Read the room and tap <b>in order from 1</b> — your number is set the moment you tap.<br>· Tap <b>within 0.4s of someone else</b> → caught<br>· <b>The one who never taps</b> → loses<br>· 2+ caught → <b>a final between them</b> until one is left<br>· The ball is in a different spot for everyone, every round')},
   liar:{ko:'라이어 게임',en:'Liar Game',min:3,
     sub:()=>T('나만 보는 제시어 · 투표로 라이어를 찾아요','Secret word on your phone · vote out the liar'),
     rules:()=>T('각자 폰에 <b>제시어</b>가 나와요. 딱 한 명, <b>라이어</b>만 제시어를 몰라요.<br>순서대로 한마디씩 설명하고, 폰으로 <b>라이어를 투표</b>해요.<br>· 라이어를 잡고 라이어가 제시어를 못 맞히면 → <b>라이어 독박</b><br>· 라이어가 아닌 사람이 지목되면 → <b>지목된 사람 독박</b><br>· 라이어가 잡혀도 제시어를 맞히면 → <b>라이어를 지목한 사람 중 추첨</b>',
@@ -2608,7 +2620,7 @@ function renderLobby(){
   if(st.game==='liar'){ const W=EN?WORDS_EN:WORDS_KO, cats=['rand',...Object.keys(W)];
     $('#cats').innerHTML=cats.map(c=>'<button data-c="'+esc(c)+'" aria-pressed="'+((st.cat||'rand')===c)+'"'+(host?'':' disabled')+'>'+esc(c==='rand'?T('랜덤','Random'):c)+'</button>').join('');
     [...$('#cats').children].forEach(b=>b.onclick=()=>{ if(isHost()) Net.update('rooms/'+code+'/state',{cat:b.dataset.c}); }); }
-  $('#rules').innerHTML=g.rules();
+  $('#rules').innerHTML=g.rules(); $('#howTitle').textContent=EN?g.en:g.ko;
   const enough=online().length>=g.min;
   $('#bStart').hidden=!host; $('#bStart').disabled=!enough; $('#bStart').textContent=enough?T('시작','Start'):T(g.min+'명부터 할 수 있어요','Needs '+g.min+'+ players');
   $('#lWait').textContent=host?(enough?'':T('친구들이 QR을 찍고 들어오길 기다려요','Waiting for friends to scan the QR')):T('방장이 게임을 고르고 시작해요','The host picks a game and starts');
@@ -2618,8 +2630,9 @@ function renderGame(st){
   show('#sGame'); const g=GAMES[st.game]; $('#gTitle').textContent=EN?g.en:g.ko; $('#gCode').textContent='#'+code;
   const key=st.game+':'+st.round+':'+(st.step||'')+':'+(st.result?'r':'');
   if(key!==lastPhaseKey){ lastPhaseKey=key; if(st.result){ buzz([60,40,120]); beep(330,.25,.09,'square'); } }
-  $('#gBtns').hidden=!(st.result&&isHost());
-  if(st.result&&!isHost()) setTimeout(()=>{ const w=document.createElement('div'); w.className='wait'; w.textContent=T('방장이 다음 판을 시작해요','The host will start the next round'); $('#stage').appendChild(w); },0);
+  const pendingFinal=st.game==='nunchi'&&st.result&&arr(st.result.losers).length>1;
+  $('#gBtns').hidden=!(st.result&&isHost())||pendingFinal;
+  if(st.result&&!isHost()&&!pendingFinal) setTimeout(()=>{ const w=document.createElement('div'); w.className='wait'; w.textContent=T('방장이 다음 판을 시작해요','The host will start the next round'); $('#stage').appendChild(w); },0);
   if(st.game==='nunchi') drawNunchi(st); else drawLiar(st);
 }
 
@@ -2630,14 +2643,23 @@ function drawNunchi(st){
   const calls=nunchiCalls(st), me=calls.findIndex(c=>c.id===uid), now=Net.now(), pre=now<st.startAt, inGame=arr(st.ids).includes(uid);
   const badSet=new Set(arr(st.result&&st.result.losers));
   let h='';
+  const multi=st.result&&arr(st.result.losers).length>1;
+  if(st.final&&!st.result) h+='<div class="wait" style="color:var(--red);font-weight:900;font-size:16px">🔥 '+T('결승전','Final')+(st.final>1?' '+st.final:'')+' · '+arr(st.ids).map(nameOf).map(esc).join(' vs ')+'</div>';
   if(st.result){ const L=arr(st.result.losers).map(id=>'<span class="dot" style="background:'+colorOf(id)+'"></span>'+esc(nameOf(id))).join(', ');
-    h+='<div class="result"><div class="who">'+L+' <em>'+T('독박!','loses!')+'</em></div><div class="why">'+(st.result.why==='same'?T('💥 동시에 눌렀어요!','💥 Tapped at the same time!'):T('😅 끝까지 못 눌렀어요!','😅 Never tapped!'))+'</div></div>';
+    const why=st.result.why==='same'?T('💥 동시에 눌렀어요!','💥 Tapped at the same time!'):T('😅 끝까지 못 눌렀어요!','😅 Never tapped!');
+    if(multi){ const left=Math.max(0,Math.ceil(((st.result.nextAt||Net.now()+3000)-Net.now())/1000));
+      h+='<div class="result"><div class="why">'+why+'</div><div class="who">'+L+'</div><div class="why" style="color:var(--fg);font-size:16px">'+T('둘 이상이 걸렸어요 → <b>결승</b>으로 독박을 가려요','More than one caught → a <b>final</b> decides who pays')+'</div><div class="count" id="fcd" style="font-size:64px">'+left+'</div></div>'; }
+    else h+='<div class="result"><div class="who">'+L+' <em>'+T('독박!','loses!')+'</em></div><div class="why">'+why+'</div></div>';
   } else if(pre){ h+='<div class="count" id="cd">'+Math.ceil((st.startAt-now)/1000)+'</div><div class="wait">'+T('곧 시작해요… 손가락 준비!','Get ready…')+'</div>';
-  } else { h+='<button class="bigbtn" id="tap"'+(me>=0||!inGame?' disabled':'')+'>'+(me>=0?(me+1):(calls.length+1)+'!')+'</button><div class="wait">'+(!inGame?T('이번 판은 구경해요','Watching this round'):me>=0?T('내 번호는 ','You are #')+(me+1)+'!':T('지금이다 싶을 때 누르세요!','Tap when the moment feels right!'))+'</div>'; }
-  h+='<div class="calls">'+calls.map((c,i)=>'<div class="call'+(badSet.has(c.id)?' bad':'')+'"><span class="n">'+(i+1)+'</span><i style="background:'+colorOf(c.id)+'"></i>'+esc(nameOf(c.id))+(c.id===uid?' ('+T('나','me')+')':'')+'</div>').join('')+'</div>';
+  } else { const seed=(uid+':'+code+':'+st.round).split('').reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7), r1=(seed%1000)/1000, r2=((seed>>>10)%1000)/1000;
+    h+='<div class="arena">'+(!inGame?'<div class="hint">'+T('이번 판은 구경해요','Watching this round')+'</div>'
+      :me>=0?'<div class="mine"><b>'+(me+1)+'</b><span class="mute">'+T('내 번호','My number')+'</span></div>'
+      :'<div class="hint" style="align-items:flex-end;padding-bottom:12px">'+T('숫자 공을 찾아서 지금이다 싶을 때 톡!','Find the ball and tap when the time is right!')+'</div><button class="dotbtn" id="tap" style="left:calc((100% - 64px) * '+r1.toFixed(3)+');top:calc((100% - 64px) * '+r2.toFixed(3)+')">'+(calls.length+1)+'</button>')+'</div>'; }
+  h+='<div class="calls sm">'+calls.map((c,i)=>'<div class="call'+(badSet.has(c.id)?' bad':'')+'"><span class="n">'+(i+1)+'</span><i style="background:'+colorOf(c.id)+'"></i>'+esc(nameOf(c.id))+(c.id===uid?' ('+T('나','me')+')':'')+'</div>').join('')+'</div>';
   $('#stage').innerHTML=h;
+  stopTick(); if(multi){ tickT=setInterval(()=>{ const e=$('#fcd'); if(!e){ stopTick(); return; } const v=Math.max(0,Math.ceil(((st.result.nextAt||0)-Net.now())/1000)); if(e.textContent!=String(v)) e.textContent=v; },200); }
   const tb=$('#tap'); if(tb) tb.onpointerdown=e=>{ e.preventDefault(); if(tb.disabled) return; tb.disabled=true; buzz(40); beep(880,.08); Net.set('rooms/'+code+'/acts/'+uid,{t:Net.TS,r:st.round}); };
-  stopTick(); if(pre&&!st.result){ tickT=setInterval(()=>{ const n=Net.now(); if(n>=st.startAt){ stopTick(); beep(990,.12); buzz(60); render(); return; } const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } },50); }
+  if(pre&&!st.result){ stopTick(); tickT=setInterval(()=>{ const n=Net.now(); if(n>=st.startAt){ stopTick(); beep(990,.12); buzz(60); render(); return; } const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } },50); }
 }
 function judgeNunchi(st){ // 방장만
   const calls=nunchiCalls(st), now=Net.now(), ids=st.ids||[];
@@ -2725,7 +2747,7 @@ async function startGame(){
     await Net.set('secrets/'+code,sec);
     await Net.update('rooms/'+code,{acts:null,state:{phase:'game',game:'liar',cat:st.cat||'rand',catName:cat,round,ids,order:shuffle(ids),step:'reveal'}});
   } else {
-    await Net.update('rooms/'+code,{acts:null,state:{phase:'game',game:'nunchi',cat:st.cat||'rand',round,ids,startAt:Net.now()+3500}});
+    await Net.update('rooms/'+code,{acts:null,state:{phase:'game',game:'nunchi',cat:st.cat||'rand',round,ids,startAt:Net.now()+3500,final:0}});
   }
 }
 function hostTick(){
@@ -2735,10 +2757,16 @@ function hostTick(){
 }
 let judging=false;
 async function hostStep(){
-  if(!room||!isHost()||judging) return; const st=room.state||{}; if(st.phase!=='game'||st.result) return;
+  if(!room||!isHost()||judging) return; const st=room.state||{}; if(st.phase!=='game') return;
+  if(st.result){ // 눈치게임: 2명 이상 걸리면 그 사람들끼리 결승
+    const L=arr(st.result.losers);
+    if(st.game==='nunchi'&&L.length>1&&st.result.nextAt&&Net.now()>=st.result.nextAt){ judging=true;
+      try{ await Net.update('rooms/'+code,{acts:null,state:Object.assign({},st,{result:null,round:(st.round||0)+1,ids:L,startAt:Net.now()+3500,final:(st.final||0)+1})}); }catch(e){}
+      judging=false; }
+    return; }
   judging=true;
   try{
-    if(st.game==='nunchi'){ const r=judgeNunchi(st); if(r) await Net.update('rooms/'+code+'/state',{result:r}); }
+    if(st.game==='nunchi'){ const r=judgeNunchi(st); if(r){ if(r.losers.length>1) r.nextAt=Net.now()+3500; await Net.update('rooms/'+code+'/state',{result:r}); } }
     else if(st.game==='liar'){
       if(st.step==='vote') await countVotes(st,false);
       else if(st.step==='guess') await checkGuess(st);
@@ -2747,6 +2775,9 @@ async function hostStep(){
   judging=false;
 }
 $('#bStart').onclick=startGame;
+$('#bHow').onclick=()=>{ $('#howPop').hidden=false; };
+$('#howOk').onclick=()=>{ $('#howPop').hidden=true; };
+$('#howPop').onclick=e=>{ if(e.target.id==='howPop') $('#howPop').hidden=true; };
 $('#bAgain').onclick=startGame;
 $('#bLobby').onclick=()=>{ if(isHost()) Net.update('rooms/'+code,{acts:null,state:Object.assign({},room.state,{phase:'lobby',result:null,step:null})}); };
 $('#gBack').onclick=()=>{ if(isHost()) $('#bLobby').onclick(); else toast(T('방장이 게임을 끝내면 대기실로 돌아가요','The host will bring everyone back to the lobby')); };
@@ -2757,6 +2788,7 @@ $('#eBack').onclick=goHome;
 $('#lBack').onclick=()=>{ if(confirmLeave()) leaveRoom(); };
 function confirmLeave(){ return !isHost()||online().length<=1||confirm(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?')); }
 window.appBack=function(){ // 안드로이드 뒤로가기
+  if(!$('#howPop').hidden){ $('#howPop').hidden=true; return 'ok'; }
   if(!$('#sGame').hidden){ $('#gBack').onclick(); return 'ok'; }
   if(!$('#sLobby').hidden){ $('#lBack').onclick(); return 'ok'; }
   if(IN_APP&&history.length>1){ history.back(); return 'ok'; }
