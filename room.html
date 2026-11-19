@@ -84,6 +84,8 @@ button{cursor:pointer}
 .pchip button{border:none;background:none;color:var(--mute);font-size:15px;padding:0 0 0 2px;line-height:1}
 .full{color:var(--green)!important}
 .howto{align-self:flex-start;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;font-size:13px}
+.lbar{position:sticky;bottom:-18px;margin-bottom:-18px;padding:10px 0 18px;background:linear-gradient(to bottom,rgba(20,22,43,0),var(--bg) 26%);display:flex;flex-direction:column;gap:6px;flex:none;z-index:5}
+.fullgame{font-family:var(--display);font-size:30px;color:var(--accent);text-align:center}
 .pop{position:fixed;inset:0;z-index:50;background:rgba(5,6,14,.72);display:flex;align-items:center;justify-content:center;padding:20px}
 .pop-in{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;animation:pop .2s ease-out}
 .rules b{color:var(--fg)}
@@ -155,8 +157,7 @@ button{cursor:pointer}
   <div class="card" id="liarOpt" hidden><div class="mute" style="font-size:13px;font-weight:700;margin-bottom:8px" id="tTopic">주제</div><div class="chips" id="cats"></div></div>
   <button class="howto" id="bHow">❔ <span id="tHow">게임 방법</span></button>
   <div style="flex:1"></div>
-  <div class="wait" id="lWait"></div>
-  <button class="btn" id="bStart">시작</button>
+  <div class="lbar"><div class="wait" id="lWait"></div><button class="btn" id="bStart">시작</button></div>
 </section>
 
 <!-- 게임 -->
@@ -169,6 +170,7 @@ button{cursor:pointer}
 </div>
 <div class="toast" id="toast" hidden></div>
 <div class="pop" id="capPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="capTitle">몇 명 방을 만들까요?</div><div class="capsel" id="capSel"></div><div class="recline" id="capRec"></div><div class="row2"><button class="btn ghost" id="capNo">취소</button><button class="btn" id="capOk">만들기</button></div></div></div>
+<div class="pop" id="fullPop" hidden><div class="pop-in" style="text-align:center"><div style="font-size:44px">🎉</div><div class="disp" style="font-size:26px" id="fullTitle">다 모였어요!</div><div class="fullgame" id="fullGame"></div><div class="row2"><button class="btn ghost" id="fullNo">다른 게임</button><button class="btn" id="fullGo">시작</button></div></div></div>
 <div class="pop" id="howPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="howTitle"></div><div class="rules" id="rules"></div><button class="btn" id="howOk">확인</button></div></div>
 
 <script>//---------------------------------------------------------------------
@@ -2674,8 +2676,11 @@ function renderLobby(){
   $('#rules').innerHTML=g.rules(); $('#howTitle').textContent=EN?g.en:g.ko;
   const enough=online().length>=g.min;
   $('#bStart').hidden=!host; $('#bStart').disabled=!enough; $('#bStart').textContent=enough?T('시작','Start'):T(g.min+'명부터 할 수 있어요','Needs '+g.min+'+ players');
+  if(host&&full&&enough&&!wasFull&&$('#capPop').hidden){ $('#fullGame').textContent=(EN?g.en:g.ko); $('#fullTitle').textContent=T('다 모였어요!','Everyone is here!'); $('#fullNo').textContent=T('다른 게임','Other game'); $('#fullGo').textContent=T('시작','Start'); $('#fullPop').hidden=false; beep(880,.08); setTimeout(()=>beep(1175,.12),110); buzz([40,40,40]); }
+  if(!full) $('#fullPop').hidden=true; wasFull=full;
   $('#lWait').textContent=full?T('🎉 다 모였어요!','🎉 Everyone is here!'):host?T('빈자리 '+(cap-ps.length)+'개 · 친구들이 QR을 찍고 들어오길 기다려요',(cap-ps.length)+' open · waiting for friends to scan the QR'):T('방장이 게임을 고르고 시작해요','The host picks a game and starts');
 }
+let wasFull=false;
 let tickT=0; const stopTick=()=>{ clearInterval(tickT); tickT=0; };
 function renderGame(st){
   show('#sGame'); const g=GAMES[st.game]; $('#gTitle').textContent=EN?g.en:g.ko; $('#gCode').textContent='#'+code;
@@ -3061,6 +3066,9 @@ async function hostStep(){
   judging=false;
 }
 $('#bStart').onclick=startGame;
+$('#fullGo').onclick=()=>{ $('#fullPop').hidden=true; startGame(); };
+$('#fullNo').onclick=()=>{ $('#fullPop').hidden=true; $('#gPick').scrollIntoView({behavior:'smooth',block:'start'}); };
+$('#fullPop').onclick=e=>{ if(e.target.id==='fullPop') $('#fullPop').hidden=true; };
 $('#bHow').onclick=()=>{ $('#howPop').hidden=false; };
 $('#howOk').onclick=()=>{ $('#howPop').hidden=true; };
 $('#howPop').onclick=e=>{ if(e.target.id==='howPop') $('#howPop').hidden=true; };
@@ -3074,6 +3082,7 @@ $('#eBack').onclick=goHome;
 $('#lBack').onclick=()=>{ if(confirmLeave()) leaveRoom(); };
 function confirmLeave(){ return !isHost()||online().length<=1||confirm(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?')); }
 window.appBack=function(){ // 안드로이드 뒤로가기
+  if(!$('#fullPop').hidden){ $('#fullPop').hidden=true; return 'ok'; }
   if(!$('#howPop').hidden){ $('#howPop').hidden=true; return 'ok'; }
   if(!$('#capPop').hidden){ $('#capPop').hidden=true; return 'ok'; }
   if(!$('#sGame').hidden){ $('#gBack').onclick(); return 'ok'; }
