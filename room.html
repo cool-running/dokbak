@@ -171,6 +171,7 @@ button{cursor:pointer}
 <div class="toast" id="toast" hidden></div>
 <div class="pop" id="capPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="capTitle">몇 명 방을 만들까요?</div><div class="capsel" id="capSel"></div><div class="recline" id="capRec"></div><div class="row2"><button class="btn ghost" id="capNo">취소</button><button class="btn" id="capOk">만들기</button></div></div></div>
 <div class="pop" id="fullPop" hidden><div class="pop-in" style="text-align:center"><div style="font-size:44px">🎉</div><div class="disp" style="font-size:26px" id="fullTitle">다 모였어요!</div><div class="fullgame" id="fullGame"></div><div class="row2"><button class="btn ghost" id="fullNo">다른 게임</button><button class="btn" id="fullGo">시작</button></div></div></div>
+<div class="pop" id="askPop" hidden style="z-index:60"><div class="pop-in" style="text-align:center"><div style="font-size:18px;font-weight:700;line-height:1.5;padding:6px 0" id="askMsg"></div><div class="row2"><button class="btn ghost" id="askNo">취소</button><button class="btn" id="askOk">확인</button></div></div></div>
 <div class="pop" id="howPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="howTitle"></div><div class="rules" id="rules"></div><button class="btn" id="howOk">확인</button></div></div>
 
 <script>//---------------------------------------------------------------------
@@ -2665,7 +2666,7 @@ function renderLobby(){
   $('#codeOut').textContent=code; $('#pCount').textContent=ps.length+'/'+cap+T('명',''); $('#pCount').classList.toggle('full',full);
   $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+((room.stats&&room.stats[p.id])?'<span class="lz">💀'+room.stats[p.id]+'</span>':'')+(host&&p.id!==uid?'<button data-kick="'+p.id+'" aria-label="'+T('내보내기','Remove')+'">×</button>':'')+'</span>').join('')
     +Array.from({length:Math.max(0,cap-ps.length)},()=>'<span class="pchip empty">'+T('빈자리','open')+'</span>').join('');
-  $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; if(confirm(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'))) Net.remove('rooms/'+code+'/players/'+id); });
+  $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; ask(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'),T('내보내기','Remove')).then(ok=>{ if(ok) Net.remove('rooms/'+code+'/players/'+id); }); });
   const on=online().length, rec=REC(Math.max(on,2)), order=[...rec,...Object.keys(GAMES).filter(k=>!rec.includes(k))];
   $('#gPick').innerHTML=order.map(k=>{ const G=GAMES[k], short=on<G.min; return '<button class="gcard'+(short?' dim':'')+'" data-g="'+k+'" aria-pressed="'+(st.game===k)+'"'+(host?'':' disabled')+'>'+(rec.includes(k)&&!short?'<span class="rec">'+T('추천','Best')+'</span>':'')+'<b>'+(EN?G.en:G.ko)+'</b><span>'+(short?'<span class="need">'+T(G.min+'명부터',G.min+'+ players')+'</span> · ':'')+G.sub()+'</span></button>'; }).join('');
   [...$('#gPick').children].forEach(b=>b.onclick=()=>{ if(!isHost()) return; beep(700,.05); Net.update('rooms/'+code+'/state',{game:b.dataset.g}); });
@@ -3079,9 +3080,14 @@ $('#gBack').onclick=()=>{ if(isHost()) $('#bLobby').onclick(); else toast(T('방
 /* ===== 뒤로 ===== */
 function goHome(){ if(IN_APP&&history.length>1) history.back(); else location.href=IN_APP?'about:blank':'./'; }
 $('#eBack').onclick=goHome;
-$('#lBack').onclick=()=>{ if(confirmLeave()) leaveRoom(); };
-function confirmLeave(){ return !isHost()||online().length<=1||confirm(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?')); }
+$('#lBack').onclick=()=>{ confirmLeave().then(ok=>{ if(ok) leaveRoom(); }); };
+function confirmLeave(){ if(!isHost()||online().length<=1) return Promise.resolve(true); return ask(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?'),T('나가기','Leave')); }
+// 앱(WebView)에서는 confirm()이 안 떠서 직접 만든 확인창을 써요
+function ask(msg,okTxt){ return new Promise(res=>{ $('#askMsg').textContent=msg; $('#askOk').textContent=okTxt||T('확인','OK'); $('#askNo').textContent=T('취소','Cancel'); $('#askPop').hidden=false;
+  const done=v=>{ $('#askPop').hidden=true; $('#askOk').onclick=$('#askNo').onclick=$('#askPop').onclick=null; res(v); };
+  $('#askOk').onclick=()=>done(true); $('#askNo').onclick=()=>done(false); $('#askPop').onclick=e=>{ if(e.target.id==='askPop') done(false); }; }); }
 window.appBack=function(){ // 안드로이드 뒤로가기
+  if(!$('#askPop').hidden){ $('#askNo').onclick(); return 'ok'; }
   if(!$('#fullPop').hidden){ $('#fullPop').hidden=true; return 'ok'; }
   if(!$('#howPop').hidden){ $('#howPop').hidden=true; return 'ok'; }
   if(!$('#capPop').hidden){ $('#capPop').hidden=true; return 'ok'; }
