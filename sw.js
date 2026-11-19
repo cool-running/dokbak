@@ -13,10 +13,11 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const same = new URL(req.url).origin === location.origin;
+  if (same && /room\.html/.test(req.url)) return; // 각자 폰: 항상 인터넷에서
   if (same) {
     e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res; })
       .catch(() => caches.match(req).then(r => r || caches.match('./index.html'))));
-  } else {
+  } else if (/fonts\.(googleapis|gstatic)\.com$/.test(new URL(req.url).hostname)) {
     e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res; })));
   }
 });
