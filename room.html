@@ -57,11 +57,22 @@ button{cursor:pointer}
 .gcard span{font-size:12px;color:var(--mute);line-height:1.4}
 .gcard[aria-pressed="true"]{border-color:var(--accent);background:#2A2B4A}
 .gcard[aria-pressed="true"] b{color:var(--accent)}
+.gcard{position:relative}.gcard .rec{align-self:flex-start;font-size:11px;font-weight:900;color:var(--bg);background:var(--accent);border-radius:999px;padding:2px 8px;line-height:1.4}
+.gcard.dim{opacity:.4}.gcard .need{color:var(--red);font-weight:900}
+.recline{font-size:14px;color:var(--mute);text-align:center;line-height:1.5;min-height:42px}.recline b{color:var(--accent)}
+.pbar{display:flex;align-items:center;gap:8px;height:26px;font-size:13px;font-weight:700}.pbar .nm{width:72px;display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pbar .nm i{flex:none;width:10px;height:10px;border-radius:50%}
+.pbar .tr{flex:1;height:10px;border-radius:6px;background:var(--card);overflow:hidden}.pbar .tr b{display:block;height:100%;border-radius:6px;transition:width .15s}.pbar .ct{width:28px;text-align:right;font-family:var(--display);font-size:16px}
+.grid25{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:min(100%,380px);margin:0 auto}
+.grid25 button{aspect-ratio:1;border-radius:12px;border:2px solid var(--line);background:var(--card);font-family:var(--display);font-size:26px;color:var(--fg);touch-action:manipulation;transition:background .1s}
+.grid25 button.done{background:transparent;border-color:transparent;color:transparent}
+.grid25 button.bad{animation:bad .35s}@keyframes bad{0%,100%{transform:none;background:var(--card)}30%{transform:translateX(-4px);background:var(--red)}60%{transform:translateX(4px)}}
+.pchip .lz{font-size:11px;color:var(--red);font-weight:900;margin-left:2px}
+.duel{transition:background .05s}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--bg);color:var(--mute);font-weight:700;font-size:13px}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .rules{font-size:14px;line-height:1.7;color:var(--mute)}
-.capsel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.capsel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .capsel button{height:54px;border-radius:14px;border:2px solid var(--line);background:var(--bg);font-family:var(--display);font-size:24px}
 .capsel button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--bg)}
 .pchip.empty{border-style:dashed;color:var(--mute);font-weight:400}
@@ -152,11 +163,10 @@ button{cursor:pointer}
 
 </div>
 <div class="toast" id="toast" hidden></div>
-<div class="pop" id="capPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="capTitle">몇 명 방을 만들까요?</div><div class="capsel" id="capSel"></div><div class="row2"><button class="btn ghost" id="capNo">취소</button><button class="btn" id="capOk">만들기</button></div></div></div>
+<div class="pop" id="capPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="capTitle">몇 명 방을 만들까요?</div><div class="capsel" id="capSel"></div><div class="recline" id="capRec"></div><div class="row2"><button class="btn ghost" id="capNo">취소</button><button class="btn" id="capOk">만들기</button></div></div></div>
 <div class="pop" id="howPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="howTitle"></div><div class="rules" id="rules"></div><button class="btn" id="howOk">확인</button></div></div>
 
-<script>
-//---------------------------------------------------------------------
+<script>//---------------------------------------------------------------------
 //
 // QR Code Generator for JavaScript
 //
@@ -2453,7 +2463,6 @@ var qrcode = function() {
 }(function () {
     return qrcode;
 }));
-
 </script>
 <script>
 (function(){
@@ -2550,15 +2559,16 @@ function show(id){ ['#sEntry','#sLobby','#sGame'].forEach(s=>$(s).hidden=s!==id)
 try{ myName=Q.get('name')||localStorage.getItem('dokbakName')||''; }catch(e){}
 function saveName(){ myName=$('#nameIn').value.trim().slice(0,8); try{ localStorage.setItem('dokbakName',myName); }catch(e){} return myName; }
 function needName(){ if(saveName()) return true; toast(T('이름을 먼저 적어 주세요','Please enter your name first')); $('#nameIn').focus(); return false; }
-let capPick=Math.min(10,Math.max(3,+Q.get('n')||4));
-function askCap(){ if(!needName()) return; const box=$('#capSel'); box.innerHTML=[3,4,5,6,7,8,9,10].map(n=>'<button data-n="'+n+'" aria-pressed="'+(n===capPick)+'">'+n+'</button>').join('');
-  [...box.children].forEach(b=>b.onclick=()=>{ capPick=+b.dataset.n; [...box.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); beep(700,.04); }); $('#capPop').hidden=false; }
+let capPick=Math.min(10,Math.max(2,+Q.get('n')||4));
+function askCap(){ if(!needName()) return; const box=$('#capSel'); box.innerHTML=[2,3,4,5,6,7,8,9,10].map(n=>'<button data-n="'+n+'" aria-pressed="'+(n===capPick)+'">'+n+'</button>').join('');
+  const rl=()=>$('#capRec').innerHTML=recText(capPick); rl();
+  [...box.children].forEach(b=>b.onclick=()=>{ capPick=+b.dataset.n; [...box.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); beep(700,.04); rl(); }); $('#capPop').hidden=false; }
 async function createRoom(){
   $('#capPop').hidden=true; if(!needName()) return; $('#bCreate').disabled=true;
   try{ await ensureNet();
     let c=null; for(let k=0;k<12;k++){ const t=String(1000+rnd(9000)); const r=await Net.get('rooms/'+t); if(!r||!r.created||r.created<Net.now()-6*3600e3){ c=t; break; } }
     if(!c) throw new Error('no code');
-    await Net.set('rooms/'+c,{host:uid,created:Net.TS,cap:capPick,state:{phase:'lobby',game:'nunchi',cat:'rand',round:0},players:{[uid]:{name:myName,joined:Net.TS,on:true}}});
+    await Net.set('rooms/'+c,{host:uid,created:Net.TS,cap:capPick,state:{phase:'lobby',game:REC(capPick)[0],cat:'rand',round:0},players:{[uid]:{name:myName,joined:Net.TS,on:true}}});
     await Net.set('roomIdx/'+c,Net.TS).catch(()=>{});
     await enter(c);
     sweepOld(c);
@@ -2615,8 +2625,23 @@ const GAMES={
   liar:{ko:'라이어 게임',en:'Liar Game',min:3,
     sub:()=>T('나만 보는 제시어 · 투표로 라이어를 찾아요','Secret word on your phone · vote out the liar'),
     rules:()=>T('각자 폰에 <b>제시어</b>가 나와요. 딱 한 명, <b>라이어</b>만 제시어를 몰라요.<br>순서대로 한마디씩 설명하고, 폰으로 <b>라이어를 투표</b>해요.<br>· 라이어를 잡고 라이어가 제시어를 못 맞히면 → <b>라이어 독박</b><br>· 라이어가 아닌 사람이 지목되면 → <b>지목된 사람 독박</b><br>· 라이어가 잡혀도 제시어를 맞히면 → <b>라이어를 지목한 사람 중 추첨</b>',
-      'Everyone sees the <b>secret word</b> — except one <b>liar</b>.<br>Take turns describing it, then <b>vote</b> for the liar on your phone.<br>· Liar caught and can\'t guess the word → <b>liar loses</b><br>· Wrong person voted out → <b>that person loses</b><br>· Liar caught but guesses the word → <b>random pick among those who voted for the liar</b>')}
+      'Everyone sees the <b>secret word</b> — except one <b>liar</b>.<br>Take turns describing it, then <b>vote</b> for the liar on your phone.<br>· Liar caught and can\'t guess the word → <b>liar loses</b><br>· Wrong person voted out → <b>that person loses</b><br>· Liar caught but guesses the word → <b>random pick among those who voted for the liar</b>')},
+  draw:{ko:'총잡이 결투',en:'Quick Draw',min:2,
+    sub:()=>T('초록불에 누가 먼저 쏘나! 부정출발 2번이면 독박','Fire first on green. 2 false starts = lose'),
+    rules:()=>T('화면이 <b>빨강</b>이면 기다리고, <b>초록</b>으로 바뀌는 순간 화면을 탭!<br>· <b>가장 늦게 쏜 사람</b> → 독박<br>· 초록 전에 누르면 <b>부정출발</b> → 1번째는 <b>경고</b> 후 다시, <b>2번째면 독박</b><br>· 언제 바뀔지는 매번 달라요 (1.5~5초)<br>· 결과에 <b>몇 초 차이</b>로 졌는지 나와요',
+      'Wait while the screen is <b>red</b>, tap the instant it turns <b>green</b>!<br>· <b>Slowest shot</b> → loses<br>· Tap before green = <b>false start</b> → 1st is a <b>warning</b> and a restart, <b>2nd loses</b><br>· The delay changes every round (1.5–5s)<br>· Results show the <b>margin</b> you lost by')},
+  race:{ko:'1→25 레이스',en:'1→25 Race',min:2,
+    sub:()=>T('같은 판에서 1부터 25까지 누가 빨리? 틀리면 +1초','Same board, tap 1 to 25 fastest. Wrong = +1s'),
+    rules:()=>T('모두 <b>같은 숫자판</b>이 나와요. <b>1부터 25까지 순서대로</b> 최대한 빨리 탭!<br>· 틀린 숫자를 누르면 <b>+1초</b><br>· 위에 상대의 진행 상황이 실시간으로 보여요<br>· <b>가장 늦게 끝낸 사람</b> → 독박 (90초 안에 못 끝내면 덜 간 사람)',
+      'Everyone gets <b>the same board</b>. Tap <b>1 to 25 in order</b> as fast as you can!<br>· Wrong number = <b>+1s</b><br>· Live progress of rivals at the top<br>· <b>Last to finish</b> loses (after 90s, whoever is furthest behind)')},
+  timer:{ko:'10초 멈추기',en:'Stop at 10s',min:2,
+    sub:()=>T('시계가 사라져요. 감으로 딱 10초에 멈춰!','The clock vanishes. Stop at exactly 10s'),
+    rules:()=>T('시작하면 시계가 가요. <b>3초 뒤 숫자가 사라지면</b> 감으로 세다가 <b>딱 10초</b>에 멈춰 버튼!<br>· <b>10초에서 가장 먼 사람</b> → 독박<br>· 모두 동시에 해요 · 20초 안에 안 누르면 독박<br>· 결과에 각자 몇 초에 멈췄는지 나와요',
+      'A clock starts. <b>After 3s the numbers vanish</b> — count in your head and hit STOP at <b>exactly 10s</b>!<br>· <b>Furthest from 10s</b> → loses<br>· Everyone plays at once · no stop within 20s = loss<br>· Results show everyone\'s time')}
 };
+// 인원별 추천
+const REC=n=>n<=2?['draw','race','timer']:n===3?['nunchi','draw','race','timer']:['liar','nunchi','timer'];
+const recText=n=>'👍 '+T(n+'명 추천','Best for '+n)+': <b>'+REC(n).slice(0,3).map(k=>EN?GAMES[k].en:GAMES[k].ko).join(' · ')+'</b>'+(n>=4?'<br>'+T('· 폭탄 넘기기는 준비 중','· Hot Potato coming soon'):'');
 
 /* ===== 그리기 ===== */
 function render(){
@@ -2627,10 +2652,11 @@ function renderLobby(){
   stopTick(); show('#sLobby'); const ps=plist(), host=isHost(), st=room.state||{}, g=GAMES[st.game]||GAMES.nunchi;
   const cap=room.cap||ps.length, full=ps.length>=cap;
   $('#codeOut').textContent=code; $('#pCount').textContent=ps.length+'/'+cap+T('명',''); $('#pCount').classList.toggle('full',full);
-  $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+(host&&p.id!==uid?'<button data-kick="'+p.id+'" aria-label="'+T('내보내기','Remove')+'">×</button>':'')+'</span>').join('')
+  $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+((room.stats&&room.stats[p.id])?'<span class="lz">💀'+room.stats[p.id]+'</span>':'')+(host&&p.id!==uid?'<button data-kick="'+p.id+'" aria-label="'+T('내보내기','Remove')+'">×</button>':'')+'</span>').join('')
     +Array.from({length:Math.max(0,cap-ps.length)},()=>'<span class="pchip empty">'+T('빈자리','open')+'</span>').join('');
   $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; if(confirm(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'))) Net.remove('rooms/'+code+'/players/'+id); });
-  $('#gPick').innerHTML=Object.keys(GAMES).map(k=>'<button class="gcard" data-g="'+k+'" aria-pressed="'+(st.game===k)+'"'+(host?'':' disabled')+'><b>'+(EN?GAMES[k].en:GAMES[k].ko)+'</b><span>'+GAMES[k].sub()+'</span></button>').join('');
+  const on=online().length, rec=REC(Math.max(on,2)), order=[...rec,...Object.keys(GAMES).filter(k=>!rec.includes(k))];
+  $('#gPick').innerHTML=order.map(k=>{ const G=GAMES[k], short=on<G.min; return '<button class="gcard'+(short?' dim':'')+'" data-g="'+k+'" aria-pressed="'+(st.game===k)+'"'+(host?'':' disabled')+'>'+(rec.includes(k)&&!short?'<span class="rec">'+T('추천','Best')+'</span>':'')+'<b>'+(EN?G.en:G.ko)+'</b><span>'+(short?'<span class="need">'+T(G.min+'명부터',G.min+'+ players')+'</span> · ':'')+G.sub()+'</span></button>'; }).join('');
   [...$('#gPick').children].forEach(b=>b.onclick=()=>{ if(!isHost()) return; beep(700,.05); Net.update('rooms/'+code+'/state',{game:b.dataset.g}); });
   $('#liarOpt').hidden=st.game!=='liar';
   if(st.game==='liar'){ const W=EN?WORDS_EN:WORDS_KO, cats=['rand',...Object.keys(W)];
@@ -2646,10 +2672,12 @@ function renderGame(st){
   show('#sGame'); const g=GAMES[st.game]; $('#gTitle').textContent=EN?g.en:g.ko; $('#gCode').textContent='#'+code;
   const key=st.game+':'+st.round+':'+(st.step||'')+':'+(st.result?'r':'');
   if(key!==lastPhaseKey){ lastPhaseKey=key; if(st.result){ buzz([60,40,120]); beep(330,.25,.09,'square'); } }
-  const pendingFinal=st.game==='nunchi'&&st.result&&arr(st.result.losers).length>1;
+  const pendingFinal=st.game!=='liar'&&st.result&&arr(st.result.losers).length>1;
   $('#gBtns').hidden=!(st.result&&isHost())||pendingFinal;
   if(st.result&&!isHost()&&!pendingFinal) setTimeout(()=>{ const w=document.createElement('div'); w.className='wait'; w.textContent=T('방장이 다음 판을 시작해요','The host will start the next round'); $('#stage').appendChild(w); },0);
-  if(st.game==='nunchi') drawNunchi(st); else drawLiar(st);
+  if(!['timer','draw','race'].includes(st.game)||st.result) delete $('#stage').dataset.k;
+  ({nunchi:drawNunchi,liar:drawLiar,timer:drawTimer,draw:drawDuel,race:drawRace}[st.game]||drawNunchi)(st);
+  if(st.result&&(st.game==='nunchi'||st.game==='liar')){ const L=arr(st.result.losers), w=$('#stage .result'); if(L.length===1&&w) w.insertAdjacentHTML('beforeend',streakText(L[0])); }
 }
 
 /* ===== 눈치게임 ===== */
@@ -2744,13 +2772,146 @@ async function countVotes(st,force){ // 방장만
   Net.update('rooms/'+code+'/state',{step:'guess',accused:acc,opts});
 }
 async function finishLiar(st,h,losers,why,guess){
-  await Net.update('rooms/'+code+'/state',{result:{losers,why,liar:h.liar,word:h.word,guess:guess||null}});
+  await setResult({losers,why,liar:h.liar,word:h.word,guess:guess||null});
 }
 async function checkGuess(st){
   const a=room.acts||{}, g=a[st.accused]&&a[st.accused].r===st.round&&a[st.accused].guess; if(!g||st.result) return;
   const h=await Net.get('secrets/'+code+'/_h'); if(!h) return;
   if(g===h.word){ const acc=arr(st.ids).filter(id=>id!==h.liar&&a[id]&&a[id].r===st.round&&a[id].vote===h.liar); const pool=acc.length?acc:arr(st.ids).filter(id=>id!==h.liar); finishLiar(st,h,[pool[rnd(pool.length)]],'guessed',g); }
   else finishLiar(st,h,[h.liar],'caught',g);
+}
+
+/* ===== 공통: 순위표 · 결승 · 독박 기록 ===== */
+const fmtS=v=>(v==null||!isFinite(v))?'—':v.toFixed(2)+T('초','s');
+const fmtMs=v=>(v==null||!isFinite(v))?'—':(v/1000).toFixed(3)+T('초','s');
+function finalBanner(st){ return st.final&&!st.result?'<div class="wait" style="color:var(--red);font-weight:900;font-size:16px">🔥 '+T('결승전','Final')+(st.final>1?' '+st.final:'')+' · '+arr(st.ids).map(nameOf).map(esc).join(' vs ')+'</div>':''; }
+function streakText(id){ const k=room.streak; return k&&k.id===id&&k.n>=2?'<div class="why" style="color:var(--red);font-weight:900">😭 '+T(k.n+'연속 독박!',k.n+' losses in a row!')+'</div>':''; }
+function resultHead(st,why){ const R=st.result, L=arr(R.losers), names=L.map(id=>'<span class="dot" style="background:'+colorOf(id)+'"></span>'+esc(nameOf(id))).join(', ');
+  if(L.length>1){ const left=Math.max(0,Math.ceil(((R.nextAt||Net.now()+3000)-Net.now())/1000));
+    return '<div class="result"><div class="why">'+why+'</div><div class="who">'+names+'</div><div class="why" style="color:var(--fg);font-size:16px">'+T('둘 이상이 걸렸어요 → <b>결승</b>으로 독박을 가려요','More than one caught → a <b>final</b> decides who pays')+'</div><div class="count" id="fcd" style="font-size:64px">'+left+'</div></div>'; }
+  return '<div class="result"><div class="who">'+names+' <em>'+T('독박!','loses!')+'</em></div><div class="why">'+why+'</div>'+streakText(L[0])+(R.margin?'<div class="why" style="color:var(--accent);font-weight:900">'+R.margin+'</div>':'')+'</div>'; }
+function finalTick(st){ if(!(st.result&&arr(st.result.losers).length>1)) return; stopTick(); tickT=setInterval(()=>{ const e=$('#fcd'); if(!e){ stopTick(); return; } const v=Math.max(0,Math.ceil(((st.result.nextAt||0)-Net.now())/1000)); if(e.textContent!=String(v)) e.textContent=v; },200); }
+function rankTable(rows){ // rows: [{id,val,bad}]
+  return '<div class="calls">'+rows.map((r,i)=>'<div class="call'+(r.bad?' bad':'')+'"><span class="n">'+(i+1)+'</span><i style="background:'+colorOf(r.id)+'"></i><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(nameOf(r.id))+(r.id===uid?' ('+T('나','me')+')':'')+'</span><span style="font-variant-numeric:tabular-nums">'+r.val+'</span></div>').join('')+'</div>'; }
+async function setResult(r){ // 방장만: 결과 저장 + 독박 1명이면 기록
+  const L=arr(r.losers); if(L.length>1) r.nextAt=Net.now()+3500;
+  const up={'state/result':r};
+  if(L.length===1){ const id=L[0], k=room.streak; up['stats/'+id]=((room.stats&&room.stats[id])||0)+1; up['streak']={id,n:k&&k.id===id?k.n+1:1}; }
+  await Net.update('rooms/'+code,up);
+}
+// 같은 판 안에서 내가 한 조작(화면이 다시 그려져도 유지)
+let LOC={key:''}; function loc(st){ const k=st.game+':'+st.round; if(LOC.key!==k) LOC={key:k}; return LOC; }
+
+/* ===== 10초 멈추기 ===== */
+const TIMER_LIMIT=20;
+function drawTimer(st){
+  const a=room.acts||{}, ids=arr(st.ids), inGame=ids.includes(uid), L=loc(st), mine=a[uid]&&a[uid].r===st.round?a[uid]:null, now=Net.now();
+  const stopped=ids.filter(id=>a[id]&&a[id].r===st.round&&a[id].v!=null);
+  if(st.result){ stopTick(); const R=st.result, rows=ids.map(id=>{ const v=a[id]&&a[id].r===st.round?a[id].v:null; return {id,v,d:v==null?1e9:Math.abs(v-10)}; }).sort((x,y)=>x.d-y.d);
+    $('#stage').innerHTML=resultHead(st,T('⏱ 10초에서 가장 멀었어요','⏱ Furthest from 10 seconds'))+rankTable(rows.map(r=>({id:r.id,bad:arr(R.losers).includes(r.id),val:r.v==null?T('안 멈춤','no stop'):r.v.toFixed(2)+' ('+(r.v>=10?'+':'−')+Math.abs(r.v-10).toFixed(2)+')'})));
+    finalTick(st); return; }
+  const pre=now<st.startAt;
+  if($('#stage').dataset.k!==L.key+(pre?'p':'g')){ $('#stage').dataset.k=L.key+(pre?'p':'g');
+    $('#stage').innerHTML=finalBanner(st)+(pre?'<div class="count" id="cd">'+Math.ceil((st.startAt-now)/1000)+'</div><div class="wait">'+T('3초가 지나면 숫자가 사라져요','The numbers vanish after 3s')+'</div>'
+      :'<div class="timer" id="tv" style="font-size:72px">0.00</div><div class="wait" id="tmsg">'+T('딱 10초라고 생각될 때 멈춰!','Stop when you think it\'s exactly 10s!')+'</div>'
+       +(inGame?'<button class="bigbtn" id="stop" style="font-size:40px"'+(mine?' disabled':'')+'>'+(mine?T('멈춤','Stopped'):T('멈춰!','STOP!'))+'</button>':'<div class="wait">'+T('이번 판은 구경해요','Watching this round')+'</div>')
+       +'<div class="wait" id="tst"></div>'); }
+  const tst=$('#tst'); if(tst) tst.textContent=T('멈춘 사람','Stopped')+' '+stopped.length+'/'+ids.length;
+  const sb=$('#stop'); if(sb&&!sb.onpointerdown) sb.onpointerdown=e=>{ e.preventDefault(); if(sb.disabled) return; const v=(Net.now()-st.startAt)/1000; sb.disabled=true; sb.textContent=T('멈춤','Stopped'); L.v=v; buzz(40); beep(880,.1); const tv=$('#tv'); if(tv) tv.textContent=v.toFixed(2); Net.set('rooms/'+code+'/acts/'+uid,{r:st.round,v:Math.round(v*1000)/1000}); };
+  stopTick(); tickT=setInterval(()=>{ const n=Net.now();
+    if(n<st.startAt){ const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } return; }
+    if($('#cd')){ stopTick(); beep(990,.12); render(); return; }
+    const tv=$('#tv'); if(!tv||L.v!=null) return; const s=(n-st.startAt)/1000; tv.textContent=s<3?s.toFixed(2):'?.??'; },30);
+}
+function judgeTimer(st){ const a=room.acts||{}, ids=arr(st.ids), now=Net.now();
+  const vals=ids.map(id=>({id,v:a[id]&&a[id].r===st.round?a[id].v:null}));
+  const live=ids.filter(id=>room.players&&room.players[id]&&room.players[id].on!==false);
+  const allDone=live.every(id=>vals.find(x=>x.id===id).v!=null);
+  if(!allDone&&now<st.startAt+TIMER_LIMIT*1000) return null;
+  const d=vals.map(x=>({id:x.id,d:x.v==null?1e9:Math.abs(x.v-10)})).sort((x,y)=>y.d-x.d);
+  const worst=d[0].d, losers=d.filter(x=>x.d===worst).map(x=>x.id);
+  const next=d.find(x=>x.d<worst); let margin='';
+  if(losers.length===1&&next&&worst<1e8) margin=T('살아남은 사람과 '+(worst-next.d).toFixed(2)+'초 차이','Only '+(worst-next.d).toFixed(2)+'s from safety');
+  return {losers,why:'timer',margin};
+}
+
+/* ===== 총잡이 결투 ===== */
+function drawDuel(st){
+  const a=room.acts||{}, ids=arr(st.ids), inGame=ids.includes(uid), L=loc(st), now=Net.now();
+  if(st.result){ stopTick(); const R=st.result, rows=ids.map(id=>{ const x=a[id]&&a[id].r===st.round?a[id]:{}; return {id,fs:!!x.fs,ms:x.ms}; })
+      .sort((p,q)=>(p.fs-q.fs)||((p.ms??1e9)-(q.ms??1e9)));
+    $('#stage').innerHTML=resultHead(st,R.why==='fs'?T('🚫 부정출발 두 번! 경고 후 또 먼저 쐈어요','🚫 Two false starts — fired early again after a warning'):T('🐢 가장 늦게 쐈어요','🐢 Slowest draw'))
+      +rankTable(rows.map(r=>({id:r.id,bad:arr(R.losers).includes(r.id),val:r.fs?T('부정출발','false start'):r.ms==null?T('안 쏨','no shot'):fmtMs(r.ms)})));
+    finalTick(st); return; }
+  const mine=a[uid]&&a[uid].r===st.round?a[uid]:null;
+  if($('#stage').dataset.k!==L.key){ $('#stage').dataset.k=L.key;
+    const W=st.warn||{}, fsn=arr(st.fsIds);
+    $('#stage').innerHTML=finalBanner(st)+(fsn.length?'<div class="wait" style="color:var(--red);font-weight:900;font-size:16px">⚠️ '+fsn.map(nameOf).map(esc).join(', ')+' '+T('부정출발 경고! 다시 해요','false start warning! Again')+'</div>':'')+(W[uid]&&inGame?'<div class="wait" style="color:var(--red)">'+T('나는 경고 1회 · 한 번 더 부정출발하면 독박','You have 1 warning · next false start = lose')+'</div>':'')+'<div class="arena duel" id="duel" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;touch-action:none"><div class="count" id="dmsg" style="font-size:52px;color:var(--fg)"></div><div class="wait" id="dsub"></div></div><div class="wait" id="dst"></div>'; }
+  const box=$('#duel'), msg=$('#dmsg'), sub=$('#dsub');
+  const paint=()=>{ const n=Net.now();
+    if(L.fs){ box.style.background='#3A1E33'; msg.textContent='🚫'; sub.textContent=(st.warn||{})[uid]?T('두 번째 부정출발!','Second false start!'):T('부정출발! 경고 1회','False start! Warning 1'); return; }
+    if(L.ms!=null){ box.style.background='#163A2A'; msg.textContent=(L.ms/1000).toFixed(3); sub.textContent=T('내 기록','My time'); return; }
+    if(!inGame){ msg.textContent='👀'; sub.textContent=T('이번 판은 구경해요','Watching this round'); return; }
+    if(n<st.startAt){ box.style.background=''; msg.textContent=Math.ceil((st.startAt-n)/1000); sub.textContent=T('손가락을 화면 위에 대고 기다려요','Hover your finger over the screen'); return; }
+    if(L.green==null){ box.style.background='#5A1A1A'; msg.textContent=T('기다려…','Wait…'); sub.textContent=T('초록이 되면 바로 탭! 먼저 누르면 부정출발','Tap the instant it turns green — early = false start'); return; }
+    box.style.background='#1F8A4C'; msg.textContent=T('쏴!','FIRE!'); sub.textContent=''; };
+  box.onpointerdown=e=>{ e.preventDefault(); if(!inGame||L.fs||L.ms!=null) return; const n=Net.now(); if(n<st.startAt) return;
+    if(L.green==null){ L.fs=true; buzz([80,40,80]); beep(180,.3,.1,'square'); Net.set('rooms/'+code+'/acts/'+uid,{r:st.round,fs:true}); }
+    else { L.ms=Math.round(performance.now()-L.green); buzz(30); beep(1200,.08); Net.set('rooms/'+code+'/acts/'+uid,{r:st.round,ms:L.ms}); }
+    paint(); };
+  const shot=ids.filter(id=>a[id]&&a[id].r===st.round&&(a[id].ms!=null||a[id].fs)).length; $('#dst').textContent=T('쏜 사람','Fired')+' '+shot+'/'+ids.length;
+  paint(); stopTick(); tickT=setInterval(()=>{ const n=Net.now(); if(L.green==null&&!L.fs&&n>=st.fireAt){ L.green=performance.now()-(n-st.fireAt); if(inGame&&L.ms==null){ buzz(25); beep(1000,.06); } } paint(); },10);
+}
+function judgeDuel(st){ const a=room.acts||{}, ids=arr(st.ids), now=Net.now(); const x=id=>a[id]&&a[id].r===st.round?a[id]:{};
+  const fs=ids.filter(id=>x(id).fs);
+  if(fs.length){ if(!st._fsAt){ Net.update('rooms/'+code+'/state',{_fsAt:now}); return null; } if(now-st._fsAt<500) return null; const W=st.warn||{}, out=fs.filter(id=>W[id]); if(out.length) return {losers:out,why:'fs'}; const nw=Object.assign({},W); fs.forEach(id=>nw[id]=1); return {restart:true,warn:nw,fsIds:fs}; }
+  if(now<st.fireAt) return null;
+  const live=ids.filter(id=>room.players&&room.players[id]&&room.players[id].on!==false);
+  const all=live.every(id=>x(id).ms!=null);
+  if(!all&&now<st.fireAt+3000) return null;
+  const none=ids.filter(id=>x(id).ms==null); if(none.length) return {losers:none,why:'slow'};
+  const s=ids.map(id=>({id,ms:x(id).ms})).sort((p,q)=>q.ms-p.ms); const worst=s[0].ms, losers=s.filter(p=>p.ms===worst).map(p=>p.id);
+  return {losers,why:'slow',margin:losers.length===1&&s[1]?T((((worst-s[1].ms)/1000).toFixed(3))+'초 차이로 졌어요','Lost by '+((worst-s[1].ms)/1000).toFixed(3)+'s'):''};
+}
+
+/* ===== 1→25 레이스 ===== */
+const RACE_LIMIT=90;
+function drawRace(st){
+  const a=room.acts||{}, ids=arr(st.ids), inGame=ids.includes(uid), L=loc(st), board=arr(st.board), now=Net.now();
+  const x=id=>a[id]&&a[id].r===st.round?a[id]:{};
+  if(st.result){ stopTick(); const R=st.result, rows=ids.map(id=>({id,n:x(id).n||0,t:x(id).time})).sort((p,q)=>((q.t!=null)-(p.t!=null))||((p.t??0)-(q.t??0))||(q.n-p.n));
+    $('#stage').innerHTML=resultHead(st,R.why==='slow'?T('🐢 가장 늦게 끝냈어요','🐢 Finished last'):T('😵 끝까지 못 끝냈어요','😵 Didn\'t finish'))
+      +rankTable(rows.map(r=>({id:r.id,bad:arr(R.losers).includes(r.id),val:r.t!=null?fmtS(r.t):r.n+'/25'})));
+    finalTick(st); return; }
+  if(L.next==null){ L.next=1; L.pen=0; }
+  const pre=now<st.startAt;
+  if($('#stage').dataset.k!==L.key+(pre?'p':'g')){ $('#stage').dataset.k=L.key+(pre?'p':'g');
+    $('#stage').innerHTML=finalBanner(st)+'<div id="rbars" class="calls" style="max-height:none"></div>'
+      +(pre?'<div class="count" id="cd">'+Math.ceil((st.startAt-now)/1000)+'</div><div class="wait">'+T('1부터 25까지 순서대로! 틀리면 +1초','1 to 25 in order! Wrong tap = +1s')+'</div>'
+        :inGame?'<div class="wait" id="rnext" style="font-size:18px;color:var(--fg)"></div><div class="grid25" id="g25">'+board.map(v=>'<button data-n="'+v+'"'+(v<L.next?' class="done"':'')+'>'+v+'</button>').join('')+'</div>'
+        :'<div class="wait">'+T('이번 판은 구경해요','Watching this round')+'</div>');
+    const g=$('#g25'); if(g) g.onpointerdown=e=>{ const b=e.target.closest('button'); if(!b||L.time!=null) return; e.preventDefault(); const v=+b.dataset.n;
+      if(v===L.next){ b.classList.add('done'); L.next++; beep(500+L.next*25,.04); buzz(10);
+        if(L.next>25){ L.time=Math.round(((performance.now()-L.t0)/1000+L.pen)*100)/100; beep(1320,.2); buzz([40,30,80]); Net.set('rooms/'+code+'/acts/'+uid,{r:st.round,n:25,pen:L.pen,time:L.time}); }
+        else Net.set('rooms/'+code+'/acts/'+uid,{r:st.round,n:L.next-1,pen:L.pen}); }
+      else if(v>=L.next){ L.pen++; b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad'); buzz(120); beep(150,.18,.09,'square'); }
+      upd(); };
+  }
+  const upd=()=>{ const A=room.acts||{}, x=id=>A[id]&&A[id].r===st.round?A[id]:{}; const rn=$('#rnext'); if(rn) rn.innerHTML=L.time!=null?T('완료! ','Done! ')+'<b style="color:var(--accent)">'+fmtS(L.time)+'</b>':T('다음','Next')+': <b style="color:var(--accent);font-size:24px">'+L.next+'</b>'+(L.pen?' · <span style="color:var(--red)">+'+L.pen+T('초','s')+'</span>':'');
+    const rb=$('#rbars'); if(rb) rb.innerHTML=ids.map(id=>{ const n=id===uid?Math.min(25,L.next-1):(x(id).n||0), done=id===uid?L.time!=null:x(id).time!=null;
+      return '<div class="pbar"><span class="nm"><i style="background:'+colorOf(id)+'"></i>'+esc(nameOf(id))+'</span><span class="tr"><b style="width:'+(n/25*100)+'%;background:'+colorOf(id)+'"></b></span><span class="ct">'+(done?'🏁':n)+'</span></div>'; }).join(''); };
+  upd();
+  stopTick(); if(pre) tickT=setInterval(()=>{ const n=Net.now(); if(n>=st.startAt){ stopTick(); beep(990,.12); buzz(50); L.t0=performance.now()-(n-st.startAt); render(); return; } const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } },50);
+  else if(L.t0==null) L.t0=performance.now()-(now-st.startAt);
+}
+function judgeRace(st){ const a=room.acts||{}, ids=arr(st.ids), now=Net.now(); const x=id=>a[id]&&a[id].r===st.round?a[id]:{};
+  const live=ids.filter(id=>room.players&&room.players[id]&&room.players[id].on!==false);
+  const all=live.every(id=>x(id).time!=null);
+  if(!all&&now<st.startAt+RACE_LIMIT*1000) return null;
+  const unf=ids.filter(id=>x(id).time==null);
+  if(unf.length){ const mn=Math.min(...unf.map(id=>x(id).n||0)); return {losers:unf.filter(id=>(x(id).n||0)===mn),why:'unfinished'}; }
+  const s=ids.map(id=>({id,t:x(id).time})).sort((p,q)=>q.t-p.t), worst=s[0].t, losers=s.filter(p=>p.t===worst).map(p=>p.id);
+  return {losers,why:'slow',margin:losers.length===1&&s[1]?T((worst-s[1].t).toFixed(2)+'초 차이로 졌어요','Lost by '+(worst-s[1].t).toFixed(2)+'s'):''};
 }
 
 /* ===== 방장 진행 ===== */
@@ -2762,10 +2923,12 @@ async function startGame(){
     const sec={_h:{liar,word,cat}}; ids.forEach(id=>sec[id]=id===liar?{role:'liar'}:{role:'cit',word});
     await Net.set('secrets/'+code,sec);
     await Net.update('rooms/'+code,{acts:null,state:{phase:'game',game:'liar',cat:st.cat||'rand',catName:cat,round,ids,order:shuffle(ids),step:'reveal'}});
-  } else {
-    await Net.update('rooms/'+code,{acts:null,state:{phase:'game',game:'nunchi',cat:st.cat||'rand',round,ids,startAt:Net.now()+3500,final:0}});
-  }
+  } else await startRound(st.game in GAMES?st.game:'nunchi',ids,0,round);
 }
+function startRound(game,ids,final,round,extra){ const st=room.state||{}, now=Net.now(), s=Object.assign({phase:'game',game,cat:st.cat||'rand',round,ids,startAt:now+3500,final},extra||{});
+  if(game==='draw') s.fireAt=s.startAt+1500+rnd(3500);
+  if(game==='race') s.board=shuffle(Array.from({length:25},(_,i)=>i+1));
+  return Net.update('rooms/'+code,{acts:null,state:s}); }
 function hostTick(){
   if(!isHost()){ clearInterval(hostTimer); hostTimer=null; return; }
   if(!hostTimer) hostTimer=setInterval(hostStep,250);
@@ -2776,13 +2939,14 @@ async function hostStep(){
   if(!room||!isHost()||judging) return; const st=room.state||{}; if(st.phase!=='game') return;
   if(st.result){ // 눈치게임: 2명 이상 걸리면 그 사람들끼리 결승
     const L=arr(st.result.losers);
-    if(st.game==='nunchi'&&L.length>1&&st.result.nextAt&&Net.now()>=st.result.nextAt){ judging=true;
-      try{ await Net.update('rooms/'+code,{acts:null,state:Object.assign({},st,{result:null,round:(st.round||0)+1,ids:L,startAt:Net.now()+3500,final:(st.final||0)+1})}); }catch(e){}
+    if(st.game!=='liar'&&L.length>1&&st.result.nextAt&&Net.now()>=st.result.nextAt){ judging=true;
+      try{ await startRound(st.game,L,(st.final||0)+1,(st.round||0)+1); }catch(e){}
       judging=false; }
     return; }
   judging=true;
   try{
-    if(st.game==='nunchi'){ const r=judgeNunchi(st); if(r){ if(r.losers.length>1) r.nextAt=Net.now()+3500; await Net.update('rooms/'+code+'/state',{result:r}); } }
+    const J={nunchi:judgeNunchi,timer:judgeTimer,draw:judgeDuel,race:judgeRace}[st.game];
+    if(J){ const r=J(st); if(r&&r.restart) await startRound(st.game,arr(st.ids),st.final||0,(st.round||0)+1,{warn:r.warn,fsIds:r.fsIds}); else if(r) await setResult(r); }
     else if(st.game==='liar'){
       if(st.step==='vote') await countVotes(st,false);
       else if(st.step==='guess') await checkGuess(st);
