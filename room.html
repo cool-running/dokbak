@@ -61,6 +61,12 @@ button{cursor:pointer}
 .chips button{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--bg);color:var(--mute);font-weight:700;font-size:13px}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .rules{font-size:14px;line-height:1.7;color:var(--mute)}
+.capsel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.capsel button{height:54px;border-radius:14px;border:2px solid var(--line);background:var(--bg);font-family:var(--display);font-size:24px}
+.capsel button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--bg)}
+.pchip.empty{border-style:dashed;color:var(--mute);font-weight:400}
+.pchip button{border:none;background:none;color:var(--mute);font-size:15px;padding:0 0 0 2px;line-height:1}
+.full{color:var(--green)!important}
 .howto{align-self:flex-start;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;font-size:13px}
 .pop{position:fixed;inset:0;z-index:50;background:rgba(5,6,14,.72);display:flex;align-items:center;justify-content:center;padding:20px}
 .pop-in{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;animation:pop .2s ease-out}
@@ -146,6 +152,7 @@ button{cursor:pointer}
 
 </div>
 <div class="toast" id="toast" hidden></div>
+<div class="pop" id="capPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="capTitle">몇 명 방을 만들까요?</div><div class="capsel" id="capSel"></div><div class="row2"><button class="btn ghost" id="capNo">취소</button><button class="btn" id="capOk">만들기</button></div></div></div>
 <div class="pop" id="howPop" hidden><div class="pop-in"><div class="disp" style="font-size:24px" id="howTitle"></div><div class="rules" id="rules"></div><button class="btn" id="howOk">확인</button></div></div>
 
 <script>
@@ -2476,7 +2483,7 @@ function applyText(){
   set('#tName','내 이름','My name'); set('#tCode','방 번호','Room number');
   set('#bCreate','방 만들기','Create room'); set('#bJoin','방 번호로 참여','Join with number');
   set('#tLobby','대기실','Lobby'); set('#tRoomNo','방 번호','Room number'); set('#tScan','카메라로 QR을 찍으면<br>바로 들어와요','Scan the QR with<br>your camera to join',1);
-  set('#tTopic','주제','Topic'); set('#tHow','게임 방법','How to play'); set('#howOk','확인','OK'); set('#bLobby','다른 게임','Other games'); set('#bAgain','한 판 더','Again');
+  set('#tTopic','주제','Topic'); set('#tHow','게임 방법','How to play'); set('#capTitle','몇 명 방을 만들까요?','How many players?'); set('#capNo','취소','Cancel'); set('#capOk','만들기','Create'); set('#howOk','확인','OK'); set('#bLobby','다른 게임','Other games'); set('#bAgain','한 판 더','Again');
   $('#nameIn').placeholder=T('예: 민수','e.g. Alex');
 }
 
@@ -2533,7 +2540,7 @@ function ensureNet(){ if(!netReady){ $('#netStatus').className='status'; $('#net
 /* ===== 상태 ===== */
 let code=null, room=null, mySecret=null, unsub=[], hostTimer=null, lastPhaseKey='', myName='';
 const isHost=()=>room&&room.host===uid;
-const plist=()=>{ const p=(room&&room.players)||{}; return Object.keys(p).map(k=>Object.assign({id:k},p[k])).sort((a,b)=>(a.joined||0)-(b.joined||0)); };
+const plist=()=>{ const p=(room&&room.players)||{}; return Object.keys(p).filter(k=>p[k]&&p[k].name).map(k=>Object.assign({id:k},p[k])).sort((a,b)=>(a.joined||0)-(b.joined||0)); };
 const colorOf=id=>{ const i=plist().findIndex(p=>p.id===id); return PAL[(i<0?0:i)%PAL.length]; };
 const nameOf=id=>{ const p=room&&room.players&&room.players[id]; return p?p.name:'?'; };
 const online=()=>plist().filter(p=>p.on!==false);
@@ -2543,12 +2550,15 @@ function show(id){ ['#sEntry','#sLobby','#sGame'].forEach(s=>$(s).hidden=s!==id)
 try{ myName=Q.get('name')||localStorage.getItem('dokbakName')||''; }catch(e){}
 function saveName(){ myName=$('#nameIn').value.trim().slice(0,8); try{ localStorage.setItem('dokbakName',myName); }catch(e){} return myName; }
 function needName(){ if(saveName()) return true; toast(T('이름을 먼저 적어 주세요','Please enter your name first')); $('#nameIn').focus(); return false; }
+let capPick=Math.min(10,Math.max(3,+Q.get('n')||4));
+function askCap(){ if(!needName()) return; const box=$('#capSel'); box.innerHTML=[3,4,5,6,7,8,9,10].map(n=>'<button data-n="'+n+'" aria-pressed="'+(n===capPick)+'">'+n+'</button>').join('');
+  [...box.children].forEach(b=>b.onclick=()=>{ capPick=+b.dataset.n; [...box.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); beep(700,.04); }); $('#capPop').hidden=false; }
 async function createRoom(){
-  if(!needName()) return; $('#bCreate').disabled=true;
+  $('#capPop').hidden=true; if(!needName()) return; $('#bCreate').disabled=true;
   try{ await ensureNet();
     let c=null; for(let k=0;k<12;k++){ const t=String(1000+rnd(9000)); const r=await Net.get('rooms/'+t); if(!r||!r.created||r.created<Net.now()-6*3600e3){ c=t; break; } }
     if(!c) throw new Error('no code');
-    await Net.set('rooms/'+c,{host:uid,created:Net.TS,state:{phase:'lobby',game:'nunchi',cat:'rand',round:0},players:{[uid]:{name:myName,joined:Net.TS,on:true}}});
+    await Net.set('rooms/'+c,{host:uid,created:Net.TS,cap:capPick,state:{phase:'lobby',game:'nunchi',cat:'rand',round:0},players:{[uid]:{name:myName,joined:Net.TS,on:true}}});
     await Net.set('roomIdx/'+c,Net.TS).catch(()=>{});
     await enter(c);
     sweepOld(c);
@@ -2565,7 +2575,10 @@ async function joinRoom(){
   if(c.length!==4){ toast(T('방 번호 4자리를 넣어 주세요','Enter the 4-digit room number')); return; }
   $('#bJoin').disabled=true;
   try{ await ensureNet(); const r=await Net.get('rooms/'+c);
+    const inside=r&&r.players&&r.players[uid], cnt=r&&r.players?Object.keys(r.players).length:0;
     if(!r||!r.host){ toast(T('그런 방이 없어요','No room with that number')); }
+    else if(!inside&&r.cap&&cnt>=r.cap){ toast(T('방이 꽉 찼어요 ('+r.cap+'명)','The room is full ('+r.cap+' players)')); }
+    else if(!inside&&r.state&&r.state.phase==='game'){ toast(T('게임 중이에요. 이번 판이 끝나면 들어와요','A game is in progress — try again after this round')); }
     else{ await Net.set('rooms/'+c+'/players/'+uid,{name:myName,joined:(r.players&&r.players[uid]&&r.players[uid].joined)||Net.TS,on:true}); await enter(c); }
   }catch(e){ console.error(e); if(Net) toast(T('들어가지 못했어요','Could not join')); }
   $('#bJoin').disabled=false;
@@ -2583,7 +2596,7 @@ async function enter(c){
   unsub.push(Net.on('secrets/'+c+'/'+uid,s=>{ mySecret=s; if(room) render(); }));
   drawQR(c); show('#sLobby');
 }
-function leaveLocal(){ unsub.forEach(f=>f()); unsub=[]; code=null; room=null; mySecret=null; clearInterval(hostTimer); hostTimer=null; show('#sEntry'); try{ history.replaceState(null,'',location.pathname+'?'+(IN_APP?'app=1&':'')+(MOCK?'mock=1&':'')+'lang='+LANG); }catch(e){} }
+function leaveLocal(){ if(code&&Net) Net.cancelDisc('rooms/'+code+'/players/'+uid+'/on').catch(()=>{}); unsub.forEach(f=>f()); unsub=[]; code=null; room=null; mySecret=null; clearInterval(hostTimer); hostTimer=null; show('#sEntry'); try{ history.replaceState(null,'',location.pathname+'?'+(IN_APP?'app=1&':'')+(MOCK?'mock=1&':'')+'lang='+LANG); }catch(e){} }
 async function leaveRoom(){ if(!code) return show('#sEntry'); const c=code;
   try{ await Net.cancelDisc('rooms/'+c+'/players/'+uid+'/on');
     if(isHost()){ await Net.remove('secrets/'+c); await Net.remove('rooms/'+c); await Net.remove('roomIdx/'+c).catch(()=>{}); } else await Net.remove('rooms/'+c+'/players/'+uid); }catch(e){}
@@ -2612,8 +2625,11 @@ function render(){
 }
 function renderLobby(){
   stopTick(); show('#sLobby'); const ps=plist(), host=isHost(), st=room.state||{}, g=GAMES[st.game]||GAMES.nunchi;
-  $('#codeOut').textContent=code; $('#pCount').textContent=T(online().length+'명',online().length+(online().length===1?' player':' players'));
-  $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+'</span>').join('');
+  const cap=room.cap||ps.length, full=ps.length>=cap;
+  $('#codeOut').textContent=code; $('#pCount').textContent=ps.length+'/'+cap+T('명',''); $('#pCount').classList.toggle('full',full);
+  $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+(host&&p.id!==uid?'<button data-kick="'+p.id+'" aria-label="'+T('내보내기','Remove')+'">×</button>':'')+'</span>').join('')
+    +Array.from({length:Math.max(0,cap-ps.length)},()=>'<span class="pchip empty">'+T('빈자리','open')+'</span>').join('');
+  $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; if(confirm(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'))) Net.remove('rooms/'+code+'/players/'+id); });
   $('#gPick').innerHTML=Object.keys(GAMES).map(k=>'<button class="gcard" data-g="'+k+'" aria-pressed="'+(st.game===k)+'"'+(host?'':' disabled')+'><b>'+(EN?GAMES[k].en:GAMES[k].ko)+'</b><span>'+GAMES[k].sub()+'</span></button>').join('');
   [...$('#gPick').children].forEach(b=>b.onclick=()=>{ if(!isHost()) return; beep(700,.05); Net.update('rooms/'+code+'/state',{game:b.dataset.g}); });
   $('#liarOpt').hidden=st.game!=='liar';
@@ -2623,7 +2639,7 @@ function renderLobby(){
   $('#rules').innerHTML=g.rules(); $('#howTitle').textContent=EN?g.en:g.ko;
   const enough=online().length>=g.min;
   $('#bStart').hidden=!host; $('#bStart').disabled=!enough; $('#bStart').textContent=enough?T('시작','Start'):T(g.min+'명부터 할 수 있어요','Needs '+g.min+'+ players');
-  $('#lWait').textContent=host?(enough?'':T('친구들이 QR을 찍고 들어오길 기다려요','Waiting for friends to scan the QR')):T('방장이 게임을 고르고 시작해요','The host picks a game and starts');
+  $('#lWait').textContent=full?T('🎉 다 모였어요!','🎉 Everyone is here!'):host?T('빈자리 '+(cap-ps.length)+'개 · 친구들이 QR을 찍고 들어오길 기다려요',(cap-ps.length)+' open · waiting for friends to scan the QR'):T('방장이 게임을 고르고 시작해요','The host picks a game and starts');
 }
 let tickT=0; const stopTick=()=>{ clearInterval(tickT); tickT=0; };
 function renderGame(st){
@@ -2789,6 +2805,7 @@ $('#lBack').onclick=()=>{ if(confirmLeave()) leaveRoom(); };
 function confirmLeave(){ return !isHost()||online().length<=1||confirm(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?')); }
 window.appBack=function(){ // 안드로이드 뒤로가기
   if(!$('#howPop').hidden){ $('#howPop').hidden=true; return 'ok'; }
+  if(!$('#capPop').hidden){ $('#capPop').hidden=true; return 'ok'; }
   if(!$('#sGame').hidden){ $('#gBack').onclick(); return 'ok'; }
   if(!$('#sLobby').hidden){ $('#lBack').onclick(); return 'ok'; }
   if(IN_APP&&history.length>1){ history.back(); return 'ok'; }
@@ -2798,7 +2815,7 @@ window.appBack=function(){ // 안드로이드 뒤로가기
 /* ===== 시작 ===== */
 applyText();
 $('#nameIn').value=myName;
-$('#bCreate').onclick=createRoom; $('#bJoin').onclick=joinRoom;
+$('#bCreate').onclick=askCap; $('#capOk').onclick=createRoom; $('#capNo').onclick=()=>$('#capPop').hidden=true; $('#capPop').onclick=e=>{ if(e.target.id==='capPop') $('#capPop').hidden=true; }; $('#bJoin').onclick=joinRoom;
 $('#codeIn').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); });
 $('#codeIn').addEventListener('keydown',e=>{ if(e.key==='Enter') joinRoom(); });
 const qr=(Q.get('r')||'').replace(/\D/g,'');
