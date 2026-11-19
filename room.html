@@ -58,7 +58,10 @@ button{cursor:pointer}
 .gcard[aria-pressed="true"]{border-color:var(--accent);background:#2A2B4A}
 .gcard[aria-pressed="true"] b{color:var(--accent)}
 .gcard{position:relative}.gcard .rec{align-self:flex-start;font-size:11px;font-weight:900;color:var(--bg);background:var(--accent);border-radius:999px;padding:2px 8px;line-height:1.4}
-.gcard.dim{opacity:.4}.gcard .need{color:var(--red);font-weight:900}
+.gcard.dim{opacity:.4}
+.gcard .q{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);color:var(--mute);font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;z-index:2}
+.gcard .rec.ghost{visibility:hidden}
+.ver{text-align:center;font-size:11px;color:var(--mute);opacity:.6;flex:none}.gcard .need{color:var(--red);font-weight:900}
 .recline{font-size:14px;color:var(--mute);text-align:center;line-height:1.5;min-height:42px}.recline b{color:var(--accent)}
 .pbar{display:flex;align-items:center;gap:8px;height:26px;font-size:13px;font-weight:700}.pbar .nm{width:72px;display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pbar .nm i{flex:none;width:10px;height:10px;border-radius:50%}
 .pbar .tr{flex:1;height:10px;border-radius:6px;background:var(--card);overflow:hidden}.pbar .tr b{display:block;height:100%;border-radius:6px;transition:width .15s}.pbar .ct{width:28px;text-align:right;font-family:var(--display);font-size:16px}
@@ -146,6 +149,7 @@ button{cursor:pointer}
   <div class="status" id="netStatus"></div>
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">방 번호로 참여</button>
+  <div class="ver">v5</div>
 </section>
 
 <!-- 대기실 -->
@@ -155,7 +159,7 @@ button{cursor:pointer}
   <div class="players" id="players"></div>
   <div class="games" id="gPick"></div>
   <div class="card" id="liarOpt" hidden><div class="mute" style="font-size:13px;font-weight:700;margin-bottom:8px" id="tTopic">주제</div><div class="chips" id="cats"></div></div>
-  <button class="howto" id="bHow">❔ <span id="tHow">게임 방법</span></button>
+  <button class="howto" id="bHow" hidden>❔ <span id="tHow">게임 방법</span></button>
   <div style="flex:1"></div>
   <div class="lbar"><div class="wait" id="lWait"></div><button class="btn" id="bStart">시작</button></div>
 </section>
@@ -2668,13 +2672,12 @@ function renderLobby(){
     +Array.from({length:Math.max(0,cap-ps.length)},()=>'<span class="pchip empty">'+T('빈자리','open')+'</span>').join('');
   $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; ask(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'),T('내보내기','Remove')).then(ok=>{ if(ok) Net.remove('rooms/'+code+'/players/'+id); }); });
   const on=online().length, rec=REC(Math.max(on,2)), order=[...rec,...Object.keys(GAMES).filter(k=>!rec.includes(k))];
-  $('#gPick').innerHTML=order.map(k=>{ const G=GAMES[k], short=on<G.min; return '<button class="gcard'+(short?' dim':'')+'" data-g="'+k+'" aria-pressed="'+(st.game===k)+'"'+(host?'':' disabled')+'>'+(rec.includes(k)&&!short?'<span class="rec">'+T('추천','Best')+'</span>':'')+'<b>'+(EN?G.en:G.ko)+'</b><span>'+(short?'<span class="need">'+T(G.min+'명부터',G.min+'+ players')+'</span> · ':'')+G.sub()+'</span></button>'; }).join('');
-  [...$('#gPick').children].forEach(b=>b.onclick=()=>{ if(!isHost()) return; beep(700,.05); Net.update('rooms/'+code+'/state',{game:b.dataset.g}); });
+  $('#gPick').innerHTML=order.map(k=>{ const G=GAMES[k], short=on<G.min; return '<button class="gcard'+(short?' dim':'')+'" data-g="'+k+'" aria-pressed="'+(st.game===k)+'">'+'<span class="q" data-q="'+k+'" role="button" aria-label="'+T('게임 방법','How to play')+'">?</span>'+(rec.includes(k)&&!short?'<span class="rec">'+T('추천','Best')+'</span>':'<span class="rec ghost">·</span>')+'<b>'+(EN?G.en:G.ko)+'</b><span>'+(short?'<span class="need">'+T(G.min+'명부터',G.min+'+ players')+'</span> · ':'')+G.sub()+'</span></button>'; }).join('');
+  [...$('#gPick').children].forEach(b=>b.onclick=e=>{ const q=e.target.closest('[data-q]'); if(q){ showHow(q.dataset.q); return; } if(!isHost()) return; beep(700,.05); Net.update('rooms/'+code+'/state',{game:b.dataset.g}); });
   $('#liarOpt').hidden=st.game!=='liar';
   if(st.game==='liar'){ const W=EN?WORDS_EN:WORDS_KO, cats=['rand',...Object.keys(W)];
     $('#cats').innerHTML=cats.map(c=>'<button data-c="'+esc(c)+'" aria-pressed="'+((st.cat||'rand')===c)+'"'+(host?'':' disabled')+'>'+esc(c==='rand'?T('랜덤','Random'):c)+'</button>').join('');
     [...$('#cats').children].forEach(b=>b.onclick=()=>{ if(isHost()) Net.update('rooms/'+code+'/state',{cat:b.dataset.c}); }); }
-  $('#rules').innerHTML=g.rules(); $('#howTitle').textContent=EN?g.en:g.ko;
   const enough=online().length>=g.min;
   $('#bStart').hidden=!host; $('#bStart').disabled=!enough; $('#bStart').textContent=enough?T('시작','Start'):T(g.min+'명부터 할 수 있어요','Needs '+g.min+'+ players');
   if(host&&full&&enough&&!wasFull&&$('#capPop').hidden){ $('#fullGame').textContent=(EN?g.en:g.ko); $('#fullTitle').textContent=T('다 모였어요!','Everyone is here!'); $('#fullNo').textContent=T('다른 게임','Other game'); $('#fullGo').textContent=T('시작','Start'); $('#fullPop').hidden=false; beep(880,.08); setTimeout(()=>beep(1175,.12),110); buzz([40,40,40]); }
@@ -3070,7 +3073,8 @@ $('#bStart').onclick=startGame;
 $('#fullGo').onclick=()=>{ $('#fullPop').hidden=true; startGame(); };
 $('#fullNo').onclick=()=>{ $('#fullPop').hidden=true; $('#gPick').scrollIntoView({behavior:'smooth',block:'start'}); };
 $('#fullPop').onclick=e=>{ if(e.target.id==='fullPop') $('#fullPop').hidden=true; };
-$('#bHow').onclick=()=>{ $('#howPop').hidden=false; };
+function showHow(k){ const g=GAMES[k]; if(!g) return; $('#rules').innerHTML=g.rules(); $('#howTitle').textContent=EN?g.en:g.ko; $('#howOk').textContent=T('확인','OK'); $('#howPop').hidden=false; beep(700,.04); }
+$('#bHow').onclick=()=>showHow((room&&room.state&&room.state.game)||'nunchi');
 $('#howOk').onclick=()=>{ $('#howPop').hidden=true; };
 $('#howPop').onclick=e=>{ if(e.target.id==='howPop') $('#howPop').hidden=true; };
 $('#bAgain').onclick=startGame;
