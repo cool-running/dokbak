@@ -68,6 +68,11 @@ button{cursor:pointer}
 .grid25 button.bad{animation:bad .35s}@keyframes bad{0%,100%{transform:none;background:var(--card)}30%{transform:translateX(-4px);background:var(--red)}60%{transform:translateX(4px)}}
 .pchip .lz{font-size:11px;color:var(--red);font-weight:900;margin-left:2px}
 .duel{transition:background .05s}
+.ccv{width:100%;aspect-ratio:600/500;border-radius:16px;display:block;touch-action:none}
+.cctl{display:flex;flex-direction:column;gap:8px}.crow{display:flex;gap:8px;align-items:center}.cab{flex:1;height:52px;font-size:22px}
+.cang{flex:1.2;text-align:center;font-family:var(--display);font-size:28px;color:var(--accent)}
+.cpow{position:relative;height:14px;border-radius:8px;background:var(--card);border:1px solid var(--line);overflow:hidden}.cpow b{display:block;height:100%;background:linear-gradient(90deg,#7CE38B,#FFD447,#FF5C7A)}.cpow i{position:absolute;top:0;bottom:0;width:3px;background:#fff;margin-left:-1px}
+.cfire{height:60px;font-size:18px;touch-action:none;user-select:none;-webkit-user-select:none}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--bg);color:var(--mute);font-weight:700;font-size:13px}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -2626,6 +2631,10 @@ const GAMES={
     sub:()=>T('나만 보는 제시어 · 투표로 라이어를 찾아요','Secret word on your phone · vote out the liar'),
     rules:()=>T('각자 폰에 <b>제시어</b>가 나와요. 딱 한 명, <b>라이어</b>만 제시어를 몰라요.<br>순서대로 한마디씩 설명하고, 폰으로 <b>라이어를 투표</b>해요.<br>· 라이어를 잡고 라이어가 제시어를 못 맞히면 → <b>라이어 독박</b><br>· 라이어가 아닌 사람이 지목되면 → <b>지목된 사람 독박</b><br>· 라이어가 잡혀도 제시어를 맞히면 → <b>라이어를 지목한 사람 중 추첨</b>',
       'Everyone sees the <b>secret word</b> — except one <b>liar</b>.<br>Take turns describing it, then <b>vote</b> for the liar on your phone.<br>· Liar caught and can\'t guess the word → <b>liar loses</b><br>· Wrong person voted out → <b>that person loses</b><br>· Liar caught but guesses the word → <b>random pick among those who voted for the liar</b>')},
+  cannon:{ko:'대포 결투',en:'Cannon Duel',min:2,
+    sub:()=>T('각도·힘·바람을 읽고 쏴라! 먼저 터지면 독박','Read angle, power and wind. First tank down loses'),
+    rules:()=>T('차례가 오면 <b>◀ ▶로 각도</b>를 맞추고, <b>발사 버튼을 꾹</b> 눌러 힘을 모았다가 <b>떼면 발사!</b><br>· 게이지는 올라갔다 내려갔다 해요 · 지난번 힘은 하얀 선으로 보여요<br>· 매 턴 <b>바람</b>이 바뀌어요 · 맞은 땅은 파여요<br>· 직격은 추가 피해! 내 포탄에 나도 맞을 수 있어요<br>· <b>체력이 먼저 0이 된 사람</b> → 독박 (턴이 다 끝나면 체력 꼴찌)<br>· 한 턴은 20초',
+      'On your turn set the <b>angle with ◀ ▶</b>, then <b>hold FIRE</b> to charge and <b>release to shoot!</b><br>· The gauge goes up and down · a white line marks your last power<br>· <b>Wind</b> changes every turn · shots dig craters<br>· Direct hits deal bonus damage — you can hit yourself too<br>· <b>First tank to 0 HP</b> loses (out of turns → lowest HP)<br>· 20 seconds per turn')},
   draw:{ko:'총잡이 결투',en:'Quick Draw',min:2,
     sub:()=>T('초록불에 누가 먼저 쏘나! 부정출발 2번이면 독박','Fire first on green. 2 false starts = lose'),
     rules:()=>T('화면이 <b>빨강</b>이면 기다리고, <b>초록</b>으로 바뀌는 순간 화면을 탭!<br>· <b>가장 늦게 쏜 사람</b> → 독박<br>· 초록 전에 누르면 <b>부정출발</b> → 1번째는 <b>경고</b> 후 다시, <b>2번째면 독박</b><br>· 언제 바뀔지는 매번 달라요 (1.5~5초)<br>· 결과에 <b>몇 초 차이</b>로 졌는지 나와요',
@@ -2640,7 +2649,7 @@ const GAMES={
       'A clock starts. <b>After 3s the numbers vanish</b> — count in your head and hit STOP at <b>exactly 10s</b>!<br>· <b>Furthest from 10s</b> → loses<br>· Everyone plays at once · no stop within 20s = loss<br>· Results show everyone\'s time')}
 };
 // 인원별 추천
-const REC=n=>n<=2?['draw','race','timer']:n===3?['nunchi','draw','race','timer']:['liar','nunchi','timer'];
+const REC=n=>n<=2?['cannon','draw','race','timer']:n===3?['nunchi','cannon','draw','race']:['liar','nunchi','cannon','timer'];
 const recText=n=>'👍 '+T(n+'명 추천','Best for '+n)+': <b>'+REC(n).slice(0,3).map(k=>EN?GAMES[k].en:GAMES[k].ko).join(' · ')+'</b>'+(n>=4?'<br>'+T('· 폭탄 넘기기는 준비 중','· Hot Potato coming soon'):'');
 
 /* ===== 그리기 ===== */
@@ -2675,8 +2684,8 @@ function renderGame(st){
   const pendingFinal=st.game!=='liar'&&st.result&&arr(st.result.losers).length>1;
   $('#gBtns').hidden=!(st.result&&isHost())||pendingFinal;
   if(st.result&&!isHost()&&!pendingFinal) setTimeout(()=>{ const w=document.createElement('div'); w.className='wait'; w.textContent=T('방장이 다음 판을 시작해요','The host will start the next round'); $('#stage').appendChild(w); },0);
-  if(!['timer','draw','race'].includes(st.game)||st.result) delete $('#stage').dataset.k;
-  ({nunchi:drawNunchi,liar:drawLiar,timer:drawTimer,draw:drawDuel,race:drawRace}[st.game]||drawNunchi)(st);
+  if(!['timer','draw','race','cannon'].includes(st.game)||st.result) delete $('#stage').dataset.k;
+  ({nunchi:drawNunchi,liar:drawLiar,timer:drawTimer,draw:drawDuel,race:drawRace,cannon:drawCannon}[st.game]||drawNunchi)(st);
   if(st.result&&(st.game==='nunchi'||st.game==='liar')){ const L=arr(st.result.losers), w=$('#stage .result'); if(L.length===1&&w) w.insertAdjacentHTML('beforeend',streakText(L[0])); }
 }
 
@@ -2914,6 +2923,101 @@ function judgeRace(st){ const a=room.acts||{}, ids=arr(st.ids), now=Net.now(); c
   return {losers,why:'slow',margin:losers.length===1&&s[1]?T((worst-s[1].t).toFixed(2)+'초 차이로 졌어요','Lost by '+(worst-s[1].t).toFixed(2)+'s'):''};
 }
 
+/* ===== 대포 결투 (턴제 포격) ===== */
+const CW=600, CH=500, CG=220, CVMAX=430, CWIND=6, CTURN=20000, CTANK=17, CDMG_R=52, CCRATER=28;
+function cannonInit(ids){ const n=ids.length, xs=ids.map((_,i)=>n===1?300:Math.round(55+i*(490/(n-1)))), pos=shuffle(xs), tanks={};
+  ids.forEach((id,i)=>tanks[id]={x:pos[i],hp:100,a:pos[i]<300?60:120});
+  const order=shuffle(ids);
+  return {tanks,order,turn:0,turns:0,limit:Math.max(12,5*n),seq:1,wind:rnd(13)-6,terr:[Math.random()*6.28,Math.random()*6.28,Math.random()*6.28],craters:[],shot:null}; }
+function cH(st,x){ const p=arr(st.terr); let h=175+55*Math.sin(x*0.011+(p[0]||0))+30*Math.sin(x*0.027+(p[1]||0))+12*Math.sin(x*0.06+(p[2]||0));
+  arr(st.craters).forEach(c=>{ const dx=x-c.x; if(Math.abs(dx)<c.r) h=Math.min(h,c.y-Math.sqrt(c.r*c.r-dx*dx)); });
+  return Math.max(8,h); }
+const cTy=(st,x)=>cH(st,x)+9;
+function cSim(st,by,a,p){ const t=st.tanks[by], rad=a*Math.PI/180, v=p*CVMAX, ax=(st.wind||0)*CWIND, dt=1/60;
+  let x=t.x+Math.cos(rad)*16, y=cTy(st,t.x)+Math.sin(rad)*16+3, vx=Math.cos(rad)*v, vy=Math.sin(rad)*v; const pts=[[x,y]]; let hit=null, miss=false;
+  for(let i=0;i<60*14;i++){ vx+=ax*dt; vy-=CG*dt; x+=vx*dt; y+=vy*dt; pts.push([x,y]);
+    if(x<-40||x>CW+40){ miss=true; break; }
+    let th=null; for(const id in st.tanks){ const k=st.tanks[id]; if(k.hp<=0||(id===by&&i<15)) continue; const dx=x-k.x, dy=y-cTy(st,k.x); if(dx*dx+dy*dy<CTANK*CTANK){ th=id; break; } }
+    if(th){ hit=th; break; } if(y<=cH(st,x)) break; }
+  return {pts,ix:x,iy:y,T:pts.length/60,hit,miss}; }
+function cDamage(st,r){ const d={}; if(r.miss) return d;
+  for(const id in st.tanks){ const k=st.tanks[id]; if(k.hp<=0) continue; const dx=r.ix-k.x, dy=r.iy-cTy(st,k.x), dist=Math.sqrt(dx*dx+dy*dy);
+    let v=dist<CDMG_R?Math.round(42*(1-dist/CDMG_R)):0; if(r.hit===id) v+=18; if(v>0) d[id]=v; }
+  return d; }
+const cShooter=st=>arr(st.order)[st.turn||0];
+const cElev=a=>a<=90?a:180-a, cDir=a=>a<=90?'→':'←';
+function drawCannon(st){
+  const ids=arr(st.ids), L=loc(st), me=uid, now=Net.now();
+  if(st.result){ stopTick(); const R=st.result, rows=ids.map(id=>({id,hp:Math.max(0,(st.tanks[id]||{}).hp||0)})).sort((a,b)=>b.hp-a.hp);
+    $('#stage').innerHTML=resultHead(st,R.why==='dead'?T('💥 탱크가 터졌어요!','💥 Tank destroyed!'):T('⌛ 턴이 다 끝났어요 · 체력 꼴찌','⌛ Out of turns · lowest HP'))
+      +rankTable(rows.map(r=>({id:r.id,bad:arr(R.losers).includes(r.id),val:'❤️ '+r.hp})));
+    finalTick(st); return; }
+  if($('#stage').dataset.k!==L.key){ $('#stage').dataset.k=L.key; L.anim=null;
+    $('#stage').innerHTML=finalBanner(st)+'<div class="wait" id="cInfo" style="font-size:15px;color:var(--fg)"></div><canvas class="ccv" id="ccv"></canvas><div class="calls" id="cHp" style="max-height:none;gap:2px"></div>'
+      +'<div id="cCtl" class="cctl" hidden><div class="crow"><button class="btn ghost cab" id="cL">◀</button><div class="cang" id="cAng"></div><button class="btn ghost cab" id="cR">▶</button></div>'
+      +'<div class="cpow"><b id="cPw"></b><i id="cLast"></i></div><button class="btn cfire" id="cFire">'+T('꾹 눌러 힘 모으고 떼면 발사!','Hold to charge · release to fire!')+'</button></div>';
+    const hold=(el,d)=>{ let iv=0; const stop=()=>{ clearInterval(iv); iv=0; }; el.onpointerdown=e=>{ e.preventDefault(); stop(); L.a=Math.max(5,Math.min(175,L.a+d)); iv=setInterval(()=>{ L.a=Math.max(5,Math.min(175,L.a+d)); },55); }; el.onpointerup=el.onpointerleave=el.onpointercancel=stop; };
+    hold($('#cL'),1); hold($('#cR'),-1);
+    const f=$('#cFire');
+    f.onpointerdown=e=>{ e.preventDefault(); const s=room.state; if(cShooter(s)!==uid||s.shot||L.fired===s.seq||Net.now()<s.startAt) return; L.cs=performance.now(); beep(400,.05); };
+    f.onpointerup=f.onpointerleave=f.onpointercancel=()=>{ if(L.cs==null) return; const s=room.state, p=Math.max(.05,L.pw||0); L.cs=null; if(cShooter(s)!==uid||s.shot||L.fired===s.seq) return;
+      L.fired=s.seq; L.lastP=p; buzz(50); beep(160,.25,.1,'sawtooth'); Net.set('rooms/'+code+'/acts/'+uid,{r:s.round,seq:s.seq,a:L.a,p:Math.round(p*1000)/1000}); };
+  }
+  if(L.a==null){ const t=st.tanks[me]; L.a=t?t.a:60; }
+  stopTick(); tickT=setInterval(()=>cFrame(),33); cFrame();
+}
+function cFrame(){
+  const st=room&&room.state; if(!st||st.game!=='cannon'||st.result) return; const cv=$('#ccv'); if(!cv) return; const L=loc(st), now=Net.now(), sh=cShooter(st), mine=sh===uid&&(st.tanks[uid]||{}).hp>0;
+  // 애니메이션
+  if(st.shot&&(!L.anim||L.anim.seq!==st.shot.seq)){ const r=cSim(st,st.shot.by,st.shot.a,st.shot.p); L.anim={seq:st.shot.seq,t0:performance.now(),pts:r.pts}; }
+  const A=st.shot&&L.anim&&L.anim.seq===st.shot.seq?L.anim:null, el=A?(performance.now()-A.t0)/1000:0, flying=A&&el<st.shot.T, landed=A&&!flying;
+  if(A&&landed&&!A.boom){ A.boom=performance.now(); if(!st.shot.miss){ beep(90,.4,.12,'square'); buzz(80); } }
+  const dmg=landed?(st.shot.dmg||{}):{};
+  // 캔버스
+  const w=cv.clientWidth, dpr=Math.min(2,window.devicePixelRatio||1); if(cv.width!==Math.round(w*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(w*CH/CW*dpr); }
+  const s=cv.width/CW, x=cv.getContext('2d'), X=v=>v*s, Y=v=>(CH-v)*s;
+  const sky=x.createLinearGradient(0,0,0,cv.height); sky.addColorStop(0,'#1B2050'); sky.addColorStop(1,'#3B3F7A'); x.fillStyle=sky; x.fillRect(0,0,cv.width,cv.height);
+  x.beginPath(); x.moveTo(0,cv.height); for(let i=0;i<=CW;i+=3) x.lineTo(X(i),Y(cH(st,i))); x.lineTo(cv.width,cv.height); x.closePath();
+  const gr=x.createLinearGradient(0,Y(260),0,cv.height); gr.addColorStop(0,'#5FB35A'); gr.addColorStop(.12,'#7A5A3A'); gr.addColorStop(1,'#3E2C1F'); x.fillStyle=gr; x.fill();
+  for(const id of arr(st.ids)){ const k=st.tanks[id]; if(!k) continue; const hp=k.hp-(dmg[id]||0); const tx=X(k.x), ty=Y(cTy(st,k.x)), a=(id===uid&&mine?L.a:k.a)*Math.PI/180, c=colorOf(id);
+    x.globalAlpha=hp<=0?.35:1; x.strokeStyle=c; x.lineWidth=6*s; x.lineCap='round'; x.beginPath(); x.moveTo(tx,ty); x.lineTo(tx+Math.cos(a)*25*s,ty-Math.sin(a)*25*s); x.stroke();
+    x.fillStyle=c; x.beginPath(); x.arc(tx,ty,15*s,Math.PI,0); x.fill(); x.fillRect(tx-19*s,ty,38*s,8*s);
+    x.font='bold '+Math.round(24*s)+'px sans-serif'; x.textAlign='center'; x.fillStyle='#fff'; x.fillText(nameOf(id).slice(0,5)+(id===sh&&!A?' ▼':''),tx,ty-26*s); x.globalAlpha=1;
+    if(landed&&dmg[id]&&el-st.shot.T<1.6){ x.fillStyle='#FF5C7A'; x.font='bold '+Math.round(34*s)+'px sans-serif'; x.fillText('-'+dmg[id],tx,ty-52*s-(el-st.shot.T)*20*s); } }
+  if(A){ const n=Math.min(A.pts.length,Math.floor(el*60)+1); x.strokeStyle='rgba(255,255,255,.35)'; x.lineWidth=2*s; x.beginPath(); for(let i=0;i<n;i++){ const p=A.pts[i]; i?x.lineTo(X(p[0]),Y(p[1])):x.moveTo(X(p[0]),Y(p[1])); } x.stroke();
+    if(flying){ const p=A.pts[n-1]; x.fillStyle='#FFD447'; x.beginPath(); x.arc(X(p[0]),Y(p[1]),6*s,0,7); x.fill(); }
+    else if(!st.shot.miss){ const b=(performance.now()-A.boom)/1000; if(b<.6){ x.fillStyle='rgba(255,140,40,'+(1-b/.6)+')'; x.beginPath(); x.arc(X(st.shot.ix),Y(st.shot.iy),(10+b*60)*s,0,7); x.fill(); } } }
+  // 바람
+  const wd=st.wind||0; x.fillStyle='#fff'; x.font='bold '+Math.round(28*s)+'px sans-serif'; x.textAlign='center'; x.fillText(T('바람','Wind')+' '+(wd<0?'◀'.repeat(Math.min(3,Math.ceil(-wd/2)))+' '+(-wd):wd>0?wd+' '+'▶'.repeat(Math.min(3,Math.ceil(wd/2))):'0'),X(CW/2),40*s);
+  if(now<st.startAt){ x.fillStyle='rgba(0,0,0,.45)'; x.fillRect(0,0,cv.width,cv.height); x.fillStyle='#FFD447'; x.font=Math.round(110*s)+'px Jua,sans-serif'; x.fillText(Math.ceil((st.startAt-now)/1000),X(CW/2),Y(CH/2)+40*s); }
+  // 글자
+  const info=$('#cInfo'), left=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+CTURN-now)/1000));
+  const it=A?(flying?'💨 '+T('발사!','Fire!'):st.shot.miss?T('🙈 빗나갔어요','🙈 Missed'):st.shot.hit?T('🎯 직격!','🎯 Direct hit!'):'💥'):now<st.startAt?T('곧 시작해요','Starting soon'):(sh===uid?'<b style="color:var(--accent)">'+T('내 차례!','Your turn!')+'</b>':'<b>'+esc(nameOf(sh))+'</b> '+T('차례','\'s turn'))+' · ⏱ '+left+' · '+T('턴','Turn')+' '+((st.turns||0)+1)+'/'+st.limit;
+  if(info.innerHTML!==it) info.innerHTML=it;
+  const hp=arr(st.order).map(id=>{ const k=st.tanks[id]||{}, v=Math.max(0,k.hp-(dmg[id]||0)); return '<div class="pbar"><span class="nm"><i style="background:'+colorOf(id)+'"></i>'+(id===sh?'▶':'')+esc(nameOf(id))+'</span><span class="tr"><b style="width:'+v+'%;background:'+(v>30?colorOf(id):'var(--red)')+'"></b></span><span class="ct">'+v+'</span></div>'; }).join('');
+  const hb=$('#cHp'); if(hb.innerHTML!==hp) hb.innerHTML=hp;
+  const ctl=$('#cCtl'), show=mine&&!st.shot&&L.fired!==st.seq&&now>=st.startAt; if(ctl.hidden===show){ ctl.hidden=!show; if(show){ buzz([30,40,30]); beep(880,.08); } }
+  if(show){ const ang=$('#cAng'), at=cDir(L.a)+' '+cElev(L.a)+'°'; if(ang.textContent!==at) ang.textContent=at;
+    if(L.cs!=null){ const t=((performance.now()-L.cs)/1300)%2; L.pw=t<1?t:2-t; } $('#cPw').style.width=((L.cs!=null?L.pw:0)*100)+'%';
+    const ls=$('#cLast'); ls.hidden=L.lastP==null; if(L.lastP!=null) ls.style.left=(L.lastP*100)+'%'; }
+}
+async function hostCannon(st){ const now=Net.now(); if(now<st.startAt) return; const sh=cShooter(st), a=room.acts||{};
+  if(!st.shot){ const act=a[sh];
+    if(act&&act.r===st.round&&act.seq===st.seq){ const r=cSim(st,sh,act.a,act.p), dmg=cDamage(st,r);
+      const tanks=JSON.parse(JSON.stringify(st.tanks)); tanks[sh].a=act.a;
+      await Net.update('rooms/'+code+'/state',{tanks,shot:{seq:st.seq,by:sh,a:act.a,p:act.p,T:Math.round(r.T*1000)/1000,ix:Math.round(r.ix*10)/10,iy:Math.round(r.iy*10)/10,miss:r.miss,hit:r.hit||'',dmg},nextAt:now+r.T*1000+1700}); return; }
+    if(now>(st.turnStart||st.startAt)+CTURN) await cAdvance(st,st.tanks,arr(st.craters));
+    return; }
+  if(now>=st.nextAt){ const tanks=JSON.parse(JSON.stringify(st.tanks)), d=st.shot.dmg||{}; for(const id in d) if(tanks[id]) tanks[id].hp=Math.max(0,tanks[id].hp-d[id]);
+    const cr=arr(st.craters).slice(); if(!st.shot.miss) cr.push({x:st.shot.ix,y:st.shot.iy,r:CCRATER});
+    await cAdvance(st,tanks,cr); } }
+async function cAdvance(st,tanks,craters){ const order=arr(st.order), dead=order.filter(id=>tanks[id]&&tanks[id].hp<=0), turns=(st.turns||0)+1;
+  if(dead.length){ await Net.update('rooms/'+code+'/state',{tanks,craters,shot:null}); await setResult({losers:dead,why:'dead'}); return; }
+  if(turns>=st.limit){ const mn=Math.min(...order.map(id=>tanks[id].hp)), L=order.filter(id=>tanks[id].hp===mn); const hs=order.map(id=>tanks[id].hp).sort((a,b)=>a-b), nx=hs.find(v=>v>mn);
+    await Net.update('rooms/'+code+'/state',{tanks,craters,shot:null}); await setResult({losers:L,why:'hp',margin:L.length===1&&nx!=null?T('체력 '+(nx-mn)+' 차이','Lost by '+(nx-mn)+' HP'):''}); return; }
+  let t=st.turn||0; for(let k=0;k<order.length;k++){ t=(t+1)%order.length; if(tanks[order[t]].hp>0&&online().some(p=>p.id===order[t])) break; }
+  await Net.update('rooms/'+code+'/state',{tanks,craters,shot:null,turn:t,turns,seq:(st.seq||0)+1,wind:rnd(13)-6,turnStart:Net.now()}); }
+
 /* ===== 방장 진행 ===== */
 async function startGame(){
   if(!isHost()) return; const st=room.state||{}, g=GAMES[st.game]||GAMES.nunchi, ids=online().map(p=>p.id), round=(st.round||0)+1;
@@ -2927,6 +3031,7 @@ async function startGame(){
 }
 function startRound(game,ids,final,round,extra){ const st=room.state||{}, now=Net.now(), s=Object.assign({phase:'game',game,cat:st.cat||'rand',round,ids,startAt:now+3500,final},extra||{});
   if(game==='draw') s.fireAt=s.startAt+1500+rnd(3500);
+  if(game==='cannon') Object.assign(s,cannonInit(ids),{turnStart:s.startAt});
   if(game==='race') s.board=shuffle(Array.from({length:25},(_,i)=>i+1));
   return Net.update('rooms/'+code,{acts:null,state:s}); }
 function hostTick(){
@@ -2946,7 +3051,8 @@ async function hostStep(){
   judging=true;
   try{
     const J={nunchi:judgeNunchi,timer:judgeTimer,draw:judgeDuel,race:judgeRace}[st.game];
-    if(J){ const r=J(st); if(r&&r.restart) await startRound(st.game,arr(st.ids),st.final||0,(st.round||0)+1,{warn:r.warn,fsIds:r.fsIds}); else if(r) await setResult(r); }
+    if(st.game==='cannon') await hostCannon(st);
+    else if(J){ const r=J(st); if(r&&r.restart) await startRound(st.game,arr(st.ids),st.final||0,(st.round||0)+1,{warn:r.warn,fsIds:r.fsIds}); else if(r) await setResult(r); }
     else if(st.game==='liar'){
       if(st.step==='vote') await countVotes(st,false);
       else if(st.step==='guess') await checkGuess(st);
