@@ -75,7 +75,10 @@ button{cursor:pointer}
 .gcard .rec.ghost{display:none}
 .gcard .minp{background:var(--line);color:var(--fg)}
 .gcard .minp.need{background:rgba(255,92,122,.18);color:var(--red)}
-.egames .gcard{min-height:104px}
+.erow:has(#bCreate[hidden]){grid-template-columns:1fr}
+.egames .gcard{min-height:0;padding:22px 6px 8px;gap:3px}
+.egames .gcard .gi{width:34px;height:34px}
+.egames .gcard>b{font-size:18px}
 .ver{text-align:center;font-size:11px;color:var(--mute);opacity:.6;flex:none}.gcard .need{color:var(--red);font-weight:900}
 .recline{font-size:14px;color:var(--mute);text-align:center;line-height:1.5;min-height:42px}.recline b{color:var(--accent)}
 .pbar{display:flex;align-items:center;gap:8px;height:26px;font-size:13px;font-weight:700}.pbar .nm{width:72px;display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pbar .nm i{flex:none;width:10px;height:10px;border-radius:50%}
@@ -165,10 +168,10 @@ button{cursor:pointer}
   <div id="joinBox" class="card field" hidden><label for="codeIn" id="tCode">방 번호</label><input id="codeIn" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></div>
   <div id="eGamesWrap"><div class="etitle" id="tPick">어떤 게임 할까요?</div><div class="egames" id="eGames"></div></div>
   <div style="flex:1"></div>
-  <div class="lbar">
+  <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
-  <button class="btn ghost" id="bJoin">방 번호로 참여</button>
-  <div class="ver">v9</div></div>
+  <button class="btn ghost" id="bJoin">참여</button></div>
+  <div class="ver">v10</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -2522,7 +2525,7 @@ function applyText(){
   set('#tEntry','각자 폰','Multi-Phone'); set('#tHero','각자 폰으로 함께!','Play on your own phones!');
   set('#tPick','어떤 게임 할까요?','Pick a game'); set('#tHeroSub','한 명이 방을 만들고, 나머지는 QR을 찍거나<br>방 번호를 넣어서 들어와요','One person creates a room, everyone else<br>scans the QR or types the room number',1);
   set('#tName','내 이름','My name'); set('#tCode','방 번호','Room number');
-  set('#bCreate','방 만들기','Create room'); set('#bJoin','방 번호로 참여','Join with number');
+  set('#bCreate','방 만들기','Create room'); set('#bJoin','참여','Join');
   set('#tLobby','대기실','Lobby'); set('#tRoomNo','방 번호','Room number'); set('#tScan','카메라로 QR을 찍으면<br>바로 들어와요','Scan the QR with<br>your camera to join',1);
   set('#tTopic','주제','Topic'); set('#tHow','게임 방법','How to play'); set('#capTitle','몇 명 방을 만들까요?','How many players?'); set('#capNo','취소','Cancel'); set('#capOk','만들기','Create'); set('#howOk','확인','OK'); set('#bLobby','다른 게임','Other games'); set('#bAgain','한 판 더','Again');
   $('#nameIn').placeholder=T('예: 민수','e.g. Alex');
@@ -2615,7 +2618,7 @@ const ro=w=>{ const c=w.charCodeAt(w.length-1)-0xAC00; return (c>=0&&c<11172&&c%
 function drawEntryGames(){ if(!GAMES[pickGame]) pickGame=ORDER[0]; const box=$('#eGames');
   box.innerHTML=ORDER.map(k=>{ const G=GAMES[k]; return '<button class="gcard" data-g="'+k+'" aria-pressed="'+(k===pickGame)+'"><span class="q" data-q="'+k+'" role="button" aria-label="'+T('게임 방법','How to play')+'">?</span><span class="minp">'+mpText(G)+'</span>'+gIcon(k)+'<b>'+(EN?G.en:G.ko)+'</b></button>'; }).join('');
   [...box.children].forEach(b=>b.onclick=e=>{ const q=e.target.closest('[data-q]'); if(q){ showHow(q.dataset.q); return; } pickGame=b.dataset.g; try{ localStorage.setItem('dokbakPick',pickGame); }catch(e){} beep(700,.05); drawEntryGames(); });
-  const G=GAMES[pickGame]; $('#bCreate').textContent=T(G.ko+ro(G.ko)+' 방 만들기','Create room · '+G.en); }
+}
 function askCap(){ if(!needName(askCap)) return; if(!GAMES[pickGame]) pickGame=ORDER[0]; const box=$('#capSel'), G=GAMES[pickGame], mn=G.min; if(capPick<mn) capPick=mn;
   if(G.max&&capPick>G.max) capPick=G.max;
   $('#capGame').innerHTML='<b>'+esc(EN?G.en:G.ko)+'</b> · '+mpText(G);
@@ -3282,7 +3285,7 @@ window.appBack=function(){ // 안드로이드 뒤로가기
 /* ===== 시작 ===== */
 applyText();
 showMe();
-function joinMode(on){ $('#joinBox').hidden=!on; $('#eGamesWrap').hidden=on; $('#bCreate').classList.toggle('ghost',on); $('#bJoin').classList.toggle('ghost',!on); $('#bJoin').textContent=on?T('참여하기','Join'):T('방 번호로 참여','Join with number'); if(on) $('#bCreate').textContent=T('방 만들기','Create room'); else drawEntryGames(); }
+function joinMode(on){ $('#joinBox').hidden=!on; $('#eGamesWrap').hidden=on; $('#bCreate').classList.toggle('ghost',on); $('#bJoin').classList.toggle('ghost',!on); $('#bJoin').textContent=on?T('참여하기','Join now'):T('참여','Join'); $('#bCreate').textContent=on?T('← 방 만들기','← Create'):T('방 만들기','Create room'); if(!on) drawEntryGames(); }
 $('#bCreate').onclick=()=>{ if(!$('#joinBox').hidden&&!Q.get('r')){ joinMode(false); return; } askCap(); }; $('#capOk').onclick=createRoom; $('#capNo').onclick=()=>$('#capPop').hidden=true; $('#capPop').onclick=e=>{ if(e.target.id==='capPop') $('#capPop').hidden=true; }; $('#bJoin').onclick=joinRoom;
 $('#codeIn').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); });
 $('#codeIn').addEventListener('keydown',e=>{ if(e.key==='Enter') joinRoom(); });
