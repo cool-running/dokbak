@@ -40,7 +40,7 @@ button{cursor:pointer}
 .hero{text-align:center;padding:10px 0 4px}
 .etitle{font-size:14px;font-weight:900;color:var(--mute);margin:2px 2px 8px}
 .egames{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-#eGamesWrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px}#eGamesWrap[hidden]{display:none}
+#eGamesWrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:4px}#eGamesWrap[hidden]{display:none}
 .epager{flex:1;min-height:0;display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}.epager::-webkit-scrollbar{display:none}
 .epager .egames{flex:0 0 100%;height:100%;scroll-snap-align:start;grid-template-rows:repeat(6,minmax(0,1fr));gap:7px}
 .espace{display:none}#eGamesWrap[hidden]+.espace{display:block;flex:1}
@@ -48,11 +48,11 @@ button{cursor:pointer}
 .epager .gcard .minp{top:6px;left:6px;font-size:10px;padding:1px 7px}.epager .gcard .q{top:6px;right:6px;width:26px;height:26px;font-size:13px}
 .gcard>b{flex:none}.epager .gcard .gi{flex:0 1 auto;min-height:20px}
 #eGames .gcard{flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:4px 6px;gap:4px}
-#eGames .gcard .gi{width:clamp(20px,3.6vh,28px);height:clamp(20px,3.6vh,28px);flex:none;min-height:0}#eGames .gt{max-width:100%;min-width:0}#eGames .gt b{display:block;max-width:100%;font-family:var(--display);font-weight:400;font-size:clamp(14px,2.2vh,17px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#eGames .gcard .gi{width:clamp(22px,4.2vh,32px);height:clamp(22px,4.2vh,32px);flex:none;min-height:0}#eGames .gt{max-width:100%;min-width:0}#eGames .gt b{display:block;max-width:100%;font-family:var(--display);font-weight:400;font-size:clamp(14px,2.4vh,18px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #eGames .gcard .minp.more{background:rgba(111,211,255,.22);color:#6FD3FF}#eGames .gcard .minp.only{background:rgba(255,159,28,.22);color:#FF9F1C}
-#eGames .gcard .minp{position:absolute;top:5px;left:5px;font-size:10px;padding:0 6px;line-height:16px}#eGames .gcard .q{top:4px;right:4px;width:22px;height:22px;font-size:12px;transform:none}
+#eGames .gcard .minp{position:absolute;top:6px;left:6px;font-size:12.5px;font-weight:900;padding:0 7px;line-height:19px}#eGames .gcard .q{top:5px;right:5px;width:26px;height:26px;font-size:14px;transform:none}
 @media (max-height:680px){#eGames .gcard{padding-top:6px}.epager .gcard .minp{font-size:9px}}
-.edots{display:flex;justify-content:center;flex:none;min-height:8px}.edots i{width:7px;height:7px;border-radius:50%;background:var(--line);margin:0 4px;cursor:pointer;transition:width .2s}.edots i.on{background:var(--accent);width:18px;border-radius:4px}
+.edots{display:flex;justify-content:center;flex:none}.edots:empty{display:none}.edots i{width:7px;height:7px;border-radius:50%;background:var(--line);margin:0 4px;cursor:pointer;transition:width .2s}.edots i.on{background:var(--accent);width:18px;border-radius:4px}
 .egames .gcard{min-height:88px}
 .gcard .minp{font-size:11px;font-weight:900;color:var(--fg);background:var(--line);border-radius:999px;padding:2px 8px;line-height:1.4}
 .capsel button:disabled{opacity:.25}
@@ -126,7 +126,7 @@ button{cursor:pointer}
 .pchip button{border:none;background:none;color:var(--mute);font-size:15px;padding:0 0 0 2px;line-height:1}
 .full{color:var(--green)!important}
 .howto{align-self:flex-start;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;font-size:13px}
-.lbar{position:sticky;bottom:-18px;margin-bottom:-18px;padding:10px 0 18px;background:linear-gradient(to bottom,rgba(20,22,43,0),var(--bg) 26%);display:flex;flex-direction:column;gap:6px;flex:none;z-index:5}
+.lbar{position:sticky;bottom:-18px;margin-bottom:-18px;padding:4px 0 18px;background:linear-gradient(to bottom,rgba(20,22,43,0),var(--bg) 26%);display:flex;flex-direction:column;gap:6px;flex:none;z-index:5}
 .fullgame{font-family:var(--display);font-size:30px;color:var(--accent);text-align:center}
 .pop{position:fixed;inset:0;z-index:50;background:rgba(5,6,14,.72);display:flex;align-items:center;justify-content:center;padding:20px}
 .pop-in{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;animation:pop .2s ease-out}
@@ -173,7 +173,7 @@ button{cursor:pointer}
 .status{font-size:12px;color:var(--mute);text-align:center}
 .status.err{color:var(--red)}
 .status:empty{display:none}
-.mename{align-self:flex-start;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:16px;flex:none}.mename b{font-weight:900}.mename .pen{font-size:13px;opacity:.7}
+.mename{margin-left:auto;max-width:50%;overflow:hidden;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:16px;flex:none}.mename b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mename .pen{font-size:13px;opacity:.7}
 .spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:sp 1s linear infinite;margin:0 auto}
 @keyframes sp{to{transform:rotate(360deg)}}
 .flash{animation:fl .5s ease-out}
@@ -185,9 +185,8 @@ button{cursor:pointer}
 
 <!-- 입장 -->
 <section class="screen" id="sEntry">
-  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div></div>
+  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div><button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button></div>
   <div class="hero" id="hero" hidden><div class="disp big" id="tHero">각자 폰으로 함께!</div><p id="tHeroSub">한 명이 방을 만들고, 나머지는 QR을 찍거나<br>방 번호를 넣어서 들어와요</p></div>
-  <button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button>
   <div class="status" id="netStatus"></div>
   <div id="joinBox" class="card field" hidden><label for="codeIn" id="tCode">방 번호</label><input id="codeIn" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></div>
   <div id="eGamesWrap"><div class="epager" id="eGames"></div><div class="edots" id="eDots"></div></div>
@@ -195,7 +194,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v20</div></div>
+  <div class="ver">v21</div></div>
 </section>
 
 <!-- 대기실 -->
