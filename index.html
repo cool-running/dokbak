@@ -3461,25 +3461,25 @@ function startBell(){
 function startFrog(){
   show('frog');
   const W=360, H=480, {cv,ctx,fit}=spCanvas('frog',W,H), sec=$('#frog'), btn=$('#fgBtn'), n=S.n;
-  const pads=[]; const gen=()=>{ const last=pads[pads.length-1], z=last?last.z+130+Math.random()*90:0; const r=last?30+Math.random()*16:44;
-    pads.push({z,r,cx:180,amp:last?20+Math.random()*70+pads.length*3:0,sp:.6+Math.random()*1.1+pads.length*.04,ph:Math.random()*6,old:last&&Math.random()<.28}); };
+  const pads=[]; const gen=()=>{ const last=pads[pads.length-1], z=last?last.z+130+Math.random()*90:0; const k=pads.length, r=last?Math.max(26,40-k*.9+Math.random()*6):46;
+    pads.push({z,r,cx:180,amp:last?Math.min(70,12+k*4+Math.random()*18):0,sp:.55+Math.random()*.45+k*.03,ph:Math.random()*6,old:last&&k>2&&Math.random()<.25}); };
   for(let i=0;i<8;i++) gen();
-  let at=0, ox=0, cur=TORD[0], phase='wait', pw=0, charging=false, jump=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, sinkT=0, ripples=[];
+  let chT=0, at=0, ox=0, cur=TORD[0], phase='wait', pw=0, charging=false, jump=null, t=0, cam=0, per=Array(n).fill(0), pop={v:null}, sinkT=0, ripples=[];
   const padX=(p,tt)=>p.cx+Math.sin(tt*p.sp+p.ph)*p.amp, scrY=z=>400-(z-cam);
   function paint(){ tgTurn(sec,cur,phase==='ready'?'차례 · 꾹 눌러 힘 모으기':'…'); btn.disabled=phase!=='ready'&&phase!=='charge'; btn.textContent=phase==='charge'?'떼면 점프!':'꾹 눌러서 점프'; sec.querySelector('.sp-board').innerHTML=mkTable(['이름','점프 성공'],[...Array(n)].map((_,i)=>({cells:[esc(nameOf(i)),per[i]+'번'],color:PAL[i][0]}))); }
-  const off=holdBtn(btn,cv,()=>{ if(phase!=='ready') return; phase='charge'; pw=0; paint(); },()=>{ if(phase!=='charge') return; launch(); });
-  function launch(){ const p=pads[at], x0=padX(p,t)+ox, z0=p.z, dist=40+pw*300; jump={x0,z0,dist,t:0,dur:.55+pw*.25}; phase='jump'; paint(); const a=audio(); if(a) tone(a,300,900,.18,'sine',.12); }
+  const off=holdBtn(btn,cv,()=>{ if(phase!=='ready') return; phase='charge'; pw=0; chT=0; paint(); },()=>{ if(phase!=='charge') return; launch(); });
+  function launch(){ const p=pads[at], x0=padX(p,t)+ox, z0=p.z, dist=50+pw*280; jump={x0,z0,dist,t:0,dur:.55+pw*.25}; phase='jump'; paint(); const a=audio(); if(a) tone(a,300,900,.18,'sine',.12); }
   function land(){ const zL=jump.z0+jump.dist, xL=jump.x0, nx=pads[at+1]; jump=null;
-    const px=padX(nx,t), dz=Math.abs(zL-nx.z), dx=Math.abs(xL-px), ok=Math.hypot(dx,dz*.9)<nx.r+6;
+    const px=padX(nx,t), dz=Math.abs(zL-nx.z), dx=Math.abs(xL-px), dd=Math.hypot(dx,dz*.9), ok=dd<nx.r+12;
     const a=audio();
     if(!ok){ phase='splash'; sinkT=0; ripples.push({x:xL,z:zL,t:0}); if(a){ noiseBurst(a,.5,'lowpass',600,.7,.7); tone(a,400,120,.4,'sine',.3); } pop.v={txt:'풍덩!',t:0,d:1.6,c:'#6FD3FF'}; frogPos={x:xL,z:zL};
       tgLose(sec,cur,'점프 성공',i=>per[i]+'번','물에 빠졌어요 🐸'); return; }
     at++; ox=xL-px; per[cur]++; if(a) tone(a,180,120,.12,'sine',.2); buzz(20);
-    if(nx.old&&Math.random()<.45){ phase='sink'; sinkT=0; pop.v={txt:'앗, 연잎이 가라앉아요!',t:0,d:1.5,c:'#FF9F1C'}; setTimeout(()=>{ if(a){ noiseBurst(a,.5,'lowpass',500,.7,.6); } frogPos={x:padX(nx,t)+ox,z:nx.z}; phase='splash'; tgLose(sec,cur,'점프 성공',i=>per[i]+'번','연잎이 가라앉았어요 🐸'); },1100); return; }
-    pop.v={txt:Math.hypot(dx,dz)<12?'정확해!':'착지!',t:0,d:.8}; while(pads.length<at+6) gen(); cur=nxt(cur); phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
+    if(nx.old&&dd>nx.r*.55){ phase='sink'; sinkT=0; pop.v={txt:'앗, 연잎이 가라앉아요!',t:0,d:1.5,c:'#FF9F1C'}; setTimeout(()=>{ if(a){ noiseBurst(a,.5,'lowpass',500,.7,.6); } frogPos={x:padX(nx,t)+ox,z:nx.z}; phase='splash'; tgLose(sec,cur,'점프 성공',i=>per[i]+'번','연잎이 가라앉았어요 🐸'); },1100); return; }
+    pop.v={txt:dd<12?'정확해! 🎯':dd>nx.r?'아슬아슬!':'착지!',t:0,d:.9,c:dd>nx.r?'#FF9F1C':undefined}; if(dd>nx.r){ buzz([30,30,30]); } while(pads.length<at+6) gen(); cur=nxt(cur); phase='wait'; paint(); setTimeout(()=>turnPop(cur,()=>{ phase='ready'; paint(); }),700); }
   let frogPos=null;
   function step(dt){ t+=dt; cam+=((pads[at].z-0)-cam)*Math.min(1,dt*2.5);
-    if(phase==='charge'){ pw=Math.min(1.15,pw+dt*.55); }
+    if(phase==='charge'){ chT+=dt; pw=(1-Math.cos(chT*Math.PI*.85))/2; }
     if(jump){ jump.t+=dt/jump.dur; if(jump.t>=1) land(); }
     if(phase==='sink'||phase==='splash') sinkT+=dt;
     ripples.forEach(r=>r.t+=dt); ripples=ripples.filter(r=>r.t<2); }
@@ -3510,8 +3510,11 @@ function startFrog(){
     if(jump){ const k=jump.t, z=jump.z0+jump.dist*k; frog(jump.x0,scrY(z)-Math.sin(k*Math.PI)*(40+jump.dist*.3),col,1+Math.sin(k*Math.PI)*.3,0); }
     else if(phase==='splash'&&frogPos){ if(sinkT<.6) frog(frogPos.x,scrY(frogPos.z)+sinkT*30,col,1-sinkT,0); }
     else { const p=pads[at], sink=phase==='sink'?sinkT*12:0; frog(padX(p,t)+ox,scrY(p.z)-6+sink,col,1,phase==='charge'?pw*.8:0); }
-    // 힘 게이지
-    if(phase==='charge'){ const fx=20, fy=440; ctx.fillStyle='rgba(255,255,255,.2)'; ctx.fillRect(fx,fy,320,12); ctx.fillStyle=pw>1?'#FF5C7A':'#FFD447'; ctx.fillRect(fx,fy,Math.min(1,pw/1.15)*320,12); }
+    // 착지 예상 지점 (누르고 있는 동안)
+    if(phase==='charge'){ const p=pads[at], lx=padX(p,t)+ox, lz=p.z+50+pw*280, ly=scrY(lz), nx=pads[at+1], good=Math.hypot(lx-padX(nx,t+.55+pw*.25),(lz-nx.z)*.9)<nx.r+12;
+      ctx.strokeStyle=good?'#7CE38B':'rgba(255,255,255,.85)'; ctx.lineWidth=3; ctx.beginPath(); ctx.ellipse(lx,ly,14,6,0,0,7); ctx.stroke(); ctx.fillStyle=good?'rgba(124,227,139,.35)':'rgba(255,255,255,.2)'; ctx.fill();
+      ctx.setLineDash([3,6]); ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=2; ctx.beginPath(); const fy=scrY(p.z)-6; ctx.moveTo(lx,fy-20); ctx.quadraticCurveTo(lx,(fy+ly)/2-60-pw*40,lx,ly); ctx.stroke(); ctx.setLineDash([]);
+      const gx=20, gy=446; ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.roundRect(gx,gy,320,12,6); ctx.fill(); ctx.fillStyle=good?'#7CE38B':'#FFD447'; ctx.beginPath(); ctx.roundRect(gx,gy,Math.max(6,pw*320),12,6); ctx.fill(); }
     popText(ctx,pop,dt,90);
   }
   paint(); turnPop(cur,()=>{ phase='ready'; paint(); }); fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
