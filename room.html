@@ -71,7 +71,7 @@ button{cursor:pointer}
 .pchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 8px;border-radius:17px;background:var(--bg);border:1px solid var(--line);font-weight:700;font-size:14px}
 .pchip i{width:12px;height:12px;border-radius:50%;flex:none}
 .pchip.off{opacity:.4}
-.pchip.botp{border:1px dashed rgba(255,212,71,.6);color:var(--accent);background:rgba(255,212,71,.08)}
+.pchip.botp{opacity:.75}
 .pchip.me{border-color:var(--accent)}
 .pchip small{font-size:11px;color:var(--accent);font-weight:700}
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -112,7 +112,7 @@ button{cursor:pointer}
 .tgclock circle{fill:none;stroke-width:4}.tgclock .bg{stroke:rgba(255,255,255,.1)}.tgclock .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s linear}.tgclock .fg.hot{stroke:var(--red)}
 .tgclock b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 15px var(--display)}
 .tgbot{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:7px}
-.tgseq{display:flex;align-items:center;gap:10px;min-width:0;overflow:hidden;font-size:12px;color:var(--mute);white-space:nowrap}
+.tgseq{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;font-size:12px;color:var(--mute);white-space:nowrap}
 .tgseq span{display:flex;align-items:center;gap:4px}.tgseq i{width:8px;height:8px;border-radius:50%;background:var(--c);opacity:.5}
 .tgseq span.on{color:var(--fg);font-weight:900}.tgseq span.on i{opacity:1;box-shadow:0 0 0 3px rgba(255,255,255,.15)}
 .tgcard .tgx{font-size:13px;color:var(--fg);white-space:nowrap;flex:none}
@@ -214,7 +214,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v25</div></div>
+  <div class="ver">v26</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -2895,7 +2895,7 @@ function renderLobby(){
   $('#codeOut').textContent=code; $('#pCount').textContent=ps.length+'/'+cap+T('명',''); $('#pCount').classList.toggle('full',full);
   $('#players').innerHTML=ps.map(p=>'<span class="pchip'+(p.on===false?' off':'')+(p.id===uid?' me':'')+'"><i style="background:'+colorOf(p.id)+'"></i>'+esc(p.name)+(p.id===room.host?' <small>'+T('방장','host')+'</small>':'')+((room.stats&&room.stats[p.id])?'<span class="lz">💀'+room.stats[p.id]+'</span>':'')+(host&&p.id!==uid?'<button data-kick="'+p.id+'" aria-label="'+T('내보내기','Remove')+'">×</button>':'')+'</span>').join('')
     +(()=>{ const hm=ps.filter(p=>!isBot(p.id)&&p.on!==false).length, bn=(host&&hm<g.min&&st.game!=='liar'&&!ps.some(p=>isBot(p.id)))?soloNeed(st.game):0;
-      return Array.from({length:Math.max(0,cap-ps.length)},(_,k)=>k<bn?'<span class="pchip botp">🤖'+T('로봇','Bot')+(k+1)+'</span>':'<span class="pchip empty">'+T('빈자리','open')+'</span>').join(''); })();
+      return Array.from({length:Math.max(0,cap-ps.length)},(_,k)=>k<bn?'<span class="pchip empty botp">'+T('빈자리','open')+' · '+T('로봇','Bot')+(k+1)+'</span>':'<span class="pchip empty">'+T('빈자리','open')+'</span>').join(''); })();
   $('#players').querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{ const id=b.dataset.kick; ask(T(nameOf(id)+'님을 내보낼까요?','Remove '+nameOf(id)+'?'),T('내보내기','Remove')).then(ok=>{ if(ok) Net.remove('rooms/'+code+'/players/'+id); }); });
   const on=online().length, rec=REC(Math.max(on,2)).filter(k=>!(GAMES[k].max&&on>GAMES[k].max)), order=[...rec,...ORDER.filter(k=>!rec.includes(k))];
   $('#gPick').innerHTML=order.map(k=>{ const G=GAMES[k], short=on<G.min; const over=!!(G.max&&on>G.max); return '<button class="gcard'+(short||over?' dim':'')+'" data-g="'+k+'" aria-pressed="'+(st.game===k)+'">'+'<span class="q" data-q="'+k+'" role="button" aria-label="'+T('게임 방법','How to play')+'">?</span>'+(short||over?'<span class="minp need">'+mpText(G)+'</span>':rec.includes(k)?'<span class="rec">'+T('추천','Best')+'</span>':'')+gIcon(k)+'<b>'+(EN?G.en:G.ko)+'</b></button>'; }).join('');
@@ -3459,7 +3459,7 @@ function tgTurnBar(st,extra){ const cur=tgCur(st), mine=cur===uid, dur=st.game==
   const ord=arr(st.order).filter(id=>on.has(id)||id===cur), C=2*Math.PI*17;
   return '<div class="tgcard'+(mine?' me':'')+'"><div class="tgtop"><span class="tgwho"><i style="background:'+colorOf(cur)+'"></i>'+(mine?T('내 차례!','Your turn!'):esc(nameOf(cur))+'<em>'+T(' 차례',"'s turn")+'</em>')+'</span>'
    +'<span class="tgclock"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="bg"></circle><circle cx="20" cy="20" r="17" class="fg" id="tgRing" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-left*1000/dur)).toFixed(1)+'"></circle></svg><b id="tgLeft">'+left+'</b></span></div>'
-   +'<div class="tgbot"><span class="tgseq">'+ord.map(id=>'<span class="'+(id===cur?'on':'')+'" style="--c:'+colorOf(id)+'"><i></i>'+esc(nameOf(id)).replace('🤖','')+(id===uid?T('(나)',''):'')+'</span>').join('')+'</span><span class="tgx">'+extra+'</span></div></div>'; }
+   +'<div class="tgbot"><span class="tgseq">'+ord.map(id=>'<span class="'+(id===cur?'on':'')+'" style="--c:'+colorOf(id)+'"><i></i>'+(id===cur||ord.length<=3?esc(nameOf(id))+(id===uid?T('(나)',''):''):id===uid?T('나','me'):'')+'</span>').join('')+'</span><span class="tgx">'+extra+'</span></div></div>'; }
 function tgMyTurnPing(st){ const L=loc(st); if(L.pinged===st.turn) return; L.pinged=st.turn; if(tgCur(st)===uid&&!st.boom){ buzz([70,50,70]); beep(660,.07); setTimeout(()=>beep(990,.09),90); } }
 function tgTick(st){ stopTick(); tickT=setInterval(()=>{ const s=room&&room.state; if(!s||s!==st&&s.turn!==st.turn) return; const e=$('#tgLeft'); if(!e) return; const v=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+TG_TURN-Net.now())/1000)); if(e.textContent!=String(v)){ e.textContent=v; if(v<=5&&v>0&&tgCur(st)===uid) beep(500,.04); } const rg=$('#tgRing'); if(rg){ const C=2*Math.PI*17, f=Math.max(0,((st.turnStart||st.startAt)+TG_TURN-Net.now())/TG_TURN); rg.setAttribute('stroke-dashoffset',(C*(1-f)).toFixed(1)); rg.classList.toggle('hot',v<=5); } },250); }
 function tgPre(st){ const now=Net.now(); if(now>=st.startAt) return false;
@@ -3693,10 +3693,10 @@ const gss=()=>{ let u=0; for(let i=0;i<6;i++) u+=Math.random(); return (u-3)/1.0
 const realUrl=()=>location.pathname+'?'+(IN_APP?'app=1&':'')+'lang='+LANG;
 function bset(id,v){ return Net.set('rooms/'+code+'/acts/'+id,v); }
 function bAt(key,when,fn){ if(BOTM[key]) return; BOTM[key]=1; const R=room&&room.state&&room.state.round; setTimeout(()=>{ const s=room&&room.state; if(!s||s.phase!=='game'||s.result||s.round!==R) return; try{ fn(s); }catch(e){ console.error(e); } },Math.max(0,when-Net.now())); }
-function soloNeed(g){ const G=GAMES[g]||GAMES.nunchi, hum=online().filter(p=>!isBot(p.id)).length; let tgt=G.max?G.max:Math.max(G.min,3); if(room&&!room.solo&&room.cap) tgt=Math.max(G.min,Math.min(tgt,room.cap)); return Math.max(0,tgt-hum); }
+function soloNeed(g){ const G=GAMES[g]||GAMES.nunchi, hum=online().filter(p=>!isBot(p.id)).length; let tgt=G.max?G.max:Math.max(G.min,3); if(room&&!room.solo&&room.cap) tgt=Math.max(G.min,G.max?Math.min(G.max,room.cap):room.cap); return Math.max(0,tgt-hum); }
 async function soloFit(g,need){ if(need==null) need=soloNeed(g); const P=room.players||{};
-  for(let k=1;k<=4;k++){ const id='bot'+k, has=!!P[id];
-    if(k<=need&&!has) await Net.set('rooms/'+code+'/players/'+id,{name:'🤖'+T('로봇','Bot')+k,joined:Net.now()+k,on:true,bot:true});
+  for(let k=1;k<=9;k++){ const id='bot'+k, has=!!P[id];
+    if(k<=need&&!has) await Net.set('rooms/'+code+'/players/'+id,{name:T('로봇','Bot')+k,joined:Net.now()+k,on:true,bot:true});
     if(k>need&&has) await Net.remove('rooms/'+code+'/players/'+id); } }
 async function startSolo(g){ try{ await ensureNet(); if(!GAMES[g]||g==='liar') g='nunchi'; if(!myName) myName=T('나','Me');
   const c=String(1000+rnd(9000)); pickGame=g;
