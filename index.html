@@ -311,8 +311,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 @keyframes pfx{from{transform:translate(0,0) scale(.3);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(1.15);opacity:0}}
 #crSvg.chomp{animation:chomp .5s ease-out}
 @keyframes chomp{15%{transform:scale(1.07) rotate(-2.5deg)}35%{transform:scale(1.05) rotate(2.5deg)}55%{transform:scale(1.02) rotate(-1.5deg)}75%{transform:rotate(1deg)}}
-.sword{animation:swfly .34s cubic-bezier(.15,.85,.35,1)}
-@keyframes swfly{0%{transform:translate(var(--fx),-60px) rotate(var(--fr));opacity:0}12%{opacity:1}72%{transform:translate(0,0) rotate(0)}84%{transform:rotate(calc(var(--fr) * -.12))}100%{transform:none}}
+.sword{animation:stab .16s ease-out}
 @keyframes stab{from{transform:scale(1.25);opacity:0}}
 .sword{transform-box:fill-box;transform-origin:center}
 
@@ -993,63 +992,47 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
   <div class="play-wrap">
     <svg id="prSvg" viewBox="0 80 360 432" role="img" aria-label="해적이 숨은 나무통">
       <defs>
-        <linearGradient id="gWood2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E1A0C"></stop><stop offset=".18" stop-color="#6B4022"></stop><stop offset=".42" stop-color="#A86C3A"></stop><stop offset=".55" stop-color="#B97A44"></stop><stop offset=".8" stop-color="#6B4022"></stop><stop offset="1" stop-color="#2A170A"></stop></linearGradient>
-        <linearGradient id="gWoodV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".35"></stop><stop offset=".25" stop-color="#000" stop-opacity="0"></stop><stop offset=".75" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".45"></stop></linearGradient>
-        <linearGradient id="gIron2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C818B"></stop><stop offset=".35" stop-color="#3C4048"></stop><stop offset="1" stop-color="#1A1C20"></stop></linearGradient>
-        <radialGradient id="gHole" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#000"></stop><stop offset="1" stop-color="#2A1608"></stop></radialGradient>
+        <linearGradient id="gWood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3B2414"></stop><stop offset=".25" stop-color="#7A4E2C"></stop><stop offset=".5" stop-color="#9A6638"></stop><stop offset=".75" stop-color="#7A4E2C"></stop><stop offset="1" stop-color="#3B2414"></stop></linearGradient>
+        <linearGradient id="gIron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A5A60"></stop><stop offset=".5" stop-color="#2A2A2E"></stop><stop offset="1" stop-color="#18181B"></stop></linearGradient>
         <radialGradient id="gSkin" cx=".45" cy=".4" r=".65"><stop offset="0" stop-color="#FFD0A6"></stop><stop offset="1" stop-color="#E39A68"></stop></radialGradient>
-        <linearGradient id="gBlade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"></stop><stop offset=".45" stop-color="#C9D1DC"></stop><stop offset="1" stop-color="#7D8794"></stop></linearGradient>
-        <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE68A"></stop><stop offset=".5" stop-color="#E0A824"></stop><stop offset="1" stop-color="#8A5E0A"></stop></linearGradient>
-        <clipPath id="cBarrel"><path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z"></path></clipPath>
       </defs>
-      <ellipse cx="180" cy="500" rx="138" ry="12" fill="#000" opacity=".4"></ellipse>
-      <ellipse cx="180" cy="214" rx="110" ry="24" fill="#120A04" stroke="#0B0C18" stroke-width="4"></ellipse>
-      <ellipse cx="180" cy="220" rx="96" ry="15" fill="#050302" opacity=".6"></ellipse>
+      <ellipse cx="180" cy="498" rx="130" ry="10" fill="#000" opacity=".35"></ellipse>
+      <ellipse cx="180" cy="214" rx="110" ry="24" fill="#1E120A" stroke="#0B0C18" stroke-width="4"></ellipse>
       <g id="prMan">
         <rect x="128" y="196" width="104" height="160" rx="20" fill="#FFF8EA" stroke="#0B0C18" stroke-width="4"></rect>
         <path d="M130 224h100M130 252h100M130 280h100M130 308h100M130 336h100" stroke="#C62828" stroke-width="13"></path>
-        <path d="M128 216 Q140 300 150 356 L128 356Z M232 216 Q220 300 210 356 L232 356Z" fill="#2B2B33"></path>
         <rect x="128" y="196" width="104" height="160" rx="20" fill="none" stroke="#0B0C18" stroke-width="4"></rect>
         <ellipse cx="118" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
         <ellipse cx="242" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <circle cx="240" cy="172" r="8" fill="none" stroke="url(#gGold)" stroke-width="4.5"></circle>
+        <circle cx="240" cy="170" r="7" fill="none" stroke="#F5C518" stroke-width="4"></circle>
         <circle cx="180" cy="146" r="62" fill="url(#gSkin)" stroke="#0B0C18" stroke-width="4"></circle>
         <path d="M120 150Q118 232 180 236Q242 232 240 150Q232 176 214 180Q180 172 146 180Q128 176 120 150Z" fill="#1A1210" stroke="#0B0C18" stroke-width="3"></path>
         <path d="M156 190Q180 214 204 190Q196 206 180 208Q164 206 156 190Z" fill="#7A1A12" stroke="#0B0C18" stroke-width="2"></path>
         <path d="M164 196Q180 200 196 196L194 202Q180 205 166 202Z" fill="#fff"></path>
-        <rect x="186" y="197" width="5" height="5" fill="#F5C518"></rect>
-        <path d="M180 174Q146 162 126 186Q132 178 142 178Q150 184 160 178Q170 182 180 178Q190 182 200 178Q210 184 218 178Q228 178 234 186Q214 162 180 174Z" fill="#1A1210" stroke="#0B0C18" stroke-width="2"></path>
+        <path d="M180 174Q150 166 134 184Q150 184 160 178Q170 182 180 178Q190 182 200 178Q210 184 226 184Q210 166 180 174Z" fill="#1A1210" stroke="#0B0C18" stroke-width="2"></path>
         <ellipse cx="180" cy="160" rx="14" ry="12" fill="#E7895A" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <ellipse cx="206" cy="140" rx="13" ry="14" fill="#fff" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <circle cx="204" cy="142" r="6" fill="#1A1210"></circle><circle cx="202" cy="139" r="2" fill="#fff"></circle>
-        <path d="M190 122Q206 112 224 124" stroke="#1A1210" stroke-width="6" stroke-linecap="round" fill="none"></path>
-        <path d="M222 150l8 16M219 156l7-3M222 162l7-3" stroke="#B5543A" stroke-width="2.5" stroke-linecap="round"></path>
-        <path d="M122 150L154 140L238 112" stroke="#1A1210" stroke-width="4.5" fill="none" stroke-linejoin="round"></path>
-        <ellipse cx="154" cy="140" rx="18" ry="15" fill="#1A1210" transform="rotate(-12 154 140)"></ellipse>
-        <path d="M120 132Q180 110 240 132L242 144Q180 122 118 144Z" fill="#C62828" stroke="#0B0C18" stroke-width="3"></path>
-        <path d="M112 126Q116 70 180 66Q244 70 248 126Q180 104 112 126Z" fill="#1C1C22" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
-        <path d="M86 130Q92 96 130 90Q116 108 116 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M274 130Q268 96 230 90Q244 108 244 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M100 130Q180 100 260 130Q252 142 240 140Q180 116 120 140Q108 142 100 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M104 131Q180 104 256 131" stroke="url(#gGold)" stroke-width="4" fill="none"></path>
-        <path d="M90 128Q96 98 128 92M270 128Q264 98 232 92" stroke="url(#gGold)" stroke-width="3" fill="none"></path>
-        <g transform="translate(0 -4)"><circle cx="180" cy="94" r="10" fill="#F4F2EA"></circle><rect x="174.5" y="101" width="11" height="7" rx="2" fill="#F4F2EA"></rect>
-        <circle cx="176" cy="93" r="2.8" fill="#1C1C22"></circle><circle cx="184" cy="93" r="2.8" fill="#1C1C22"></circle><path d="M178 104v3M182 104v3" stroke="#1C1C22" stroke-width="1.2"></path>
-        <path d="M164 110l32-10M164 100l32 10" stroke="#F4F2EA" stroke-width="4" stroke-linecap="round"></path></g>
+        <ellipse cx="206" cy="138" rx="13" ry="14" fill="#fff" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <circle cx="204" cy="140" r="6" fill="#1A1210"></circle><circle cx="202" cy="137" r="2" fill="#fff"></circle>
+        <path d="M192 116Q206 108 222 118" stroke="#1A1210" stroke-width="6" stroke-linecap="round" fill="none"></path>
+        <path d="M122 150L154 138L238 104" stroke="#1A1210" stroke-width="4.5" fill="none" stroke-linejoin="round"></path>
+        <ellipse cx="154" cy="138" rx="18" ry="15" fill="#1A1210" transform="rotate(-12 154 138)"></ellipse>
+        <path d="M118 126Q118 72 180 76Q242 72 242 126Q180 104 118 126Z" fill="#D7261E" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
+        <path d="M240 112q22 -6 34 6q-14 4 -18 14q-6-10 -16-8z" fill="#D7261E" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M244 118q16 10 18 30q-12-6 -22-8z" fill="#B71C15" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <g fill="#fff"><circle cx="180" cy="94" r="9"></circle><rect x="175" y="100" width="10" height="6" rx="2"></rect></g>
+        <g fill="#D7261E"><circle cx="176.5" cy="93" r="2.4"></circle><circle cx="183.5" cy="93" r="2.4"></circle></g>
+        <path d="M166 108l28-8M166 100l28 8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"></path>
       </g>
       <g id="prFront">
-        <path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z" fill="url(#gWood2)" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
-        <g clip-path="url(#cBarrel)">
-          <g stroke="#3A2210" stroke-width="1" fill="none" opacity=".45"><path d="M77.3 214.0 L75.8 233.7 L72.1 253.5 L67.2 273.3 L65.1 293.2 L66.3 313.1 L67.4 333.0 L65.9 353.0 L64.0 373.0 L65.2 393.1 L69.5 413.2 L72.9 433.3 L73.9 453.5 L75.3 473.7 L79.9 494.0"/><path d="M88.8 214.0 L85.5 233.7 L80.5 253.5 L77.2 273.3 L77.6 293.2 L78.7 313.1 L77.4 333.0 L74.8 353.0 L74.6 373.0 L77.9 393.1 L81.3 413.2 L82.1 433.3 L82.2 453.5 L85.3 473.7 L91.1 494.0"/><path d="M103.6 214.0 L98.8 233.7 L94.9 253.5 L94.4 273.3 L95.6 293.2 L94.7 313.1 L91.7 333.0 L90.4 353.0 L92.6 373.0 L95.8 393.1 L96.5 413.2 L95.7 433.3 L97.1 453.5 L101.7 473.7 L106.5 494.0"/><path d="M111.8 214.0 L107.4 233.7 L106.0 253.5 L107.0 273.3 L106.7 293.2 L103.7 313.1 L101.3 333.0 L102.5 353.0 L105.4 373.0 L106.4 393.1 L105.1 413.2 L105.1 433.3 L108.6 453.5 L113.1 473.7 L115.4 494.0"/><path d="M124.7 214.0 L122.7 233.7 L123.6 253.5 L123.8 273.3 L121.3 293.2 L118.3 313.1 L118.4 333.0 L121.0 353.0 L122.3 373.0 L120.8 393.1 L119.6 413.2 L121.7 433.3 L125.7 453.5 L127.8 473.7 L127.8 494.0"/><path d="M134.1 214.0 L134.6 233.7 L135.3 253.5 L133.4 273.3 L130.1 293.2 L129.2 313.1 L131.3 333.0 L133.0 353.0 L131.7 373.0 L129.7 393.1 L130.7 413.2 L134.1 433.3 L136.4 453.5 L136.1 473.7 L135.8 494.0"/><path d="M150.1 214.0 L151.4 233.7 L150.4 253.5 L147.2 273.3 L145.6 293.2 L147.2 313.1 L149.3 333.0 L148.4 353.0 L146.0 373.0 L145.7 393.1 L148.5 413.2 L150.9 433.3 L150.4 453.5 L149.0 473.7 L150.2 494.0"/><path d="M161.7 214.0 L161.6 233.7 L158.9 253.5 L156.7 273.3 L157.7 293.2 L160.0 313.1 L159.9 333.0 L157.3 353.0 L156.1 373.0 L158.1 393.1 L160.7 413.2 L160.5 433.3 L158.6 453.5 L158.5 473.7 L161.3 494.0"/><path d="M177.0 214.0 L175.2 233.7 L172.9 253.5 L173.4 273.3 L175.9 293.2 L176.6 313.1 L174.3 333.0 L172.4 353.0 L173.6 373.0 L176.2 393.1 L176.5 413.2 L174.2 433.3 L172.9 453.5 L174.6 473.7 L176.9 494.0"/><path d="M185.7 214.0 L183.5 233.7 L183.5 253.5 L186.0 273.3 L187.5 293.2 L185.9 313.1 L183.5 333.0 L184.0 353.0 L186.6 373.0 L187.5 393.1 L185.3 413.2 L183.2 433.3 L184.0 453.5 L186.3 473.7 L186.4 494.0"/><path d="M198.5 214.0 L198.3 233.7 L200.8 253.5 L203.3 273.3 L202.6 293.2 L200.2 313.1 L200.0 333.0 L202.4 353.0 L203.9 373.0 L202.2 393.1 L199.4 413.2 L199.3 433.3 L201.2 453.5 L201.5 473.7 L199.0 494.0"/><path d="M207.4 214.0 L209.8 233.7 L212.9 253.5 L213.3 273.3 L211.3 293.2 L210.5 313.1 L212.7 333.0 L214.9 353.0 L213.9 373.0 L210.9 393.1 L209.9 413.2 L211.5 433.3 L212.4 453.5 L210.1 473.7 L206.8 494.0"/><path d="M223.0 214.0 L226.8 233.7 L228.6 253.5 L227.3 273.3 L226.3 293.2 L228.2 313.1 L231.0 333.0 L230.9 353.0 L228.1 373.0 L226.3 393.1 L227.5 413.2 L228.7 433.3 L226.8 453.5 L223.0 473.7 L220.6 494.0"/><path d="M234.6 214.0 L237.6 233.7 L237.3 253.5 L236.3 273.3 L237.9 293.2 L241.1 313.1 L242.2 333.0 L239.9 353.0 L237.7 373.0 L238.4 393.1 L240.0 413.2 L238.9 433.3 L235.0 453.5 L232.0 473.7 L231.4 494.0"/><path d="M250.4 214.0 L251.5 233.7 L251.0 253.5 L252.5 273.3 L256.1 293.2 L258.3 313.1 L256.9 333.0 L254.6 353.0 L254.7 373.0 L256.6 393.1 L256.3 413.2 L252.7 433.3 L248.9 453.5 L247.6 473.7 L247.3 494.0"/><path d="M259.5 214.0 L259.7 233.7 L261.1 253.5 L264.9 273.3 L268.2 293.2 L268.0 313.1 L265.9 333.0 L265.6 353.0 L267.6 373.0 L268.3 393.1 L265.5 413.2 L261.4 433.3 L259.5 453.5 L259.3 473.7 L257.2 494.0"/><path d="M272.3 214.0 L274.0 233.7 L278.1 253.5 L282.5 273.3 L283.8 293.2 L282.3 313.1 L281.7 333.0 L283.8 353.0 L285.4 373.0 L283.5 393.1 L279.4 413.2 L276.9 433.3 L276.6 453.5 L275.1 473.7 L270.2 494.0"/><path d="M280.8 214.0 L285.1 233.7 L290.4 253.5 L293.2 273.3 L292.6 293.2 L292.0 313.1 L294.1 333.0 L296.6 353.0 L295.9 373.0 L292.2 393.1 L289.3 413.2 L288.9 433.3 L288.2 453.5 L284.1 473.7 L277.8 494.0"/></g>
-          <g fill="#3A2210" opacity=".5"><ellipse cx="104" cy="330" rx="5" ry="8" /><ellipse cx="246" cy="420" rx="5" ry="8" /><ellipse cx="150" cy="470" rx="5" ry="8" /><ellipse cx="212" cy="262" rx="5" ry="8" /></g>
-          <g stroke="#1E1006" stroke-width="2.6" fill="none"><path d="M94.4 214.0 L91.6 233.7 L89.2 253.5 L87.3 273.3 L85.8 293.2 L84.8 313.1 L84.3 333.0 L84.3 353.0 L84.8 373.0 L85.7 393.1 L87.1 413.2 L89.0 433.3 L91.4 453.5 L94.2 473.7 L97.6 494.0"/><path d="M118.9 214.0 L116.8 233.7 L115.1 253.5 L113.8 273.3 L112.7 293.2 L112.0 313.1 L111.7 333.0 L111.7 353.0 L112.0 373.0 L112.7 393.1 L113.7 413.2 L115.0 433.3 L116.7 453.5 L118.7 473.7 L121.1 494.0"/><path d="M143.3 214.0 L142.1 233.7 L141.1 253.5 L140.3 273.3 L139.6 293.2 L139.2 313.1 L139.0 333.0 L139.0 353.0 L139.2 373.0 L139.6 393.1 L140.2 413.2 L141.0 433.3 L142.0 453.5 L143.2 473.7 L144.7 494.0"/><path d="M167.8 214.0 L167.4 233.7 L167.0 253.5 L166.8 273.3 L166.5 293.2 L166.4 313.1 L166.3 333.0 L166.3 353.0 L166.4 373.0 L166.5 393.1 L166.7 413.2 L167.0 433.3 L167.3 453.5 L167.7 473.7 L168.2 494.0"/><path d="M192.2 214.0 L192.6 233.7 L193.0 253.5 L193.2 273.3 L193.5 293.2 L193.6 313.1 L193.7 333.0 L193.7 353.0 L193.6 373.0 L193.5 393.1 L193.3 413.2 L193.0 433.3 L192.7 453.5 L192.3 473.7 L191.8 494.0"/><path d="M216.7 214.0 L217.9 233.7 L218.9 253.5 L219.7 273.3 L220.4 293.2 L220.8 313.1 L221.0 333.0 L221.0 353.0 L220.8 373.0 L220.4 393.1 L219.8 413.2 L219.0 433.3 L218.0 453.5 L216.8 473.7 L215.3 494.0"/><path d="M241.1 214.0 L243.2 233.7 L244.9 253.5 L246.2 273.3 L247.3 293.2 L248.0 313.1 L248.3 333.0 L248.3 353.0 L248.0 373.0 L247.3 393.1 L246.3 413.2 L245.0 433.3 L243.3 453.5 L241.3 473.7 L238.9 494.0"/><path d="M265.6 214.0 L268.4 233.7 L270.8 253.5 L272.7 273.3 L274.2 293.2 L275.2 313.1 L275.7 333.0 L275.7 353.0 L275.2 373.0 L274.3 393.1 L272.9 413.2 L271.0 433.3 L268.6 453.5 L265.8 473.7 L262.4 494.0"/></g>
-          <g stroke="#D69A5E" stroke-width="1.2" fill="none" opacity=".45"><path d="M96.9 214.0 L94.1 233.7 L91.7 253.5 L89.8 273.3 L88.3 293.2 L87.3 313.1 L86.8 333.0 L86.8 353.0 L87.3 373.0 L88.2 393.1 L89.6 413.2 L91.5 433.3 L93.9 453.5 L96.7 473.7 L100.1 494.0"/><path d="M121.4 214.0 L119.3 233.7 L117.6 253.5 L116.3 273.3 L115.2 293.2 L114.5 313.1 L114.2 333.0 L114.2 353.0 L114.5 373.0 L115.2 393.1 L116.2 413.2 L117.5 433.3 L119.2 453.5 L121.2 473.7 L123.6 494.0"/><path d="M145.8 214.0 L144.6 233.7 L143.6 253.5 L142.8 273.3 L142.1 293.2 L141.7 313.1 L141.5 333.0 L141.5 353.0 L141.7 373.0 L142.1 393.1 L142.7 413.2 L143.5 433.3 L144.5 453.5 L145.7 473.7 L147.2 494.0"/><path d="M170.3 214.0 L169.9 233.7 L169.5 253.5 L169.3 273.3 L169.0 293.2 L168.9 313.1 L168.8 333.0 L168.8 353.0 L168.9 373.0 L169.0 393.1 L169.2 413.2 L169.5 433.3 L169.8 453.5 L170.2 473.7 L170.7 494.0"/><path d="M194.7 214.0 L195.1 233.7 L195.5 253.5 L195.7 273.3 L196.0 293.2 L196.1 313.1 L196.2 333.0 L196.2 353.0 L196.1 373.0 L196.0 393.1 L195.8 413.2 L195.5 433.3 L195.2 453.5 L194.8 473.7 L194.3 494.0"/><path d="M219.2 214.0 L220.4 233.7 L221.4 253.5 L222.2 273.3 L222.9 293.2 L223.3 313.1 L223.5 333.0 L223.5 353.0 L223.3 373.0 L222.9 393.1 L222.3 413.2 L221.5 433.3 L220.5 453.5 L219.3 473.7 L217.8 494.0"/><path d="M243.6 214.0 L245.7 233.7 L247.4 253.5 L248.7 273.3 L249.8 293.2 L250.5 313.1 L250.8 333.0 L250.8 353.0 L250.5 373.0 L249.8 393.1 L248.8 413.2 L247.5 433.3 L245.8 453.5 L243.8 473.7 L241.4 494.0"/><path d="M268.1 214.0 L270.9 233.7 L273.3 253.5 L275.2 273.3 L276.7 293.2 L277.7 313.1 L278.2 333.0 L278.2 353.0 L277.7 373.0 L276.8 393.1 L275.4 413.2 L273.5 433.3 L271.1 453.5 L268.3 473.7 L264.9 494.0"/></g>
-          <rect x="40" y="210" width="280" height="290" fill="url(#gWoodV)"></rect>
-          <ellipse cx="150" cy="300" rx="30" ry="120" fill="#fff" opacity=".06"></ellipse>
-        </g>
-        <path d="M58.1 270.0 Q180 298.0 301.9 270.0 L301.9 285.0 Q180 313.0 58.1 285.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M60.1 273.0 Q180 301.0 299.9 273.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="72.1" cy="280.5" r="3.2"/><circle cx="113.0" cy="287.3" r="3.2"/><circle cx="180.0" cy="291.5" r="3.2"/><circle cx="247.0" cy="287.3" r="3.2"/><circle cx="287.9" cy="280.5" r="3.2"/></g><path d="M53.9 342.0 Q180 370.0 306.1 342.0 L306.1 357.0 Q180 385.0 53.9 357.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M55.9 345.0 Q180 373.0 304.1 345.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="67.9" cy="352.4" r="3.2"/><circle cx="110.7" cy="359.3" r="3.2"/><circle cx="180.0" cy="363.5" r="3.2"/><circle cx="249.3" cy="359.3" r="3.2"/><circle cx="292.1" cy="352.4" r="3.2"/></g><path d="M57.5 412.0 Q180 440.0 302.5 412.0 L302.5 427.0 Q180 455.0 57.5 427.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M59.5 415.0 Q180 443.0 300.5 415.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="71.5" cy="422.5" r="3.2"/><circle cx="112.6" cy="429.3" r="3.2"/><circle cx="180.0" cy="433.5" r="3.2"/><circle cx="247.4" cy="429.3" r="3.2"/><circle cx="288.5" cy="422.5" r="3.2"/></g><path d="M65.6 468.0 Q180 496.0 294.4 468.0 L294.4 483.0 Q180 511.0 65.6 483.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M67.6 471.0 Q180 499.0 292.4 471.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="79.6" cy="478.7" r="3.2"/><circle cx="117.1" cy="485.3" r="3.2"/><circle cx="180.0" cy="489.5" r="3.2"/><circle cx="242.9" cy="485.3" r="3.2"/><circle cx="280.4" cy="478.7" r="3.2"/></g>
-        <path d="M70 214Q180 240 290 214L291 224Q180 252 69 224Z" fill="#B07A45" stroke="#0B0C18" stroke-width="3"></path>
-        <path d="M74 217Q180 242 286 217" stroke="#E0A86C" stroke-width="2" fill="none" opacity=".8"></path>
+        <path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z" fill="url(#gWood)" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
+        <g stroke="#2A170B" stroke-width="3" fill="none" opacity=".8"><path d="M96 226Q78 360 100 490"/><path d="M124 226Q112 360 128 490"/><path d="M152 226Q147 360 156 490"/><path d="M180 226Q180 360 176 490"/><path d="M208 226Q213 360 204 490"/><path d="M236 226Q248 360 232 490"/><path d="M264 226Q282 360 260 490"/></g>
+        <path d="M110 330q8 4 6 12M232 420q-6 6 0 12M150 478q6-4 12 0" stroke="#2A170B" stroke-width="2.5" fill="none" opacity=".6"></path>
+        <path d="M62 274Q180 304 298 274L299 290Q180 320 61 290Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M56 344Q180 374 304 344L304 360Q180 390 56 360Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M58 414Q180 444 302 414L300 430Q180 460 60 430Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <g fill="#9A9AA2" stroke="#0B0C18" stroke-width="1.5"><circle cx="72" cy="284.4" r="4"/><circle cx="120" cy="293.1" r="4"/><circle cx="180" cy="297.0" r="4"/><circle cx="240" cy="293.1" r="4"/><circle cx="288" cy="284.4" r="4"/><circle cx="72" cy="354.4" r="4"/><circle cx="120" cy="363.1" r="4"/><circle cx="180" cy="367.0" r="4"/><circle cx="240" cy="363.1" r="4"/><circle cx="288" cy="354.4" r="4"/><circle cx="72" cy="424.4" r="4"/><circle cx="120" cy="433.1" r="4"/><circle cx="180" cy="437.0" r="4"/><circle cx="240" cy="433.1" r="4"/><circle cx="288" cy="424.4" r="4"/></g>
+        <path d="M70 214Q180 240 290 214" stroke="#0B0C18" stroke-width="5" fill="none"></path>
+        <path d="M72 220Q180 246 288 220" stroke="#B88250" stroke-width="3" fill="none" opacity=".6"></path>
       </g>
       <g id="prSlots"></g>
       <text id="prBang" x="180" y="60" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FFD447" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">펑!</text>
@@ -2321,54 +2304,34 @@ function startBowling(){
   const sec=$('#bowling'), tapBtn=$('#bwTap'), gauge=$('#bwGauge'), mark=$('#bwMark');
   tapBtn.hidden=true; gauge.hidden=true; $('#bwFrames').style.display='none';
   let hint=$('#bwHint'); if(!hint){ hint=document.createElement('div'); hint.id='bwHint'; hint.className='bw-hint'; tapBtn.after(hint); }
-  // 프레임 진행: 1프레임을 모두 돌아가며 친 뒤 다음 프레임. 한 프레임 2구(스트라이크면 1구).
-  const n=S.n, NF=1; const fr=[...Array(n)].map(()=>[]);   // fr[i] = [[a,b],[a,b]...]
-  let order=[...Array(n).keys()], ci=0, frame=0, roll=0, tie=null;
-  const segB=$$('#bwFrames button'); const paintF=()=>segB.forEach(b=>b.setAttribute('aria-pressed',+b.dataset.f===bwFrames));
-  
-  // 실제 볼링 점수: 스트라이크 = 10 + 다음 2구, 스페어 = 10 + 다음 1구, 마지막 프레임은 스트라이크/스페어면 보너스 투구
-  const frSum=f=>f?f.reduce((a,b)=>a+b,0):0, tbt=i=>fr[i].slice(NF).reduce((a,f)=>a+frSum(f),0);
-  const tot=i=>{ const Fs=fr[i].slice(0,NF), rolls=[].concat(...Fs); let sc=0, ri=0;
-    for(let k=0;k<Fs.length;k++){ const f=Fs[k];
-      if(k===NF-1){ sc+=frSum(f); break; }
-      if(f[0]===10){ sc+=10+(rolls[ri+1]||0)+(rolls[ri+2]||0); ri+=1; }
-      else if(f.length===2&&f[0]+f[1]===10){ sc+=10+(rolls[ri+2]||0); ri+=2; }
-      else { sc+=frSum(f); ri+=f.length; } }
-    return sc; };
-  const cell=f=>{ if(!f) return ''; let fresh=true, prev=0; return f.map(v=>{ if(fresh&&v===10) return 'X'; if(!fresh&&prev+v===10){ fresh=true; return '/'; } const t=v===0?'-':v; if(fresh){ fresh=false; prev=v; } else fresh=true; return t; }).join(' '); };
-  const frameDone=()=>true;   // 한 사람당 1구
-  const T={ get who(){ return order[ci]; }, get shot(){ return roll; } };
-  T.table=(lose,live)=>{ const extra=Math.max(0,...fr.map(a=>a.length-NF)); let h='<table class="sc"><thead><tr><th scope="col" style="text-align:left">이름</th>';
-    for(let k=0;k<NF;k++) h+='<th scope="col">'+(k+1)+'F</th>'; for(let k=0;k<extra;k++) h+='<th scope="col">결승</th>'; h+='<th scope="col">합계</th></tr></thead><tbody>';
-    for(let i=0;i<n;i++){ const now=live&&i===T.who; h+='<tr class="'+(lose===i?'lose':'')+(now?' now':'')+'"><td class="nm"><i style="background:'+PAL[i][0]+'"></i>'+esc(nameOf(i))+'</td>';
-      for(let k=0;k<NF+extra;k++){ const curF=now&&k===(tie?(roll?fr[i].length-1:fr[i].length):frame); h+='<td class="'+(k>=NF?'tb':'')+(curF?' cur':'')+'">'+(cell(fr[i][k])||(curF?'…':''))+'</td>'; }
-      h+='<td class="tot">'+tot(i)+'</td></tr>'; } return h+'</tbody></table>'; };
-  T.paint=()=>{ const i=T.who; sec.querySelector('.sp-turn .dot').style.background=PAL[i][0]; sec.querySelector('.sp-turn b').textContent=nameOf(i);
-    sec.querySelector('.sp-info').textContent=tie?'동점! 다시 한 번':'차례 · 빨간 핀 조심'; sec.querySelector('.sp-board').innerHTML=T.table(null,true); };
-  T.record=v=>{ const i=T.who; if(roll===0) fr[i].push([v]); else fr[i][fr[i].length-1].push(v);
-    const f=fr[i][fr[i].length-1]; if(!frameDone(f,!tie&&frame===NF-1)){ roll++; return 'again'; }
-    roll=0; ci++; if(ci<order.length) return 'next';
-    ci=0; if(!tie){ frame++; if(frame<NF) return 'next'; }
-    const base=tie||[...Array(n).keys()], val=tie?tbt:tot, vals=base.map(val), worst=Math.min(...vals), lows=base.filter(i=>val(i)===worst);
-    if(lows.length>1){ tie=lows; order=lows; return 'tie'; }
-    T.loser=lows[0]; return 'done'; };
-  T.finish=sub=>{ const L=T.loser; sec.querySelector('.sp-board').innerHTML=T.table(L,false); boomSound(); buzz([200,60,300]); setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:sub(L,tot(L)), n, table:T.table(L,false)}),900); };
+  // 핀 같이 쓰기: 흰 핀 5개를 모두가 돌아가며 쓰러뜨려요. 내 차례에 1개도 못 쓰러뜨리거나 빨간 핀을 맞히면 독박.
+  const n=S.n, cnt=Array(n).fill(0); let order=[...Array(n).keys()], ci=0;
+  const T={ get who(){ return order[ci]; } };
+  const whitesLeft=()=>pins.filter(p=>!p.red&&!p.gone).length;
+  const board=L=>mkTable(['이름','쓰러뜨린 핀'],order.map(i=>({cells:[esc(nameOf(i)),cnt[i]+'개'],lose:i===L,color:PAL[i][0]})));
+  T.paint=()=>{ const i=T.who; sec.querySelector('.sp-turn .dot').style.background=PAL[i][0]; sec.querySelector('.sp-turn b').textContent=phase==='order'?'🎲':nameOf(i);
+    sec.querySelector('.sp-info').textContent=phase==='order'?'순서 뽑는 중':'차례 · 흰 핀 '+whitesLeft()+'개 남음'; sec.querySelector('.sp-board').innerHTML=board(); };
+  // 순서 뽑기 주사위
+  let od=[...Array(n).keys()].map(k=>({i:k,v:1+Math.floor(Math.random()*6),spin:true,stop:.9+k*.35,re:0})), odT=0, odDone=0, odTick=0;
   let fresh=true, pins=[], ball, phase='dir', clock=0, dirV=0, dirSp=1, powV=0, powSp=1, theta=0, meter=0, oil, camZ=0, rum=null, settleT=0, lastClack=0, pop=null;
   const F=790, HOR=95, CH=1.5, K=.45;
   const P=(x,z,y=0)=>{ const d=Math.max(.6,(z-camZ)*K+3); return [180+x*F/d, HOR+(CH-y)*F/d, F/d]; };
-  function rack(){ fresh=true; pins=[]; const S=.3048, rows=[[0],[-.5,.5],[-1,0,1],[-1.5,-.5,.5,1.5]];
-    const red=Math.floor(Math.random()*10); rows.forEach((r,ri)=>r.forEach(k=>pins.push({red:pins.length===red,x:k*S,z:PINZ+ri*S*.866,ox:k*S,oz:PINZ+ri*S*.866,vx:0,vz:0,down:false,gone:false,tilt:0,tv:0,ang:Math.random()*6}))); }
+  const RZ=PINZ*.55, RA=LW*.62, RW=.9+Math.random()*.5, RP=Math.random()*6;
+  const mkPin=(x,z,red)=>({red,x,z,ox:x,oz:z,vx:0,vz:0,down:false,gone:false,tilt:0,tv:0,ang:Math.random()*6});
+  function rackWhite(){ pins=pins.filter(p=>p.red); [[-.42,0],[-.21,.45],[0,.8],[.21,.45],[.42,0]].forEach(([x,dz])=>pins.push(mkPin(x,PINZ+dz,false))); }
+  function rack(){ fresh=true; pins=[mkPin(0,RZ,true)]; rackWhite(); }
   function newThrow(){ ball={x:0,z:.4,vx:0,vz:0,hook:0,on:false,gutter:false,spinA:0};
     oil={len:9.5+Math.random()*4, f:.7+Math.random()*.7, drift:(Math.random()-.5)*.08};
-    camZ=0; swipe=null; phase='aim'; hint.innerHTML='공을 잡고 <b>위로 쓸어</b> 굴려요 · 휘게 쓸면 공도 휘어요<br><b style="color:#FF5C7A">빨간 핀</b>을 쓰러뜨리면 <b style="color:#FF5C7A">0점!</b>'; T.paint(); }
+    camZ=0; swipe=null; phase='aim'; hint.innerHTML='<b>휘게 쓸어서</b> 움직이는 <b style="color:#FF5C7A">빨간 핀</b>을 피해요<br>흰 핀을 <b>1개 이상</b> 못 쓰러뜨리면 <b style="color:#FF5C7A">독박!</b>'; T.paint(); }
   let swipe=null;
-  rack(); newThrow();
+  rack(); newThrow(); phase='order'; hint.textContent='🎲 순서를 뽑고 있어요…'; T.paint();
   // 스와이프: 시작 위치 = 공 위치, 쓸은 방향 = 방향, 빠르기 = 힘, 휘어짐 = 회전
   const cxy=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]; };
   cv.onpointerdown=e=>{ e.preventDefault(); if(phase!=='aim') return; audio(); try{ cv.setPointerCapture(e.pointerId); }catch(_){} const [x,y]=cxy(e); swipe={pts:[[x,y,performance.now()]]}; };
   cv.onpointermove=e=>{ if(!swipe) return; const [x,y]=cxy(e); swipe.pts.push([x,y,performance.now()]); if(swipe.pts.length===2) beep(300,.03,'triangle',.03); };
-  cv.onpointerup=cv.onpointercancel=e=>{ if(!swipe||phase!=='aim') return; const P0=swipe.pts[0], P1=swipe.pts[swipe.pts.length-1]; const dy=P0[1]-P1[1], dx=P1[0]-P0[0];
-    if(dy<50){ swipe=null; hint.innerHTML='더 길게 <b>위로</b> 쓸어 주세요'; buzz([30,30,30]); return; }
+  cv.onpointerup=cv.onpointercancel=e=>{ if(!swipe||phase!=='aim') return; let lo=0; swipe.pts.forEach((p,i)=>{ if(p[1]>=swipe.pts[lo][1]) lo=i; }); swipe.pts=swipe.pts.slice(lo);
+    const P0=swipe.pts[0], P1=swipe.pts[swipe.pts.length-1]; const dy=P0[1]-P1[1], dx=P1[0]-P0[0];
+    if(dy<50||swipe.pts.length<2){ swipe=null; hint.innerHTML='공에서 <b>위로 쭉</b> 밀어 올리세요 ☝'; buzz([30,30,30]); return; }
     // 최근 구간 속도
     const recent=swipe.pts.filter(p=>p[2]>P1[2]-160), R0=recent[0]||P0, dt=Math.max(.03,(P1[2]-R0[2])/1000), vy=(R0[1]-P1[1])/dt;
     // 가운데 점이 직선에서 얼마나 벗어났나 = 휘어짐
@@ -2386,6 +2349,14 @@ function startBowling(){
   }
   function clack(v){ const now=performance.now(); if(now-lastClack<25) return; lastClack=now; const a=audio(); if(!a) return; noiseBurst(a,.05,'bandpass',1800+Math.random()*1800,2,Math.min(1,v*.35)); tone(a,900+Math.random()*500,500,.05,'triangle',Math.min(.07,v*.03)); }
   function step(dt){ clock+=dt;
+    if(phase==='order'){ odT+=dt; odTick-=dt; const tk=odTick<=0; if(tk) odTick=.07;
+      od.forEach(d=>{ if(!d.spin) return; if(odT>=d.stop){ d.spin=false; d.v=1+Math.floor(Math.random()*6); beep(600+d.v*60,.08,'triangle',.07); buzz(15); } else if(tk) d.v=1+Math.floor(Math.random()*6); });
+      if(od.every(d=>!d.spin)&&!odDone){ const ties=new Set(); od.forEach(a=>od.forEach(b=>{ if(a!==b&&a.v===b.v){ ties.add(a); ties.add(b); } }));
+        if(ties.size){ let k=0; ties.forEach(d=>{ d.spin=true; d.re++; d.stop=odT+.8+k*.3; k++; }); }
+        else { odDone=odT; order=od.slice().sort((a,b)=>b.v-a.v).map(d=>d.i); fanfare(); } }
+      if(odDone&&odT>odDone+1.8){ ci=0; newThrow(); callout(nameOf(T.who)+' 먼저!',PAL[T.who][0]); }
+      return; }
+    { const r=pins.find(p=>p.red); if(r&&!r.down&&!r.touched){ r.x=RA*Math.sin(clock*RW+RP); r.ox=r.x; r.vx=r.vz=0; } }
     if(phase!=='roll'&&phase!=='after') return;
     const SUB=6, h=dt/SUB;
     for(let k=0;k<SUB;k++){
@@ -2402,6 +2373,7 @@ function startBowling(){
         if(Math.abs(p.x)>LW+GW||p.z>PINZ+1.5){ p.down=true; p.out=true; } }
       for(let i=0;i<pins.length;i++){ const A=pins[i]; if(A.gone) continue; for(let j=i+1;j<pins.length;j++){ const B=pins[j]; if(B.gone) continue; let nx=B.x-A.x, nz=B.z-A.z; const d=Math.hypot(nx,nz), RR=PR*2*(A.down||B.down?1.5:1); if(d>=RR||d<1e-6) continue; nx/=d; nz/=d; const o=(RR-d)/2; A.x-=nx*o; A.z-=nz*o; B.x+=nx*o; B.z+=nz*o; const vn=(B.vx-A.vx)*nx+(B.vz-A.vz)*nz; if(vn<0){ const jj=-.95*vn; A.vx-=jj*nx; A.vz-=jj*nz; B.vx+=jj*nx; B.vz+=jj*nz; A.tv+=-vn*2; B.tv+=-vn*2; clack(-vn); } } }
     }
+    { const r=pins.find(p=>p.red); if(r&&!r.touched&&Math.hypot(r.vx,r.vz)>.02) r.touched=true; }
     // 카메라가 공을 따라감
     const target=Math.min(10.5,Math.max(0,(ball.on?ball.z:PINZ)-3.2)); camZ+=(target-camZ)*Math.min(1,dt*2.2);
     if(rum) rum.set(ball.on&&!ball.gutter?.4:ball.on?.2:0);
@@ -2411,14 +2383,15 @@ function startBowling(){
   }
   function endThrow(){
     phase='wait'; if(rum){ rum.stop(); rum=null; }
-    const knocked=pins.filter(p=>p.down&&!p.gone).length, redDown=pins.some(p=>p.red&&p.down);
-    const strike=!redDown&&knocked===10, score=redDown?0:knocked;
-    if(redDown){ boomSound(); buzz([200,60,200]); } else if(strike) fanfare(); else if(knocked) beep(700,.08,'triangle',.06);
-    pop={txt:redDown?'빨간 핀! 0점':strike?'스트라이크!':(knocked?knocked+'핀':(ball.gutter?'거터…':'0핀')),t:0,red:redDown};
-    const r=T.record(score);
-    setTimeout(()=>{ pins.forEach(p=>{ if(p.down) p.gone=true; });
-      if(r==='next'||r==='tie'){ rack(); newThrow(); if(r==='tie') pop={txt:'동점! 한 구씩 더',t:0}; return; }
-      phase='done'; hint.textContent='끝!'; T.finish((L,t)=>t+'점 · 꼴찌'+(fr[L][0]&&fr[L][0][0]===0?' (빨간 핀 또는 0핀)':'')); },1500);
+    const who=T.who, knocked=pins.filter(p=>!p.red&&p.down&&!p.gone).length, red=pins.find(p=>p.red), redHit=red&&(red.down||red.touched);
+    cnt[who]+=redHit?0:knocked; const fail=redHit||knocked===0;
+    pop={txt:redHit?'빨간 핀! 독박':knocked===0?'꽝! 독박':(knocked+'개!'),t:0,red:fail};
+    if(fail){ phase='done'; hint.textContent='끝!'; sec.querySelector('.sp-board').innerHTML=board(who); boomSound(); buzz([200,60,300]);
+      setTimeout(()=>result({name:nameOf(who), color:PAL[who][0], sub:redHit?'움직이는 빨간 핀을 맞혔어요':'흰 핀을 하나도 못 쓰러뜨렸어요', n, table:board(who)}),1500); return; }
+    if(knocked>=3) fanfare(); else beep(700,.08,'triangle',.06);
+    setTimeout(()=>{ pins.forEach(p=>{ if(p.down&&!p.red) p.gone=true; }); if(red){ red.x=RA*Math.sin(clock*RW+RP); red.ox=red.x; red.z=red.oz=RZ; red.vx=red.vz=0; red.tilt=0; red.tv=0; red.down=false; red.touched=false; }
+      if(!whitesLeft()){ rackWhite(); pop={txt:'핀 다시 세우기!',t:0}; }
+      ci=(ci+1)%order.length; newThrow(); callout(nameOf(T.who)+' 차례!',PAL[T.who][0]); buzz([60,40,60]); },1500);
   }
   // ── 그리기 ──
   function quad(pts,fill){ ctx.fillStyle=fill; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.fill(); }
@@ -2455,15 +2428,24 @@ function startBowling(){
     if(phase==='aim'){ const o1=P(-LW,oil.len), o2=P(LW,oil.len); ctx.strokeStyle='rgba(111,211,255,.35)'; ctx.setLineDash([4,6]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(o1[0],o1[1]); ctx.lineTo(o2[0],o2[1]); ctx.stroke(); ctx.setLineDash([]);
       }
     // 핀 (먼 것부터)
-    const obj=[]; for(const p of pins){ if(p.gone) continue; obj.push({z:p.z,f:()=>{ const [sx,sy,sc]=P(p.x,p.z); pinShape(sx,sy,sc,p.down?p.tilt:0,p.ang,p.down?.9:1,p.red); if(p.red&&!p.down&&phase==='aim'){ ctx.fillStyle='#FF5C7A'; ctx.font='bold 14px sans-serif'; ctx.textAlign='center'; ctx.fillText('▼',sx,sy-.45*sc-6+Math.sin(clock*6)*2); } }}); }
+    const obj=[]; for(const p of pins){ if(p.gone) continue; obj.push({z:p.z,f:()=>{ const [sx,sy,sc]=P(p.x,p.z); pinShape(sx,sy,sc,p.down?p.tilt:0,p.ang,p.down?.9:1,p.red); if(p.red&&!p.down&&phase==='aim'&&false){ ctx.fillStyle='#FF5C7A'; ctx.font='bold 14px sans-serif'; ctx.textAlign='center'; ctx.fillText('▼',sx,sy-.45*sc-6+Math.sin(clock*6)*2); } }}); }
     if(ball.on||phase==='aim') obj.push({z:ball.z,f:()=>{ const [sx,sy,sc]=P(ball.x,ball.z), r=BR*sc, col=PAL[T.who][0];
       ctx.fillStyle='rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(sx,sy,r*1.05,r*.3,0,0,7); ctx.fill();
       const g=ctx.createRadialGradient(sx-r*.35,sy-r*1.35,r*.1,sx,sy-r,r); g.addColorStop(0,'#FFFFFF'); g.addColorStop(.3,col); g.addColorStop(1,col); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(sx,sy-r,r,0,7); ctx.fill(); ctx.strokeStyle='rgba(0,0,0,.5)'; ctx.lineWidth=1.5; ctx.stroke();
       ctx.fillStyle='#14162B'; [[-.3,-.25],[.3,-.25],[0,.25]].forEach(([dx,dy])=>{ const yy=dy*Math.cos(ball.spinA)-.0; if(Math.cos(ball.spinA+dy)<-.2) return; ctx.beginPath(); ctx.arc(sx+dx*r,sy-r+yy*r,r*.12,0,7); ctx.fill(); }); }});
     obj.sort((a,b)=>b.z-a.z).forEach(o=>o.f());
     // 스와이프 자국
-    if(swipe&&swipe.pts.length>1){ const al=swipe.done?Math.max(0,1-(performance.now()-swipe.done)/500):1; ctx.save(); ctx.globalAlpha=al; ctx.strokeStyle='#FFD447'; ctx.lineWidth=6; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); swipe.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.stroke(); ctx.restore(); }
+    if(swipe&&swipe.pts.length>1){ const al=swipe.done?Math.max(0,1-(performance.now()-swipe.done)/500):1; ctx.save(); ctx.strokeStyle='#FFD447'; ctx.lineCap='round'; const now=swipe.done||performance.now(), tl=swipe.pts.filter(p=>p[2]>now-250); for(let i=1;i<tl.length;i++){ const f=1-(now-tl[i][2])/250; ctx.globalAlpha=al*f*.9; ctx.lineWidth=2+8*f; ctx.beginPath(); ctx.moveTo(tl[i-1][0],tl[i-1][1]); ctx.lineTo(tl[i][0],tl[i][1]); ctx.stroke(); } ctx.restore(); }
     if(phase==='aim'&&!swipe){ const yy=H-150+Math.sin(clock*4)*6; ctx.save(); ctx.globalAlpha=.75; ctx.fillStyle='#fff'; ctx.font='26px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('☝ ↑',180,yy); ctx.restore(); }
+    if(phase==='order'){ ctx.save(); ctx.fillStyle='rgba(10,11,25,.82)'; ctx.fillRect(0,0,W,H); ctx.fillStyle='#FFD447'; ctx.font='30px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('🎲 순서 뽑기',180,70);
+      const rh=Math.min(54,330/n), y0=110; const rank=odDone?order:null;
+      od.forEach((d,k)=>{ const y=y0+k*rh, s=Math.min(40,rh-10), dx=230; ctx.fillStyle=PAL[d.i][0]; ctx.beginPath(); ctx.arc(70,y+s/2,7,0,7); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 17px "Noto Sans KR",sans-serif'; ctx.textAlign='left'; ctx.fillText(nameOf(d.i),86,y+s/2+6);
+        const jig=d.spin?Math.sin(clock*40+k)*3:0; ctx.save(); ctx.translate(dx+s/2+jig,y+s/2); ctx.rotate(d.spin?Math.sin(clock*30+k)*.25:0); ctx.fillStyle='#F4F2EA'; ctx.beginPath(); ctx.roundRect?ctx.roundRect(-s/2,-s/2,s,s,s*.2):ctx.rect(-s/2,-s/2,s,s); ctx.fill();
+        const PP={1:[[0,0]],2:[[-1,-1],[1,1]],3:[[-1,-1],[0,0],[1,1]],4:[[-1,-1],[1,-1],[-1,1],[1,1]],5:[[-1,-1],[1,-1],[0,0],[-1,1],[1,1]],6:[[-1,-1],[1,-1],[-1,0],[1,0],[-1,1],[1,1]]}[d.v];
+        ctx.fillStyle=d.v===1?'#D7261E':'#1A1A1E'; PP.forEach(([a,b])=>{ ctx.beginPath(); ctx.arc(a*s*.27,b*s*.27,s*(d.v===1?.12:.085),0,7); ctx.fill(); }); ctx.restore();
+        if(d.re&&!odDone){ ctx.fillStyle='#FF9F1C'; ctx.font='bold 12px "Noto Sans KR",sans-serif'; ctx.textAlign='left'; ctx.fillText('동점! 다시',dx+s+8,y+s/2+4); }
+        if(rank){ const r=rank.indexOf(d.i)+1; ctx.fillStyle=r===1?'#FFD447':'#fff'; ctx.font='20px Jua, sans-serif'; ctx.textAlign='left'; ctx.fillText(r+'번째',dx+s+10,y+s/2+7); } });
+      ctx.restore(); }
     if(pop){ pop.t+=dt; const al=Math.max(0,1-pop.t/1.4); ctx.save(); ctx.globalAlpha=al; ctx.font='38px Jua, sans-serif'; ctx.textAlign='center'; ctx.lineWidth=7; ctx.strokeStyle='#14162B'; ctx.fillStyle=pop.red?'#FF5C7A':'#FFD447'; ctx.strokeText(pop.txt,180,70-pop.t*12); ctx.fillText(pop.txt,180,70-pop.t*12); ctx.restore(); if(pop.t>1.4) pop=null; }
   }
   fit(); const onR=()=>fit(); window.addEventListener('resize',onR);
@@ -3722,15 +3704,6 @@ function startCroc(){
   cleanup=()=>timers.forEach(clearTimeout);
 }
 
-function swordSVG(x,y,col,dir,rot){ const d=dir, X=v=>(x+d*v).toFixed(1);
-  return '<g transform="rotate('+rot+' '+x+' '+y+') translate('+x+' '+y+') scale(1.3) translate('+(-x)+' '+(-y)+')"><g class="sword" style="--fx:'+(d*170)+'px;--fr:'+(d*-30)+'deg">'
-   +'<path d="M'+X(-2)+' '+(y-3)+' L'+X(21)+' '+(y-4.5)+' L'+X(21)+' '+(y+4.5)+' L'+X(-2)+' '+(y+3)+'Z" fill="url(#gBlade)" stroke="#2A2E36" stroke-width="1.2"/>'
-   +'<path d="M'+X(1)+' '+(y-1.2)+' L'+X(20)+' '+(y-2.2)+'" stroke="#fff" stroke-width="1.1" opacity=".9"/>'
-   +'<rect x="'+(+X(21)-3.5)+'" y="'+(y-12)+'" width="7" height="24" rx="3" fill="url(#gGold)" stroke="#3A2A06" stroke-width="1.3"/>'
-   +'<rect x="'+(d<0?X(40):X(24))+'" y="'+(y-4.5)+'" width="16" height="9" rx="2.5" fill="'+col+'" stroke="#0B0C18" stroke-width="1.3"/>'
-   +'<path d="M'+X(28)+' '+(y-4.5)+'v9M'+X(32)+' '+(y-4.5)+'v9M'+X(36)+' '+(y-4.5)+'v9" stroke="#0B0C18" stroke-width="1" opacity=".45"/>'
-   +'<circle cx="'+X(44)+'" cy="'+y+'" r="5.5" fill="url(#gGold)" stroke="#3A2A06" stroke-width="1.3"/></g></g>'; }
-function sWhoosh2(){ const a=audio(); if(!a) return; const len=Math.floor(a.sampleRate*.22), b=a.createBuffer(1,len,a.sampleRate), ch=b.getChannelData(0); for(let i=0;i<len;i++) ch[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/len); const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); src.buffer=b; f.type='bandpass'; f.frequency.setValueAtTime(800,a.currentTime); f.frequency.linearRampToValueAtTime(3200,a.currentTime+.2); g.gain.value=.35; src.connect(f).connect(g).connect(a.destination); src.start(); }
 /* ── 해적 통 ── */
 function startPirate(){
   show('pirate');
@@ -3745,14 +3718,19 @@ function startPirate(){
   prLabel(); setTimeout(prTurn,0);
   let h='';
   rows.forEach((y0,ri)=>{ const half=[96,108,110,104][ri]; for(let c=0;c<5;c++){ const x=Math.round(180-half+c*(half/2)), y=Math.round(y0+15*(1-Math.pow((x-180)/118,2)));
-    h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*5+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-6)+'" y="'+(y-14)+'" width="12" height="28" rx="6" fill="url(#gHole)" stroke="#E0A86C" stroke-width="1.6"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
+    h+='<g class="slot" role="button" tabindex="0" aria-label="구멍 '+(ri*5+c+1)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-5)+'" y="'+(y-13)+'" width="10" height="26" rx="5" fill="#0F0905" stroke="#C08A55" stroke-width="1.5"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
   box.innerHTML=h;
   [...box.children].forEach((sl,k)=>bindPress(sl,()=>{
     if(!ready||done||sl.dataset.p) return; sl.dataset.p='1'; audio();
     const g=sl.querySelector('.sw'), x=+g.dataset.x, y=+g.dataset.y;
-    const col=PAL[cur][0], rot=(Math.random()*24-12).toFixed(0);
+    const TOY=['#E53935','#FDD835','#43A047','#1E88E5','#FB8C00','#8E24AA'], col=TOY[used%TOY.length], rot=(Math.random()*24-12).toFixed(0);
     const dir = x<170 ? -1 : (x>190 ? 1 : (Math.random()<.5?-1:1)), gx = x+dir*4;
-    g.innerHTML=swordSVG(x,y,col,dir,rot);
+    g.innerHTML='<g transform="rotate('+rot+' '+x+' '+y+')"><g class="sword">'+
+      '<rect x="'+(x-4.5)+'" y="'+(y-15)+'" width="9" height="30" rx="4" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect>'+
+      '<rect x="'+(dir<0?gx-30:gx)+'" y="'+(y-6)+'" width="30" height="12" rx="5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect>'+
+      '<path d="M'+(gx+dir*8)+' '+(y-6)+'v12M'+(gx+dir*15)+' '+(y-6)+'v12M'+(gx+dir*22)+' '+(y-6)+'v12" stroke="#0B0C18" stroke-width="1.3" opacity=".45"></path>'+
+      '<circle cx="'+(gx+dir*34)+'" cy="'+y+'" r="6.5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></circle>'+
+      '<rect x="'+(dir<0?gx-28:gx+2)+'" y="'+(y-4)+'" width="26" height="2.5" rx="1.2" fill="#fff" opacity=".45"></rect></g></g>';
     if(k===trap){
       done=true; svg.appendChild(man); svg.appendChild(bang); man.getBoundingClientRect(); man.classList.add('pop');
       sPop(); buzz([120,40,260]); bang.setAttribute('opacity','1');
@@ -3763,7 +3741,7 @@ function startPirate(){
       timers.push(setTimeout(()=>result({name:nameOf(cur), color:PAL[cur][0], sub:'해적이 날아갔어요! ('+(used+1)+'번째 칼)', n:S.n, table:mkTable(['기록','값'],[{cells:['튀어나온 칼',(used+1)+'번째'],lose:true},{cells:['무사히 꽂은 칼',used+'개']},{cells:['남은 구멍',(N-used-1)+'개']}])}),1700));
       return;
     }
-    used++; sWhoosh2(); setTimeout(()=>{ sThunk(); buzz(20); },230);
+    used++; sThunk(); buzz(20);
     ready=false; $('#prLeft').textContent='휴~ 남은 구멍 '+(N-used)+'개'; cur=nxt(cur); timers.push(setTimeout(prTurn,600));
   }));
   cleanup=()=>timers.forEach(clearTimeout);
