@@ -173,11 +173,16 @@ button{cursor:pointer}
 .status{font-size:12px;color:var(--mute);text-align:center}
 .status.err{color:var(--red)}
 .status:empty{display:none}
-.mename{margin-left:auto;max-width:50%;overflow:hidden;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:16px;flex:none}.mename b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mename .pen{font-size:13px;opacity:.7}
+.mename{margin-left:auto;max-width:42%;overflow:hidden;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:16px;flex:none}.mename b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mename .pen{font-size:13px;opacity:.7}
 .spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:sp 1s linear infinite;margin:0 auto}
 @keyframes sp{to{transform:rotate(360deg)}}
 .flash{animation:fl .5s ease-out}
 @keyframes fl{from{transform:scale(1.15)}}
+#tEntry{white-space:nowrap;flex:none}
+#sEntry .top{gap:8px}
+#sEntry .mename{max-width:36%;padding:0 11px;gap:5px}
+.solochip{flex:none;height:40px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,212,71,.55);background:rgba(255,212,71,.12);color:var(--accent);font:700 14px var(--body,sans-serif);white-space:nowrap}
+#meRow[hidden]+.solochip{margin-left:auto}
 .solo-btn{display:block;margin:8px auto 0;background:none;border:0;color:var(--accent);font:700 14px var(--body,sans-serif);padding:6px 10px;text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
@@ -186,7 +191,7 @@ button{cursor:pointer}
 
 <!-- 입장 -->
 <section class="screen" id="sEntry">
-  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div><button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button></div>
+  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div><button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button><button class="solochip" id="bSolo">🤖 혼자</button></div>
   <div class="hero" id="hero" hidden><div class="disp big" id="tHero">각자 폰으로 함께!</div><p id="tHeroSub">한 명이 방을 만들고, 나머지는 QR을 찍거나<br>방 번호를 넣어서 들어와요</p></div>
   <div class="status" id="netStatus"></div>
   <div id="joinBox" class="card field" hidden><label for="codeIn" id="tCode">방 번호</label><input id="codeIn" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></div>
@@ -195,7 +200,6 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <button class="solo-btn" id="bSolo">🤖 혼자 해보기</button>
   <div class="ver">v23</div></div>
 </section>
 
