@@ -109,7 +109,7 @@ button{cursor:pointer}
 .tooth,.slot{cursor:default;outline:none}.fang{transition:transform .13s cubic-bezier(.5,0,1,1)}.tooth.down .fang{transform:translateY(var(--d))}.tooth .cap{opacity:0;transition:opacity .05s .1s}.tooth.down .cap{opacity:1}
 #crTop{transition:transform .16s cubic-bezier(.7,0,1,1)}#crTop.bite{transform:translateY(158px)}#crSvg.shut .mouth{opacity:0}#crSvg.chomp{animation:chomp .5s ease-out}@keyframes chomp{15%{transform:scale(1.07) rotate(-2.5deg)}35%{transform:scale(1.05) rotate(2.5deg)}55%{transform:scale(1.02) rotate(-1.5deg)}75%{transform:rotate(1deg)}}
 #prMan{transform-origin:180px 160px;transition:transform 1s cubic-bezier(.2,.85,.3,1)}#prMan.flyup{transform:translate(0,-620px) rotate(-14deg)}
-.sword{transform-box:fill-box;transform-origin:center;animation:swfly .34s cubic-bezier(.15,.85,.35,1)}@keyframes swfly{0%{transform:translate(var(--fx),-60px) rotate(var(--fr));opacity:0}12%{opacity:1}72%{transform:translate(0,0) rotate(0)}84%{transform:rotate(calc(var(--fr) * -.12))}100%{transform:none}}
+.sword{transform-box:fill-box;transform-origin:center;animation:stab .16s ease-out}@keyframes stab{from{transform:scale(1.25);opacity:0}}
 .ccv{width:100%;aspect-ratio:600/500;border-radius:16px;display:block;touch-action:none}
 .cctl{display:flex;flex-direction:column;gap:8px}.crow{display:flex;gap:8px;align-items:center}.cab{flex:1;height:52px;font-size:22px}
 .cang{flex:1.2;text-align:center;font-family:var(--display);font-size:28px;color:var(--accent)}
@@ -178,6 +178,7 @@ button{cursor:pointer}
 @keyframes sp{to{transform:rotate(360deg)}}
 .flash{animation:fl .5s ease-out}
 @keyframes fl{from{transform:scale(1.15)}}
+.solo-btn{display:block;margin:8px auto 0;background:none;border:0;color:var(--accent);font:700 14px var(--body,sans-serif);padding:6px 10px;text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -194,7 +195,8 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v21</div></div>
+  <button class="solo-btn" id="bSolo">🤖 혼자 해보기</button>
+  <div class="ver">v23</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -214,6 +216,7 @@ button{cursor:pointer}
   <div class="top"><button class="icon-btn" id="gBack" aria-label="대기실로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="gTitle">게임</div><span class="badge" id="gCode"></span></div>
   <div class="stage" id="stage"></div>
   <div id="gBtns" class="row2" hidden><button class="btn ghost" id="bLobby">다른 게임</button><button class="btn" id="bAgain">한 판 더</button></div>
+  <button class="solo-btn" id="bReal" hidden>👥 친구들과 하려면 방 만들기!</button>
 </section>
 
 </div>
@@ -267,63 +270,47 @@ button{cursor:pointer}
     </svg></template>
 <template id="tplPirate"><svg id="prSvg" viewBox="0 80 360 432" role="img" aria-label="해적이 숨은 나무통">
       <defs>
-        <linearGradient id="gWood2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E1A0C"></stop><stop offset=".18" stop-color="#6B4022"></stop><stop offset=".42" stop-color="#A86C3A"></stop><stop offset=".55" stop-color="#B97A44"></stop><stop offset=".8" stop-color="#6B4022"></stop><stop offset="1" stop-color="#2A170A"></stop></linearGradient>
-        <linearGradient id="gWoodV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".35"></stop><stop offset=".25" stop-color="#000" stop-opacity="0"></stop><stop offset=".75" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".45"></stop></linearGradient>
-        <linearGradient id="gIron2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C818B"></stop><stop offset=".35" stop-color="#3C4048"></stop><stop offset="1" stop-color="#1A1C20"></stop></linearGradient>
-        <radialGradient id="gHole" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#000"></stop><stop offset="1" stop-color="#2A1608"></stop></radialGradient>
+        <linearGradient id="gWood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3B2414"></stop><stop offset=".25" stop-color="#7A4E2C"></stop><stop offset=".5" stop-color="#9A6638"></stop><stop offset=".75" stop-color="#7A4E2C"></stop><stop offset="1" stop-color="#3B2414"></stop></linearGradient>
+        <linearGradient id="gIron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A5A60"></stop><stop offset=".5" stop-color="#2A2A2E"></stop><stop offset="1" stop-color="#18181B"></stop></linearGradient>
         <radialGradient id="gSkin" cx=".45" cy=".4" r=".65"><stop offset="0" stop-color="#FFD0A6"></stop><stop offset="1" stop-color="#E39A68"></stop></radialGradient>
-        <linearGradient id="gBlade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"></stop><stop offset=".45" stop-color="#C9D1DC"></stop><stop offset="1" stop-color="#7D8794"></stop></linearGradient>
-        <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE68A"></stop><stop offset=".5" stop-color="#E0A824"></stop><stop offset="1" stop-color="#8A5E0A"></stop></linearGradient>
-        <clipPath id="cBarrel"><path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z"></path></clipPath>
       </defs>
-      <ellipse cx="180" cy="500" rx="138" ry="12" fill="#000" opacity=".4"></ellipse>
-      <ellipse cx="180" cy="214" rx="110" ry="24" fill="#120A04" stroke="#0B0C18" stroke-width="4"></ellipse>
-      <ellipse cx="180" cy="220" rx="96" ry="15" fill="#050302" opacity=".6"></ellipse>
+      <ellipse cx="180" cy="498" rx="130" ry="10" fill="#000" opacity=".35"></ellipse>
+      <ellipse cx="180" cy="214" rx="110" ry="24" fill="#1E120A" stroke="#0B0C18" stroke-width="4"></ellipse>
       <g id="prMan">
         <rect x="128" y="196" width="104" height="160" rx="20" fill="#FFF8EA" stroke="#0B0C18" stroke-width="4"></rect>
         <path d="M130 224h100M130 252h100M130 280h100M130 308h100M130 336h100" stroke="#C62828" stroke-width="13"></path>
-        <path d="M128 216 Q140 300 150 356 L128 356Z M232 216 Q220 300 210 356 L232 356Z" fill="#2B2B33"></path>
         <rect x="128" y="196" width="104" height="160" rx="20" fill="none" stroke="#0B0C18" stroke-width="4"></rect>
         <ellipse cx="118" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
         <ellipse cx="242" cy="150" rx="13" ry="17" fill="#E9A776" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <circle cx="240" cy="172" r="8" fill="none" stroke="url(#gGold)" stroke-width="4.5"></circle>
+        <circle cx="240" cy="170" r="7" fill="none" stroke="#F5C518" stroke-width="4"></circle>
         <circle cx="180" cy="146" r="62" fill="url(#gSkin)" stroke="#0B0C18" stroke-width="4"></circle>
         <path d="M120 150Q118 232 180 236Q242 232 240 150Q232 176 214 180Q180 172 146 180Q128 176 120 150Z" fill="#1A1210" stroke="#0B0C18" stroke-width="3"></path>
         <path d="M156 190Q180 214 204 190Q196 206 180 208Q164 206 156 190Z" fill="#7A1A12" stroke="#0B0C18" stroke-width="2"></path>
         <path d="M164 196Q180 200 196 196L194 202Q180 205 166 202Z" fill="#fff"></path>
-        <rect x="186" y="197" width="5" height="5" fill="#F5C518"></rect>
-        <path d="M180 174Q146 162 126 186Q132 178 142 178Q150 184 160 178Q170 182 180 178Q190 182 200 178Q210 184 218 178Q228 178 234 186Q214 162 180 174Z" fill="#1A1210" stroke="#0B0C18" stroke-width="2"></path>
+        <path d="M180 174Q150 166 134 184Q150 184 160 178Q170 182 180 178Q190 182 200 178Q210 184 226 184Q210 166 180 174Z" fill="#1A1210" stroke="#0B0C18" stroke-width="2"></path>
         <ellipse cx="180" cy="160" rx="14" ry="12" fill="#E7895A" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <ellipse cx="206" cy="140" rx="13" ry="14" fill="#fff" stroke="#0B0C18" stroke-width="3"></ellipse>
-        <circle cx="204" cy="142" r="6" fill="#1A1210"></circle><circle cx="202" cy="139" r="2" fill="#fff"></circle>
-        <path d="M190 122Q206 112 224 124" stroke="#1A1210" stroke-width="6" stroke-linecap="round" fill="none"></path>
-        <path d="M222 150l8 16M219 156l7-3M222 162l7-3" stroke="#B5543A" stroke-width="2.5" stroke-linecap="round"></path>
-        <path d="M122 150L154 140L238 112" stroke="#1A1210" stroke-width="4.5" fill="none" stroke-linejoin="round"></path>
-        <ellipse cx="154" cy="140" rx="18" ry="15" fill="#1A1210" transform="rotate(-12 154 140)"></ellipse>
-        <path d="M120 132Q180 110 240 132L242 144Q180 122 118 144Z" fill="#C62828" stroke="#0B0C18" stroke-width="3"></path>
-        <path d="M112 126Q116 70 180 66Q244 70 248 126Q180 104 112 126Z" fill="#1C1C22" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
-        <path d="M86 130Q92 96 130 90Q116 108 116 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M274 130Q268 96 230 90Q244 108 244 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M100 130Q180 100 260 130Q252 142 240 140Q180 116 120 140Q108 142 100 130Z" fill="#26262E" stroke="#0B0C18" stroke-width="3.5" stroke-linejoin="round"></path>
-        <path d="M104 131Q180 104 256 131" stroke="url(#gGold)" stroke-width="4" fill="none"></path>
-        <path d="M90 128Q96 98 128 92M270 128Q264 98 232 92" stroke="url(#gGold)" stroke-width="3" fill="none"></path>
-        <g transform="translate(0 -4)"><circle cx="180" cy="94" r="10" fill="#F4F2EA"></circle><rect x="174.5" y="101" width="11" height="7" rx="2" fill="#F4F2EA"></rect>
-        <circle cx="176" cy="93" r="2.8" fill="#1C1C22"></circle><circle cx="184" cy="93" r="2.8" fill="#1C1C22"></circle><path d="M178 104v3M182 104v3" stroke="#1C1C22" stroke-width="1.2"></path>
-        <path d="M164 110l32-10M164 100l32 10" stroke="#F4F2EA" stroke-width="4" stroke-linecap="round"></path></g>
+        <ellipse cx="206" cy="138" rx="13" ry="14" fill="#fff" stroke="#0B0C18" stroke-width="3"></ellipse>
+        <circle cx="204" cy="140" r="6" fill="#1A1210"></circle><circle cx="202" cy="137" r="2" fill="#fff"></circle>
+        <path d="M192 116Q206 108 222 118" stroke="#1A1210" stroke-width="6" stroke-linecap="round" fill="none"></path>
+        <path d="M122 150L154 138L238 104" stroke="#1A1210" stroke-width="4.5" fill="none" stroke-linejoin="round"></path>
+        <ellipse cx="154" cy="138" rx="18" ry="15" fill="#1A1210" transform="rotate(-12 154 138)"></ellipse>
+        <path d="M118 126Q118 72 180 76Q242 72 242 126Q180 104 118 126Z" fill="#D7261E" stroke="#0B0C18" stroke-width="4" stroke-linejoin="round"></path>
+        <path d="M240 112q22 -6 34 6q-14 4 -18 14q-6-10 -16-8z" fill="#D7261E" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M244 118q16 10 18 30q-12-6 -22-8z" fill="#B71C15" stroke="#0B0C18" stroke-width="3" stroke-linejoin="round"></path>
+        <g fill="#fff"><circle cx="180" cy="94" r="9"></circle><rect x="175" y="100" width="10" height="6" rx="2"></rect></g>
+        <g fill="#D7261E"><circle cx="176.5" cy="93" r="2.4"></circle><circle cx="183.5" cy="93" r="2.4"></circle></g>
+        <path d="M166 108l28-8M166 100l28 8" stroke="#fff" stroke-width="3.5" stroke-linecap="round"></path>
       </g>
       <g id="prFront">
-        <path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z" fill="url(#gWood2)" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
-        <g clip-path="url(#cBarrel)">
-          <g stroke="#3A2210" stroke-width="1" fill="none" opacity=".45"><path d="M77.3 214.0 L75.8 233.7 L72.1 253.5 L67.2 273.3 L65.1 293.2 L66.3 313.1 L67.4 333.0 L65.9 353.0 L64.0 373.0 L65.2 393.1 L69.5 413.2 L72.9 433.3 L73.9 453.5 L75.3 473.7 L79.9 494.0"/><path d="M88.8 214.0 L85.5 233.7 L80.5 253.5 L77.2 273.3 L77.6 293.2 L78.7 313.1 L77.4 333.0 L74.8 353.0 L74.6 373.0 L77.9 393.1 L81.3 413.2 L82.1 433.3 L82.2 453.5 L85.3 473.7 L91.1 494.0"/><path d="M103.6 214.0 L98.8 233.7 L94.9 253.5 L94.4 273.3 L95.6 293.2 L94.7 313.1 L91.7 333.0 L90.4 353.0 L92.6 373.0 L95.8 393.1 L96.5 413.2 L95.7 433.3 L97.1 453.5 L101.7 473.7 L106.5 494.0"/><path d="M111.8 214.0 L107.4 233.7 L106.0 253.5 L107.0 273.3 L106.7 293.2 L103.7 313.1 L101.3 333.0 L102.5 353.0 L105.4 373.0 L106.4 393.1 L105.1 413.2 L105.1 433.3 L108.6 453.5 L113.1 473.7 L115.4 494.0"/><path d="M124.7 214.0 L122.7 233.7 L123.6 253.5 L123.8 273.3 L121.3 293.2 L118.3 313.1 L118.4 333.0 L121.0 353.0 L122.3 373.0 L120.8 393.1 L119.6 413.2 L121.7 433.3 L125.7 453.5 L127.8 473.7 L127.8 494.0"/><path d="M134.1 214.0 L134.6 233.7 L135.3 253.5 L133.4 273.3 L130.1 293.2 L129.2 313.1 L131.3 333.0 L133.0 353.0 L131.7 373.0 L129.7 393.1 L130.7 413.2 L134.1 433.3 L136.4 453.5 L136.1 473.7 L135.8 494.0"/><path d="M150.1 214.0 L151.4 233.7 L150.4 253.5 L147.2 273.3 L145.6 293.2 L147.2 313.1 L149.3 333.0 L148.4 353.0 L146.0 373.0 L145.7 393.1 L148.5 413.2 L150.9 433.3 L150.4 453.5 L149.0 473.7 L150.2 494.0"/><path d="M161.7 214.0 L161.6 233.7 L158.9 253.5 L156.7 273.3 L157.7 293.2 L160.0 313.1 L159.9 333.0 L157.3 353.0 L156.1 373.0 L158.1 393.1 L160.7 413.2 L160.5 433.3 L158.6 453.5 L158.5 473.7 L161.3 494.0"/><path d="M177.0 214.0 L175.2 233.7 L172.9 253.5 L173.4 273.3 L175.9 293.2 L176.6 313.1 L174.3 333.0 L172.4 353.0 L173.6 373.0 L176.2 393.1 L176.5 413.2 L174.2 433.3 L172.9 453.5 L174.6 473.7 L176.9 494.0"/><path d="M185.7 214.0 L183.5 233.7 L183.5 253.5 L186.0 273.3 L187.5 293.2 L185.9 313.1 L183.5 333.0 L184.0 353.0 L186.6 373.0 L187.5 393.1 L185.3 413.2 L183.2 433.3 L184.0 453.5 L186.3 473.7 L186.4 494.0"/><path d="M198.5 214.0 L198.3 233.7 L200.8 253.5 L203.3 273.3 L202.6 293.2 L200.2 313.1 L200.0 333.0 L202.4 353.0 L203.9 373.0 L202.2 393.1 L199.4 413.2 L199.3 433.3 L201.2 453.5 L201.5 473.7 L199.0 494.0"/><path d="M207.4 214.0 L209.8 233.7 L212.9 253.5 L213.3 273.3 L211.3 293.2 L210.5 313.1 L212.7 333.0 L214.9 353.0 L213.9 373.0 L210.9 393.1 L209.9 413.2 L211.5 433.3 L212.4 453.5 L210.1 473.7 L206.8 494.0"/><path d="M223.0 214.0 L226.8 233.7 L228.6 253.5 L227.3 273.3 L226.3 293.2 L228.2 313.1 L231.0 333.0 L230.9 353.0 L228.1 373.0 L226.3 393.1 L227.5 413.2 L228.7 433.3 L226.8 453.5 L223.0 473.7 L220.6 494.0"/><path d="M234.6 214.0 L237.6 233.7 L237.3 253.5 L236.3 273.3 L237.9 293.2 L241.1 313.1 L242.2 333.0 L239.9 353.0 L237.7 373.0 L238.4 393.1 L240.0 413.2 L238.9 433.3 L235.0 453.5 L232.0 473.7 L231.4 494.0"/><path d="M250.4 214.0 L251.5 233.7 L251.0 253.5 L252.5 273.3 L256.1 293.2 L258.3 313.1 L256.9 333.0 L254.6 353.0 L254.7 373.0 L256.6 393.1 L256.3 413.2 L252.7 433.3 L248.9 453.5 L247.6 473.7 L247.3 494.0"/><path d="M259.5 214.0 L259.7 233.7 L261.1 253.5 L264.9 273.3 L268.2 293.2 L268.0 313.1 L265.9 333.0 L265.6 353.0 L267.6 373.0 L268.3 393.1 L265.5 413.2 L261.4 433.3 L259.5 453.5 L259.3 473.7 L257.2 494.0"/><path d="M272.3 214.0 L274.0 233.7 L278.1 253.5 L282.5 273.3 L283.8 293.2 L282.3 313.1 L281.7 333.0 L283.8 353.0 L285.4 373.0 L283.5 393.1 L279.4 413.2 L276.9 433.3 L276.6 453.5 L275.1 473.7 L270.2 494.0"/><path d="M280.8 214.0 L285.1 233.7 L290.4 253.5 L293.2 273.3 L292.6 293.2 L292.0 313.1 L294.1 333.0 L296.6 353.0 L295.9 373.0 L292.2 393.1 L289.3 413.2 L288.9 433.3 L288.2 453.5 L284.1 473.7 L277.8 494.0"/></g>
-          <g fill="#3A2210" opacity=".5"><ellipse cx="104" cy="330" rx="5" ry="8" /><ellipse cx="246" cy="420" rx="5" ry="8" /><ellipse cx="150" cy="470" rx="5" ry="8" /><ellipse cx="212" cy="262" rx="5" ry="8" /></g>
-          <g stroke="#1E1006" stroke-width="2.6" fill="none"><path d="M94.4 214.0 L91.6 233.7 L89.2 253.5 L87.3 273.3 L85.8 293.2 L84.8 313.1 L84.3 333.0 L84.3 353.0 L84.8 373.0 L85.7 393.1 L87.1 413.2 L89.0 433.3 L91.4 453.5 L94.2 473.7 L97.6 494.0"/><path d="M118.9 214.0 L116.8 233.7 L115.1 253.5 L113.8 273.3 L112.7 293.2 L112.0 313.1 L111.7 333.0 L111.7 353.0 L112.0 373.0 L112.7 393.1 L113.7 413.2 L115.0 433.3 L116.7 453.5 L118.7 473.7 L121.1 494.0"/><path d="M143.3 214.0 L142.1 233.7 L141.1 253.5 L140.3 273.3 L139.6 293.2 L139.2 313.1 L139.0 333.0 L139.0 353.0 L139.2 373.0 L139.6 393.1 L140.2 413.2 L141.0 433.3 L142.0 453.5 L143.2 473.7 L144.7 494.0"/><path d="M167.8 214.0 L167.4 233.7 L167.0 253.5 L166.8 273.3 L166.5 293.2 L166.4 313.1 L166.3 333.0 L166.3 353.0 L166.4 373.0 L166.5 393.1 L166.7 413.2 L167.0 433.3 L167.3 453.5 L167.7 473.7 L168.2 494.0"/><path d="M192.2 214.0 L192.6 233.7 L193.0 253.5 L193.2 273.3 L193.5 293.2 L193.6 313.1 L193.7 333.0 L193.7 353.0 L193.6 373.0 L193.5 393.1 L193.3 413.2 L193.0 433.3 L192.7 453.5 L192.3 473.7 L191.8 494.0"/><path d="M216.7 214.0 L217.9 233.7 L218.9 253.5 L219.7 273.3 L220.4 293.2 L220.8 313.1 L221.0 333.0 L221.0 353.0 L220.8 373.0 L220.4 393.1 L219.8 413.2 L219.0 433.3 L218.0 453.5 L216.8 473.7 L215.3 494.0"/><path d="M241.1 214.0 L243.2 233.7 L244.9 253.5 L246.2 273.3 L247.3 293.2 L248.0 313.1 L248.3 333.0 L248.3 353.0 L248.0 373.0 L247.3 393.1 L246.3 413.2 L245.0 433.3 L243.3 453.5 L241.3 473.7 L238.9 494.0"/><path d="M265.6 214.0 L268.4 233.7 L270.8 253.5 L272.7 273.3 L274.2 293.2 L275.2 313.1 L275.7 333.0 L275.7 353.0 L275.2 373.0 L274.3 393.1 L272.9 413.2 L271.0 433.3 L268.6 453.5 L265.8 473.7 L262.4 494.0"/></g>
-          <g stroke="#D69A5E" stroke-width="1.2" fill="none" opacity=".45"><path d="M96.9 214.0 L94.1 233.7 L91.7 253.5 L89.8 273.3 L88.3 293.2 L87.3 313.1 L86.8 333.0 L86.8 353.0 L87.3 373.0 L88.2 393.1 L89.6 413.2 L91.5 433.3 L93.9 453.5 L96.7 473.7 L100.1 494.0"/><path d="M121.4 214.0 L119.3 233.7 L117.6 253.5 L116.3 273.3 L115.2 293.2 L114.5 313.1 L114.2 333.0 L114.2 353.0 L114.5 373.0 L115.2 393.1 L116.2 413.2 L117.5 433.3 L119.2 453.5 L121.2 473.7 L123.6 494.0"/><path d="M145.8 214.0 L144.6 233.7 L143.6 253.5 L142.8 273.3 L142.1 293.2 L141.7 313.1 L141.5 333.0 L141.5 353.0 L141.7 373.0 L142.1 393.1 L142.7 413.2 L143.5 433.3 L144.5 453.5 L145.7 473.7 L147.2 494.0"/><path d="M170.3 214.0 L169.9 233.7 L169.5 253.5 L169.3 273.3 L169.0 293.2 L168.9 313.1 L168.8 333.0 L168.8 353.0 L168.9 373.0 L169.0 393.1 L169.2 413.2 L169.5 433.3 L169.8 453.5 L170.2 473.7 L170.7 494.0"/><path d="M194.7 214.0 L195.1 233.7 L195.5 253.5 L195.7 273.3 L196.0 293.2 L196.1 313.1 L196.2 333.0 L196.2 353.0 L196.1 373.0 L196.0 393.1 L195.8 413.2 L195.5 433.3 L195.2 453.5 L194.8 473.7 L194.3 494.0"/><path d="M219.2 214.0 L220.4 233.7 L221.4 253.5 L222.2 273.3 L222.9 293.2 L223.3 313.1 L223.5 333.0 L223.5 353.0 L223.3 373.0 L222.9 393.1 L222.3 413.2 L221.5 433.3 L220.5 453.5 L219.3 473.7 L217.8 494.0"/><path d="M243.6 214.0 L245.7 233.7 L247.4 253.5 L248.7 273.3 L249.8 293.2 L250.5 313.1 L250.8 333.0 L250.8 353.0 L250.5 373.0 L249.8 393.1 L248.8 413.2 L247.5 433.3 L245.8 453.5 L243.8 473.7 L241.4 494.0"/><path d="M268.1 214.0 L270.9 233.7 L273.3 253.5 L275.2 273.3 L276.7 293.2 L277.7 313.1 L278.2 333.0 L278.2 353.0 L277.7 373.0 L276.8 393.1 L275.4 413.2 L273.5 433.3 L271.1 453.5 L268.3 473.7 L264.9 494.0"/></g>
-          <rect x="40" y="210" width="280" height="290" fill="url(#gWoodV)"></rect>
-          <ellipse cx="150" cy="300" rx="30" ry="120" fill="#fff" opacity=".06"></ellipse>
-        </g>
-        <path d="M58.1 270.0 Q180 298.0 301.9 270.0 L301.9 285.0 Q180 313.0 58.1 285.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M60.1 273.0 Q180 301.0 299.9 273.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="72.1" cy="280.5" r="3.2"/><circle cx="113.0" cy="287.3" r="3.2"/><circle cx="180.0" cy="291.5" r="3.2"/><circle cx="247.0" cy="287.3" r="3.2"/><circle cx="287.9" cy="280.5" r="3.2"/></g><path d="M53.9 342.0 Q180 370.0 306.1 342.0 L306.1 357.0 Q180 385.0 53.9 357.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M55.9 345.0 Q180 373.0 304.1 345.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="67.9" cy="352.4" r="3.2"/><circle cx="110.7" cy="359.3" r="3.2"/><circle cx="180.0" cy="363.5" r="3.2"/><circle cx="249.3" cy="359.3" r="3.2"/><circle cx="292.1" cy="352.4" r="3.2"/></g><path d="M57.5 412.0 Q180 440.0 302.5 412.0 L302.5 427.0 Q180 455.0 57.5 427.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M59.5 415.0 Q180 443.0 300.5 415.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="71.5" cy="422.5" r="3.2"/><circle cx="112.6" cy="429.3" r="3.2"/><circle cx="180.0" cy="433.5" r="3.2"/><circle cx="247.4" cy="429.3" r="3.2"/><circle cx="288.5" cy="422.5" r="3.2"/></g><path d="M65.6 468.0 Q180 496.0 294.4 468.0 L294.4 483.0 Q180 511.0 65.6 483.0 Z" fill="url(#gIron2)" stroke="#0B0C18" stroke-width="2.5"/><path d="M67.6 471.0 Q180 499.0 292.4 471.0" stroke="#B8BCC6" stroke-width="2" fill="none" opacity=".7"/><g fill="#C9CDD6" stroke="#0B0C18" stroke-width="1.2"><circle cx="79.6" cy="478.7" r="3.2"/><circle cx="117.1" cy="485.3" r="3.2"/><circle cx="180.0" cy="489.5" r="3.2"/><circle cx="242.9" cy="485.3" r="3.2"/><circle cx="280.4" cy="478.7" r="3.2"/></g>
-        <path d="M70 214Q180 240 290 214L291 224Q180 252 69 224Z" fill="#B07A45" stroke="#0B0C18" stroke-width="3"></path>
-        <path d="M74 217Q180 242 286 217" stroke="#E0A86C" stroke-width="2" fill="none" opacity=".8"></path>
+        <path d="M70 214Q42 352 74 494L286 494Q318 352 290 214Q180 240 70 214z" fill="url(#gWood)" stroke="#0B0C18" stroke-width="5" stroke-linejoin="round"></path>
+        <g stroke="#2A170B" stroke-width="3" fill="none" opacity=".8"><path d="M96 226Q78 360 100 490"/><path d="M124 226Q112 360 128 490"/><path d="M152 226Q147 360 156 490"/><path d="M180 226Q180 360 176 490"/><path d="M208 226Q213 360 204 490"/><path d="M236 226Q248 360 232 490"/><path d="M264 226Q282 360 260 490"/></g>
+        <path d="M110 330q8 4 6 12M232 420q-6 6 0 12M150 478q6-4 12 0" stroke="#2A170B" stroke-width="2.5" fill="none" opacity=".6"></path>
+        <path d="M62 274Q180 304 298 274L299 290Q180 320 61 290Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M56 344Q180 374 304 344L304 360Q180 390 56 360Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <path d="M58 414Q180 444 302 414L300 430Q180 460 60 430Z" fill="url(#gIron)" stroke="#0B0C18" stroke-width="2.5"></path>
+        <g fill="#9A9AA2" stroke="#0B0C18" stroke-width="1.5"><circle cx="72" cy="284.4" r="4"/><circle cx="120" cy="293.1" r="4"/><circle cx="180" cy="297.0" r="4"/><circle cx="240" cy="293.1" r="4"/><circle cx="288" cy="284.4" r="4"/><circle cx="72" cy="354.4" r="4"/><circle cx="120" cy="363.1" r="4"/><circle cx="180" cy="367.0" r="4"/><circle cx="240" cy="363.1" r="4"/><circle cx="288" cy="354.4" r="4"/><circle cx="72" cy="424.4" r="4"/><circle cx="120" cy="433.1" r="4"/><circle cx="180" cy="437.0" r="4"/><circle cx="240" cy="433.1" r="4"/><circle cx="288" cy="424.4" r="4"/></g>
+        <path d="M70 214Q180 240 290 214" stroke="#0B0C18" stroke-width="5" fill="none"></path>
+        <path d="M72 220Q180 246 288 220" stroke="#B88250" stroke-width="3" fill="none" opacity=".6"></path>
       </g>
       <g id="prSlots"></g>
       <text id="prBang" x="180" y="60" text-anchor="middle" font-family="Jua, Noto Sans KR, sans-serif" font-size="56" fill="#FFD447" stroke="#0B0C18" stroke-width="6" paint-order="stroke" opacity="0">펑!</text>
@@ -2912,7 +2899,7 @@ function renderGame(st){
   const rpOn=st.game==='draw'&&st.result&&(()=>{ const r=duelRP(st); return performance.now()<r.t0+r.dur; })();
   if(key!==lastPhaseKey){ lastPhaseKey=key; if(st.result&&!rpOn){ buzz([60,40,120]); beep(330,.25,.09,'square'); } }
   const pendingFinal=st.game!=='liar'&&st.result&&arr(st.result.losers).length>1;
-  $('#gBtns').hidden=!(st.result&&isHost())||pendingFinal||rpOn;
+  $('#gBtns').hidden=!(st.result&&isHost())||pendingFinal||rpOn; $('#bReal').hidden=!(room.solo&&st.result)||pendingFinal||rpOn;
   if(st.result&&!isHost()&&!pendingFinal&&!rpOn) setTimeout(()=>{ const w=document.createElement('div'); w.className='wait'; w.textContent=T('방장이 다음 판을 시작해요','The host will start the next round'); $('#stage').appendChild(w); },0);
   if(!['timer','draw','race','cannon','cham','nunchi','croc','pirate','balloon','arch','stack'].includes(st.game)||st.result) delete $('#stage').dataset.k;
   ({nunchi:drawNunchi,liar:drawLiar,timer:drawTimer,draw:drawDuel,race:drawRace,cannon:drawCannon,cham:drawCham,croc:drawCroc,pirate:drawPirate,balloon:drawBalloon,arch:drawArch,stack:drawStack}[st.game]||drawNunchi)(st);
@@ -3493,28 +3480,21 @@ function drawCroc(st){
     $('#tgMsg').innerHTML='<b style="color:var(--red)">'+esc(nameOf(st.boom.by))+T(' 물렸다!',' got bitten!')+'</b>'; }
   tgMyTurnPing(st); tgTick(st);
 }
-function swordSVG(x,y,col,dir,rot){ const d=dir, X=v=>(x+d*v).toFixed(1);
-  return '<g transform="rotate('+rot+' '+x+' '+y+') translate('+x+' '+y+') scale(1.3) translate('+(-x)+' '+(-y)+')"><g class="sword" style="--fx:'+(d*170)+'px;--fr:'+(d*-30)+'deg">'
-   +'<path d="M'+X(-2)+' '+(y-3)+' L'+X(21)+' '+(y-4.5)+' L'+X(21)+' '+(y+4.5)+' L'+X(-2)+' '+(y+3)+'Z" fill="url(#gBlade)" stroke="#2A2E36" stroke-width="1.2"/>'
-   +'<path d="M'+X(1)+' '+(y-1.2)+' L'+X(20)+' '+(y-2.2)+'" stroke="#fff" stroke-width="1.1" opacity=".9"/>'
-   +'<rect x="'+(+X(21)-3.5)+'" y="'+(y-12)+'" width="7" height="24" rx="3" fill="url(#gGold)" stroke="#3A2A06" stroke-width="1.3"/>'
-   +'<rect x="'+(d<0?X(40):X(24))+'" y="'+(y-4.5)+'" width="16" height="9" rx="2.5" fill="'+col+'" stroke="#0B0C18" stroke-width="1.3"/>'
-   +'<path d="M'+X(28)+' '+(y-4.5)+'v9M'+X(32)+' '+(y-4.5)+'v9M'+X(36)+' '+(y-4.5)+'v9" stroke="#0B0C18" stroke-width="1" opacity=".45"/>'
-   +'<circle cx="'+X(44)+'" cy="'+y+'" r="5.5" fill="url(#gGold)" stroke="#3A2A06" stroke-width="1.3"/></g></g>'; }
 /* 해적 통 */
 function drawPirate(st){
   if(st.result) return tgResult(st,T('🏴‍☠️ 해적이 날아갔어요!','🏴‍☠️ The pirate popped out!'));
   if(tgPre(st)) return; const L=loc(st), used=st.used||{}, cur=tgCur(st), mine=cur===uid&&!st.boom;
   const TOY=['#E53935','#FDD835','#43A047','#1E88E5','#FB8C00','#8E24AA'];
-  const sword=(g,x,y,col,seed)=>{ const rot=((seed*37)%24)-12, dir=x<170?-1:(x>190?1:(seed%2?-1:1)); g.innerHTML=swordSVG(x,y,col,dir,rot); };
+  const sword=(g,x,y,col,seed)=>{ const rot=((seed*37)%24)-12, dir=x<170?-1:(x>190?1:(seed%2?-1:1)), gx=x+dir*4;
+    g.innerHTML='<g transform="rotate('+rot+' '+x+' '+y+')"><g class="sword"><rect x="'+(x-4.5)+'" y="'+(y-15)+'" width="9" height="30" rx="4" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect><rect x="'+(dir<0?gx-30:gx)+'" y="'+(y-6)+'" width="30" height="12" rx="5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></rect><circle cx="'+(gx+dir*34)+'" cy="'+y+'" r="6.5" fill="'+col+'" stroke="#0B0C18" stroke-width="2"></circle></g></g>'; };
   if($('#stage').dataset.k!==L.key){ $('#stage').dataset.k=L.key; L.popd=false;
     $('#stage').innerHTML='<div id="tgBar"></div><div class="tgplay" id="tgPlay"></div><div class="wait" id="tgMsg"></div>';
     $('#tgPlay').innerHTML=$('#tplPirate').innerHTML; $('#prBang').textContent=T('펑!','POP!');
     let h=''; [238,308,378,448].forEach((y0,ri)=>{ const half=[96,108,110,104][ri]; for(let c=0;c<5;c++){ const x=Math.round(180-half+c*(half/2)), y=Math.round(y0+15*(1-Math.pow((x-180)/118,2)));
-      h+='<g class="slot" data-k="'+(ri*5+c)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-6)+'" y="'+(y-14)+'" width="12" height="28" rx="6" fill="url(#gHole)" stroke="#E0A86C" stroke-width="1.6"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
+      h+='<g class="slot" data-k="'+(ri*5+c)+'"><rect x="'+(x-22)+'" y="'+(y-16)+'" width="44" height="30" fill="transparent"></rect><rect class="hole" x="'+(x-5)+'" y="'+(y-13)+'" width="10" height="26" rx="5" fill="#0F0905" stroke="#C08A55" stroke-width="1.5"></rect><g class="sw" data-x="'+x+'" data-y="'+y+'"></g></g>'; } });
     $('#prSlots').innerHTML=h;
     $('#prSlots').onpointerdown=e=>{ const sl=e.target.closest('.slot'); if(!sl) return; e.preventDefault(); const s=room.state, k=+sl.dataset.k; if(!s||s.boom||tgCur(s)!==uid||(s.used||{})[k]!=null||L.sent===s.turn) return;
-      L.sent=s.turn; const g=sl.querySelector('.sw'); sword(g,+g.dataset.x,+g.dataset.y,colorOf(uid),k); beep(1800,.05,.03,'sawtooth'); setTimeout(()=>{ beep(470,.07); buzz(20); },230); Net.set('rooms/'+code+'/acts/'+uid,{r:s.round,t:s.turn,k}); };
+      L.sent=s.turn; const g=sl.querySelector('.sw'); sword(g,+g.dataset.x,+g.dataset.y,colorOf(uid),k); beep(470,.06); buzz(20); Net.set('rooms/'+code+'/acts/'+uid,{r:s.round,t:s.turn,k}); };
   }
   $('#tgBar').innerHTML=tgTurnBar(st,T('남은 구멍 ','Holes left ')+(20-Object.keys(used).length));
   $$('#prSlots .slot').forEach(sl=>{ const k=+sl.dataset.k, g=sl.querySelector('.sw'); if(used[k]!=null&&!g.innerHTML){ sword(g,+g.dataset.x,+g.dataset.y,colorOf(used[k]),k); beep(470,.05); } sl.style.cursor=mine&&used[k]==null?'pointer':'default'; });
@@ -3663,7 +3643,8 @@ function skFrame(st0){ const st=room&&room.state; if(!st||st.game!=='stack'||st.
 
 /* ===== 방장 진행 ===== */
 async function startGame(){
-  if(!isHost()) return; const st=room.state||{}, g=GAMES[st.game]||GAMES.nunchi, ids=online().map(p=>p.id), round=(st.round||0)+1;
+  if(!isHost()) return; if(room.solo){ const g0=(room.state||{}).game; if(g0==='liar'){ toast(T('라이어 게임은 혼자 해볼 수 없어요','Liar Game needs real players')); return; } await soloFit(g0); }
+  const st=room.state||{}, g=GAMES[st.game]||GAMES.nunchi, ids=online().map(p=>p.id), round=(st.round||0)+1;
   if(ids.length<g.min||(g.max&&ids.length>g.max)) return; beep(880,.1);
   if(st.game==='liar'){
     const W=EN?WORDS_EN:WORDS_KO, cats=Object.keys(W), cat=(st.cat&&W[st.cat])?st.cat:cats[rnd(cats.length)], word=W[cat][rnd(W[cat].length)], liar=ids[rnd(ids.length)];
@@ -3681,10 +3662,53 @@ function startRound(game,ids,final,round,extra){ const st=room.state||{}, now=Ne
   if(game==='arch') s.winds=[0,1,2].map(()=>[rnd(7),rnd(8)*Math.PI/4]);
   if(game==='race') s.board=shuffle(Array.from({length:25},(_,i)=>i+1));
   return Net.update('rooms/'+code,{acts:null,state:s}); }
+/* ===== 🤖 혼자 해보기: 로봇이 대신 움직여요 (평균보다 조금 잘하는 정도의 랜덤) ===== */
+const SOLO=Q.get('solo');
+const isBot=id=>/^bot\d/.test(String(id));
+const BOTM={};
+const gss=()=>{ let u=0; for(let i=0;i<6;i++) u+=Math.random(); return (u-3)/1.0; };
+const realUrl=()=>location.pathname+'?'+(IN_APP?'app=1&':'')+'lang='+LANG;
+function bset(id,v){ return Net.set('rooms/'+code+'/acts/'+id,v); }
+function bAt(key,when,fn){ if(BOTM[key]) return; BOTM[key]=1; const R=room&&room.state&&room.state.round; setTimeout(()=>{ const s=room&&room.state; if(!s||s.phase!=='game'||s.result||s.round!==R) return; try{ fn(s); }catch(e){ console.error(e); } },Math.max(0,when-Net.now())); }
+function soloNeed(g){ const G=GAMES[g]||GAMES.nunchi; return G.max?G.max-1:2; }
+async function soloFit(g){ const need=soloNeed(g), P=room.players||{};
+  for(let k=1;k<=4;k++){ const id='bot'+k, has=!!P[id];
+    if(k<=need&&!has) await Net.set('rooms/'+code+'/players/'+id,{name:'🤖'+T('로봇','Bot')+k,joined:Net.now()+k,on:true,bot:true});
+    if(k>need&&has) await Net.remove('rooms/'+code+'/players/'+id); } }
+async function startSolo(g){ try{ await ensureNet(); if(!GAMES[g]||g==='liar') g='nunchi'; if(!myName) myName=T('나','Me');
+  const c=String(1000+rnd(9000)); pickGame=g;
+  await Net.set('rooms/'+c,{host:uid,created:Net.TS,cap:10,solo:1,state:{phase:'lobby',game:g,cat:'rand',round:0},players:{[uid]:{name:myName,joined:Net.TS,on:true}}});
+  await enter(c); await new Promise(ok=>{ const iv=setInterval(()=>{ if(room){ clearInterval(iv); ok(); } },30); }); await soloFit(g); setTimeout(()=>startGame(),300); toast(T('🤖 로봇과 연습 중이에요','🤖 Practicing with bots')); }catch(e){ console.error(e); } }
+function cannonAim(st,by){ const me=st.tanks[by], foes=Object.keys(st.tanks).filter(id=>id!==by&&st.tanks[id].hp>0); if(!foes.length) return {a:me.a||90,p:.6};
+  const tg=foes[rnd(foes.length)], T0=st.tanks[tg]; let best=null;
+  for(let a=12;a<=168;a+=3) for(let p=.2;p<=1.001;p+=.025){ const r=cSim(st,by,a,p); const d=r.hit===tg?0:(r.miss?999:Math.abs(r.ix-T0.x)); if(!best||d<best.d) best={a,p,d}; }
+  return {a:Math.max(5,Math.min(175,Math.round(best.a+gss()*3))),p:Math.round(Math.max(.05,Math.min(1,best.p+gss()*.03))*1000)/1000}; }
+function botStep(){ const st=room&&room.state; if(!room||!room.solo||!isHost()||!st||st.phase!=='game'||st.result) return;
+  const now=Net.now(), R=st.round, g=st.game, bots=arr(st.ids).filter(isBot); if(!bots.length) return;
+  if(g==='nunchi') bots.forEach(id=>{ const k='nu'+R+id; if(BOTM[k]) return; BOTM[k]=1; const T0=st.startAt+1500+Math.random()*8000;
+      bAt(k+'h',T0-500-Math.random()*900,()=>bset(id,{r:R,h:1}));
+      const fire=()=>{ const s=room&&room.state; if(!s||s.round!==R||s.result) return; const c=nunchiCalls(s), last=c.length?c[c.length-1].t:0; if(Net.now()-last<GAP+250){ setTimeout(fire,500+Math.random()*900); return; } bset(id,{r:R,t:Net.TS}); };
+      setTimeout(fire,Math.max(0,T0-now)); });
+  else if(g==='timer') bots.forEach(id=>{ const v=Math.max(7.5,10+gss()*.3); bAt('tm'+R+id,st.startAt+v*1000,()=>bset(id,{r:R,v:Math.round(v*1000)/1000})); });
+  else if(g==='draw'){ if(st.fireAt) bots.forEach(id=>{ const ms=Math.round(240+Math.random()*170); bAt('dr'+R+id,st.fireAt+ms,()=>bset(id,{r:R,ms})); }); }
+  else if(g==='race') bots.forEach(id=>{ const k='rc'+R+id; if(BOTM[k]) return; BOTM[k]=1; const Tt=17+Math.random()*9;
+      for(let n=1;n<=25;n++) bAt(k+'_'+n,st.startAt+Tt*1000*n/25,()=>bset(id,n<25?{r:R,n,pen:0}:{r:R,n:25,pen:0,time:Math.round(Tt*100)/100})); });
+  else if(g==='arch') bots.forEach(id=>{ const k='ar'+R+id; if(BOTM[k]) return; BOTM[k]=1; const sc=[], pick=()=>{ const q=Math.random(); return q<.16?10:q<.42?9:q<.67?8:q<.84?7:q<.94?6:q<.98?5:0; };
+      for(let s=0;s<AR_SHOTS;s++){ const v=pick(); bAt(k+'_'+s,st.startAt+2200+s*3000+Math.random()*1200,()=>{ sc.push(v); bset(id,{r:R,sc:sc.slice(),done:sc.length>=AR_SHOTS}); }); } });
+  else if(g==='cham'){ if(st.last&&st.last.turn===st.turn) return; const t3=chT3(st); bots.forEach(id=>bAt('ch'+R+'_'+st.turn+id,Math.min(t3+CH_WIN1-80,Math.max(t3-CH_WIN0+60,t3-150+Math.random()*450)),s=>{ if(s.turn!==st.turn) return; bset(id,{r:R,t:s.turn,d:Math.random()<.5?'L':'R',at:Net.now()}); })); }
+  else if(g==='cannon'){ const sh=cShooter(st); if(!isBot(sh)||st.shot) return; bAt('cn'+R+'_'+st.seq,Math.max(now,st.startAt)+1300+Math.random()*1300,s=>{ if(s.seq!==st.seq||s.shot||cShooter(s)!==sh) return; const m=cannonAim(s,sh); bset(sh,{r:R,seq:s.seq,a:m.a,p:m.p}); }); }
+  else if(TGAMES.includes(g)){ const cur=tgCur(st); if(!isBot(cur)||st.boom) return; const t0=Math.max(st.startAt,st.turnStart||0), key='tg'+R+'_'+st.turn;
+    if(g==='balloon'){ const d=.6+Math.random()*1.5; for(let q=1;q<=4;q++) bAt(key+'p'+q,t0+900+d*1000*q/5,s=>{ if(s.turn===st.turn) bset(cur,{r:R,t:s.turn,air:Math.round(d*q/5*1000)/1000}); }); bAt(key,t0+900+d*1000,s=>{ if(s.turn===st.turn) bset(cur,{r:R,t:s.turn,air:Math.round(d*1000)/1000,pass:true}); }); }
+    else bAt(key,t0+1200+Math.random()*1800,s=>{ if(s.turn!==st.turn) return; const used=s.used||{}, free=[...Array(TG_N[g]).keys()].filter(k=>!used[k]); if(free.length) bset(cur,{r:R,t:s.turn,k:free[rnd(free.length)]}); }); }
+  else if(g==='stack'){ const cur=tgCur(st); if(!isBot(cur)||st.boom) return; const key='sk'+R+'_'+st.turn; if(BOTM[key]) return;
+    const t0=Math.max(st.startAt,st.turnStart||0), dl=t0+SK_TURN, tw=arr(st.tower), top=tw[tw.length-1], tol=Math.random()<.2?3:4+Math.random()*14; let at=null, bestT=t0+1500, bestE=1e9;
+    for(let t=t0+900;t<dl-600;t+=16){ const e=Math.abs(skX(st,t)-top.x); if(e<bestE){ bestE=e; bestT=t; } if(e<tol){ at=t; break; } }
+    const when=at||bestT; bAt(key,when,s=>{ if(s.turn===st.turn) bset(cur,{r:R,t:s.turn,at:when}); }); }
+}
 function hostTick(){
   if(!isHost()){ clearInterval(hostTimer); hostTimer=null; return; }
-  if(!hostTimer) hostTimer=setInterval(hostStep,250);
-  hostStep();
+  if(!hostTimer) hostTimer=setInterval(()=>{ hostStep(); botStep(); },250);
+  hostStep(); botStep();
 }
 let judging=false;
 async function hostStep(){
@@ -3725,7 +3749,9 @@ $('#gBack').onclick=()=>{ if(isHost()) $('#bLobby').onclick(); else toast(T('방
 /* ===== 뒤로 ===== */
 function goHome(){ if(IN_APP&&history.length>1) history.back(); else location.href=IN_APP?'about:blank':'./'; }
 $('#eBack').onclick=goHome;
-$('#lBack').onclick=()=>{ confirmLeave().then(ok=>{ if(ok) leaveRoom(); }); };
+$('#lBack').onclick=()=>{ if(room&&room.solo){ location.replace(realUrl()); return; } confirmLeave().then(ok=>{ if(ok) leaveRoom(); }); };
+$('#bSolo').onclick=()=>{ const g=ORDER.includes(pickGame)?pickGame:ORDER[0]; if(g==='liar'){ toast(T('라이어 게임은 혼자 해볼 수 없어요','Liar Game needs real players')); return; } beep(700,.05); location.href=location.pathname+'?'+(IN_APP?'app=1&':'')+'mock=1&solo='+g+'&lang='+LANG; };
+$('#bReal').onclick=()=>location.replace(realUrl());
 function confirmLeave(){ if(!isHost()||online().length<=1) return Promise.resolve(true); return ask(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?'),T('나가기','Leave')); }
 // 앱(WebView)에서는 confirm()이 안 떠서 직접 만든 확인창을 써요
 function ask(msg,okTxt){ return new Promise(res=>{ $('#askMsg').textContent=msg; $('#askOk').textContent=okTxt||T('확인','OK'); $('#askNo').textContent=T('취소','Cancel'); $('#askPop').hidden=false;
@@ -3754,6 +3780,7 @@ const qr=(Q.get('r')||'').replace(/\D/g,'');
 drawEntryGames();
 if(qr.length===4){ $('#hero').hidden=false; $('#eGamesWrap').hidden=true; $('#joinBox').hidden=false; $('#codeIn').value=qr; $('#bJoin').textContent=T(qr+'번 방에 참여','Join room '+qr); $('#bCreate').hidden=true; $('#bJoin').classList.remove('ghost'); if(!myName) setTimeout(()=>openName(),300); }
 ensureNet().catch(()=>{});
+if(SOLO) startSolo(SOLO);
 })();
 </script>
 </body>
