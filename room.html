@@ -194,7 +194,7 @@ button{cursor:pointer}
 @keyframes fl{from{transform:scale(1.15)}}
 #tEntry{white-space:nowrap;flex:none}
 #sEntry .top{gap:8px}
-#sEntry .mename{max-width:36%;padding:0 11px;gap:5px}
+#sEntry .mename{max-width:55%;padding:0 11px;gap:5px}
 .solochip{flex:none;height:40px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,212,71,.55);background:rgba(255,212,71,.12);color:var(--accent);font:700 14px var(--body,sans-serif);white-space:nowrap}
 #meRow[hidden]+.solochip{margin-left:auto}
 .solo-btn{display:block;margin:8px auto 0;background:none;border:0;color:var(--accent);font:700 14px var(--body,sans-serif);padding:6px 10px;text-decoration:underline;text-underline-offset:3px}
@@ -205,7 +205,7 @@ button{cursor:pointer}
 
 <!-- 입장 -->
 <section class="screen" id="sEntry">
-  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div><button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button><button class="solochip" id="bSolo">🤖 혼자</button></div>
+  <div class="top"><button class="icon-btn" id="eBack" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="disp" id="tEntry">각자 폰</div><button class="mename" id="meRow" hidden><span>👤</span><b id="meName"></b><span class="pen">✏️</span></button></div>
   <div class="hero" id="hero" hidden><div class="disp big" id="tHero">각자 폰으로 함께!</div><p id="tHeroSub">한 명이 방을 만들고, 나머지는 QR을 찍거나<br>방 번호를 넣어서 들어와요</p></div>
   <div class="status" id="netStatus"></div>
   <div id="joinBox" class="card field" hidden><label for="codeIn" id="tCode">방 번호</label><input id="codeIn" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></div>
@@ -214,7 +214,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v26</div></div>
+  <div class="ver">v27</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -3773,7 +3773,7 @@ $('#gBack').onclick=()=>{ if(isHost()) $('#bLobby').onclick(); else toast(T('방
 function goHome(){ if(IN_APP&&history.length>1) history.back(); else location.href=IN_APP?'about:blank':'./'; }
 $('#eBack').onclick=goHome;
 $('#lBack').onclick=()=>{ if(room&&room.solo){ location.replace(realUrl()); return; } confirmLeave().then(ok=>{ if(ok) leaveRoom(); }); };
-$('#bSolo').onclick=()=>{ const g=ORDER.includes(pickGame)?pickGame:ORDER[0]; if(g==='liar'){ toast(T('라이어 게임은 혼자 해볼 수 없어요','Liar Game needs real players')); return; } beep(700,.05); location.href=location.pathname+'?'+(IN_APP?'app=1&':'')+'mock=1&solo='+g+'&lang='+LANG; };
+if($('#bSolo')) $('#bSolo').onclick=()=>{ const g=ORDER.includes(pickGame)?pickGame:ORDER[0]; if(g==='liar'){ toast(T('라이어 게임은 혼자 해볼 수 없어요','Liar Game needs real players')); return; } beep(700,.05); location.href=location.pathname+'?'+(IN_APP?'app=1&':'')+'mock=1&solo='+g+'&lang='+LANG; };
 $('#bReal').onclick=()=>location.replace(realUrl());
 function confirmLeave(){ if(!isHost()||online().length<=1) return Promise.resolve(true); return ask(T('방장이 나가면 방이 닫혀요. 나갈까요?','If the host leaves, the room closes. Leave?'),T('나가기','Leave')); }
 // 앱(WebView)에서는 confirm()이 안 떠서 직접 만든 확인창을 써요
