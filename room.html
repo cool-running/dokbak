@@ -109,6 +109,10 @@ button{cursor:pointer}
 .tgb i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
 .tgb small{font:400 13px var(--display);color:var(--accent);min-height:15px;line-height:15px}
 .tgb.on{opacity:1;border-color:var(--accent);background:#2A2B4A;box-shadow:0 0 0 3px rgba(255,212,71,.15)}
+.tgb{position:relative}.tgn{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;max-width:100%}
+.tgb.on .tgn{padding-right:30px}
+.tgb .tgclock{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px}.tgb .tgclock svg{width:30px;height:30px}.tgb .tgclock b{font-size:12px}
+.tgextra{text-align:center;font:400 19px var(--display);color:var(--fg);flex:none;margin-top:2px}
 .tginfo{display:flex;align-items:center;justify-content:space-between;padding:2px 4px;flex:none}
 .tginfo .tgx{font-size:15px;color:var(--fg)}
 .tginfo .tgclock{width:36px;height:36px}.tginfo .tgclock svg{width:36px;height:36px}.tginfo .tgclock b{font-size:14px}
@@ -223,7 +227,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v28</div></div>
+  <div class="ver">v30</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -2850,12 +2854,12 @@ const GAMES={
       'Everyone sees the <b>secret word</b> — except one <b>liar</b>.<br>Take turns describing it, then <b>vote</b> for the liar on your phone.<br>· Liar caught and can\'t guess the word → <b>liar loses</b><br>· Wrong person voted out → <b>that person loses</b><br>· Liar caught but guesses the word → <b>random pick among those who voted for the liar</b>')},
   croc:{ko:'악어 이빨',en:'Croc Teeth',min:2,
     sub:()=>T('차례대로 이빨 누르기 · 물리면 독박','Press teeth in turn · bitten = lose'),
-    rules:()=>T('순서대로 <b>내 차례에 내 폰</b>에서 이빨 하나를 눌러요.<br>· 이빨 12개 중 <b>하나가 함정</b>이에요<br>· 함정을 누르면 악어가 콱! → <b>독박</b><br>· 다른 사람 차례에는 각자 폰으로 지켜봐요 · 한 차례 25초',
-      'On <b>your turn, on your phone</b>, press one tooth.<br>· One of the 12 teeth is a <b>trap</b><br>· Hit it and the croc bites → <b>you lose</b><br>· Everyone watches on their own phone · 25s per turn')},
+    rules:()=>T('순서대로 <b>내 차례에 내 폰</b>에서 이빨 하나를 눌러요.<br>· 이빨 12개 중 <b>하나가 함정</b>이에요<br>· 함정을 누르면 악어가 콱! → <b>독박</b><br>· 다른 사람 차례에는 각자 폰으로 지켜봐요<br>· 한 차례 15초 · 시간이 지나면 자동으로 하나를 골라요',
+      'On <b>your turn, on your phone</b>, press one tooth.<br>· One of the 12 teeth is a <b>trap</b><br>· Hit it and the croc bites → <b>you lose</b><br>· Everyone watches on their own phone<br>· 15s per turn · time out = random pick')},
   pirate:{ko:'해적 통',en:'Pirate Barrel',min:2,
     sub:()=>T('차례대로 칼 꽂기 · 해적이 튀면 독박','Stab in turn · pirate pops = lose'),
-    rules:()=>T('순서대로 <b>내 차례에 내 폰</b>에서 구멍 하나에 칼을 꽂아요.<br>· 구멍 20개 중 <b>하나가 함정</b>이에요<br>· 해적이 튀어나오면 → <b>독박</b><br>· 한 차례 25초',
-      'On <b>your turn, on your phone</b>, stick a sword in one hole.<br>· One of 20 holes is a <b>trap</b><br>· Pirate pops out → <b>you lose</b><br>· 25s per turn')},
+    rules:()=>T('순서대로 <b>내 차례에 내 폰</b>에서 구멍 하나에 칼을 꽂아요.<br>· 구멍 20개 중 <b>하나가 함정</b>이에요<br>· 해적이 튀어나오면 → <b>독박</b><br>· 한 차례 15초 · 시간이 지나면 자동으로 하나를 골라요',
+      'On <b>your turn, on your phone</b>, stick a sword in one hole.<br>· One of 20 holes is a <b>trap</b><br>· Pirate pops out → <b>you lose</b><br>· 15s per turn · time out = random pick')},
   balloon:{ko:'풍선 불기',en:'Balloon Pump',min:2,
     sub:()=>T('차례대로 꾹 불기 · 터뜨리면 독박','Pump in turn · pop it = lose'),
     rules:()=>T('<b>내 차례에 내 폰</b>에서 펌프를 꾹 눌러 바람을 넣어요.<br>· 최소 0.5초는 불어야 <b>다음 사람</b>에게 넘길 수 있어요<br>· 풍선이 언제 터질지는 매번 달라요<br>· <b>터뜨린 사람</b> → 독박 · 한 차례 25초',
@@ -3457,19 +3461,21 @@ async function hostCham(st){ const now=Net.now(), ids=arr(st.ids); if(now<st.sta
 
 const TGAMES=['croc','pirate','balloon'];
 /* ===== 차례 넘기기 게임 (악어 이빨 · 해적 통 · 풍선 불기) ===== */
-const TG_TURN=25000, TG_N={croc:12,pirate:20};
+const TG_TURN=25000, TG_N={croc:12,pirate:20}, tgDur=st=>st.game==='stack'?SK_TURN:st.game==='balloon'?TG_TURN:15000;
 const TG_H={}; // 방장만: 비밀 값 (함정 위치 / 풍선 한계)
 async function tgSecret(st){ const k=code+':'+st.round; if(TG_H[k]) return TG_H[k]; const h=await Net.get('secrets/'+code+'/_h'); if(h) TG_H[k]=h; return h; }
 function tgInit(game,ids){ return {order:shuffle(ids),ti:0,turn:0,used:{},air:0,boom:null}; }
 async function tgSecretInit(game){ const h=game==='balloon'?{limit:Math.round((4+Math.random()*12)*100)/100}:{trap:rnd(TG_N[game])}; await Net.set('secrets/'+code,{_h:h}); TG_H[code+':'+((room.state&&room.state.round||0)+1)]=h; }
 const tgCur=st=>arr(st.order)[st.ti||0];
 function tgNext(st){ const o=arr(st.order), on=new Set(online().map(p=>p.id)); let t=st.ti||0; for(let k=0;k<o.length;k++){ t=(t+1)%o.length; if(on.has(o[t])) break; } return t; }
-function tgTurnBar(st,extra){ const cur=tgCur(st), mine=cur===uid, dur=st.game==='stack'?SK_TURN:TG_TURN, left=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+dur-Net.now())/1000)), on=new Set(online().map(p=>p.id));
-  const ord=arr(st.order).filter(id=>on.has(id)||id===cur), C=2*Math.PI*15;
-  return '<div class="tgturns" style="grid-template-columns:repeat('+Math.min(5,ord.length)+',1fr)">'+ord.map(id=>'<div class="tgb'+(id===cur?' on':'')+'" style="--c:'+colorOf(id)+'"><b><i></i>'+(id===uid?T('나','Me'):esc(nameOf(id)))+'</b><small>'+(id===cur?(id===uid?T('내 차례!','Your turn!'):T('차례','turn')):'')+'</small></div>').join('')+'</div>'
-   +'<div class="tginfo"><span class="tgx">'+extra+'</span><span class="tgclock"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" class="bg"></circle><circle cx="18" cy="18" r="15" class="fg" id="tgRing" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-left*1000/dur)).toFixed(1)+'"></circle></svg><b id="tgLeft">'+left+'</b></span></div>'; }
-function tgMyTurnPing(st){ const L=loc(st); if(L.pinged===st.turn) return; L.pinged=st.turn; if(tgCur(st)===uid&&!st.boom){ buzz([70,50,70]); beep(660,.07); setTimeout(()=>beep(990,.09),90); } }
-function tgTick(st){ stopTick(); tickT=setInterval(()=>{ const s=room&&room.state; if(!s||s!==st&&s.turn!==st.turn) return; const e=$('#tgLeft'); if(!e) return; const v=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+TG_TURN-Net.now())/1000)); if(e.textContent!=String(v)){ e.textContent=v; if(v<=5&&v>0&&tgCur(st)===uid) beep(500,.04); } const rg=$('#tgRing'); if(rg){ const C=2*Math.PI*15, f=Math.max(0,((st.turnStart||st.startAt)+TG_TURN-Net.now())/TG_TURN); rg.setAttribute('stroke-dashoffset',(C*(1-f)).toFixed(1)); rg.classList.toggle('hot',v<=5); } },250); }
+function tgTurnBar(st,extra){ const cur=tgCur(st), dur=tgDur(st), left=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+dur-Net.now())/1000)), on=new Set(online().map(p=>p.id));
+  const ord=arr(st.order).filter(id=>on.has(id)||id===cur), C=2*Math.PI*13;
+  const clock='<span class="tgclock"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" class="bg"></circle><circle cx="16" cy="16" r="13" class="fg" id="tgRing" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-left*1000/dur)).toFixed(1)+'"></circle></svg><b id="tgLeft">'+left+'</b></span>';
+  return '<div class="tgturns" style="grid-template-columns:repeat('+Math.min(5,ord.length)+',1fr)">'+ord.map(id=>'<div class="tgb'+(id===cur?' on':'')+'" style="--c:'+colorOf(id)+'"><div class="tgn"><b><i></i>'+(id===uid?T('나','Me'):esc(nameOf(id)))+'</b><small>'+(id===cur?(id===uid?T('내 차례!','Your turn!'):T('차례','turn')):'')+'</small></div>'+(id===cur?clock:'')+'</div>').join('')+'</div>'
+   +'<div class="tgextra">'+extra+'</div>'; }
+let lastAuto=''; function tgAutoNote(st){ const a=st.autoPick; if(!a) return; const k=code+':'+st.round+':'+a.turn; if(lastAuto===k) return; lastAuto=k; toast(T(nameOf(a.by)+' 시간 초과 · 자동으로 골랐어요',nameOf(a.by)+' timed out · random pick')); }
+function tgMyTurnPing(st){ tgAutoNote(st); const L=loc(st); if(L.pinged===st.turn) return; L.pinged=st.turn; if(tgCur(st)===uid&&!st.boom){ buzz([70,50,70]); beep(660,.07); setTimeout(()=>beep(990,.09),90); } }
+function tgTick(st){ stopTick(); tickT=setInterval(()=>{ const s=room&&room.state; if(!s||s!==st&&s.turn!==st.turn) return; const e=$('#tgLeft'); if(!e) return; const v=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+tgDur(st)-Net.now())/1000)); if(e.textContent!=String(v)){ e.textContent=v; if(v<=5&&v>0&&tgCur(st)===uid) beep(500,.04); } const rg=$('#tgRing'); if(rg){ const C=2*Math.PI*13, f=Math.max(0,((st.turnStart||st.startAt)+tgDur(st)-Net.now())/tgDur(st)); rg.setAttribute('stroke-dashoffset',(C*(1-f)).toFixed(1)); rg.classList.toggle('hot',v<=5); } },250); }
 function tgPre(st){ const now=Net.now(); if(now>=st.startAt) return false;
   $('#stage').innerHTML='<div class="count" id="cd">'+Math.ceil((st.startAt-now)/1000)+'</div><div class="wait">'+T('순서','Order')+': '+arr(st.order).map(nameOf).map(esc).join(' → ')+'</div>'; delete $('#stage').dataset.k;
   stopTick(); tickT=setInterval(()=>{ const n=Net.now(); if(n>=st.startAt){ stopTick(); render(); return; } const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } },100); return true; }
@@ -3482,11 +3488,14 @@ async function hostTG(st){ const now=Net.now(); if(now<st.startAt||st.result) re
   if(st.game==='balloon'){
     if(act&&act.air!=null){ const tot=(st.air||0)+act.air; if(tot>=h.limit){ await Net.update('rooms/'+code+'/state',{boom:{by:cur,at:now,air:Math.round(tot*100)/100}}); return; }
       if(act.pass&&act.air>=.5){ await Net.update('rooms/'+code+'/state',{air:Math.round(tot*1000)/1000,ti:tgNext(st),turn:st.turn+1,turnStart:now}); return; } }
-    if(now>(st.turnStart||st.startAt)+TG_TURN){ const add=act&&act.air||0; await Net.update('rooms/'+code+'/state',{air:Math.round(((st.air||0)+add)*1000)/1000,ti:tgNext(st),turn:st.turn+1,turnStart:now}); }
+    if(now>(st.turnStart||st.startAt)+tgDur(st)){ const add=act&&act.air||0; await Net.update('rooms/'+code+'/state',{air:Math.round(((st.air||0)+add)*1000)/1000,ti:tgNext(st),turn:st.turn+1,turnStart:now}); }
     return; }
   if(act&&act.k!=null&&!(st.used||{})[act.k]){ if(act.k===h.trap){ await Net.update('rooms/'+code+'/state',{boom:{by:cur,at:now,k:act.k}}); return; }
     const used=Object.assign({},st.used||{}); used[act.k]=cur; await Net.update('rooms/'+code+'/state',{used,ti:tgNext(st),turn:st.turn+1,turnStart:now}); return; }
-  if(now>(st.turnStart||st.startAt)+TG_TURN) await Net.update('rooms/'+code+'/state',{ti:tgNext(st),turn:st.turn+1,turnStart:now});
+  if(now>(st.turnStart||st.startAt)+tgDur(st)){ // 시간 초과: 남은 것 중 하나를 자동으로 랜덤 선택
+    const used=Object.assign({},st.used||{}), free=[...Array(TG_N[st.game]).keys()].filter(k=>used[k]==null); if(!free.length){ await Net.update('rooms/'+code+'/state',{ti:tgNext(st),turn:st.turn+1,turnStart:now}); return; }
+    const k=free[rnd(free.length)]; if(k===h.trap){ await Net.update('rooms/'+code+'/state',{boom:{by:cur,at:now,k,auto:true}}); return; }
+    used[k]=cur; await Net.update('rooms/'+code+'/state',{used,ti:tgNext(st),turn:st.turn+1,turnStart:now,autoPick:{by:cur,turn:st.turn}}); }
 }
 /* 악어 이빨 */
 const CR_POS=[[76,250],[76,286],[82,320],[96,350],[124,370],[160,378],[200,378],[236,370],[264,350],[278,320],[284,286],[284,250]];
