@@ -103,6 +103,15 @@ button{cursor:pointer}
 .grid25 button.bad{animation:bad .35s}@keyframes bad{0%,100%{transform:none;background:var(--card)}30%{transform:translateX(-4px);background:var(--red)}60%{transform:translateX(4px)}}
 .pchip .lz{font-size:11px;color:var(--red);font-weight:900;margin-left:2px}
 .duel{transition:background .05s}
+.tgturns{display:grid;gap:6px;flex:none}
+.tgb{min-width:0;height:54px;border-radius:12px;background:var(--card);border:2px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;opacity:.6;transition:all .2s}
+.tgb b{display:flex;align-items:center;gap:4px;font:700 13px var(--body);max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 6px}
+.tgb i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.tgb small{font:400 13px var(--display);color:var(--accent);min-height:15px;line-height:15px}
+.tgb.on{opacity:1;border-color:var(--accent);background:#2A2B4A;box-shadow:0 0 0 3px rgba(255,212,71,.15)}
+.tginfo{display:flex;align-items:center;justify-content:space-between;padding:2px 4px;flex:none}
+.tginfo .tgx{font-size:15px;color:var(--fg)}
+.tginfo .tgclock{width:36px;height:36px}.tginfo .tgclock svg{width:36px;height:36px}.tginfo .tgclock b{font-size:14px}
 .tgcard{flex:none;padding:10px 12px 9px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
 .tgcard.me{border-color:var(--accent);background:#2A2B4A}
 .tgtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -214,7 +223,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v27</div></div>
+  <div class="ver">v28</div></div>
 </section>
 
 <!-- 대기실 -->
@@ -3456,12 +3465,11 @@ async function tgSecretInit(game){ const h=game==='balloon'?{limit:Math.round((4
 const tgCur=st=>arr(st.order)[st.ti||0];
 function tgNext(st){ const o=arr(st.order), on=new Set(online().map(p=>p.id)); let t=st.ti||0; for(let k=0;k<o.length;k++){ t=(t+1)%o.length; if(on.has(o[t])) break; } return t; }
 function tgTurnBar(st,extra){ const cur=tgCur(st), mine=cur===uid, dur=st.game==='stack'?SK_TURN:TG_TURN, left=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+dur-Net.now())/1000)), on=new Set(online().map(p=>p.id));
-  const ord=arr(st.order).filter(id=>on.has(id)||id===cur), C=2*Math.PI*17;
-  return '<div class="tgcard'+(mine?' me':'')+'"><div class="tgtop"><span class="tgwho"><i style="background:'+colorOf(cur)+'"></i>'+(mine?T('내 차례!','Your turn!'):esc(nameOf(cur))+'<em>'+T(' 차례',"'s turn")+'</em>')+'</span>'
-   +'<span class="tgclock"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="bg"></circle><circle cx="20" cy="20" r="17" class="fg" id="tgRing" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-left*1000/dur)).toFixed(1)+'"></circle></svg><b id="tgLeft">'+left+'</b></span></div>'
-   +'<div class="tgbot"><span class="tgseq">'+ord.map(id=>'<span class="'+(id===cur?'on':'')+'" style="--c:'+colorOf(id)+'"><i></i>'+(id===cur||ord.length<=3?esc(nameOf(id))+(id===uid?T('(나)',''):''):id===uid?T('나','me'):'')+'</span>').join('')+'</span><span class="tgx">'+extra+'</span></div></div>'; }
+  const ord=arr(st.order).filter(id=>on.has(id)||id===cur), C=2*Math.PI*15;
+  return '<div class="tgturns" style="grid-template-columns:repeat('+Math.min(5,ord.length)+',1fr)">'+ord.map(id=>'<div class="tgb'+(id===cur?' on':'')+'" style="--c:'+colorOf(id)+'"><b><i></i>'+(id===uid?T('나','Me'):esc(nameOf(id)))+'</b><small>'+(id===cur?(id===uid?T('내 차례!','Your turn!'):T('차례','turn')):'')+'</small></div>').join('')+'</div>'
+   +'<div class="tginfo"><span class="tgx">'+extra+'</span><span class="tgclock"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" class="bg"></circle><circle cx="18" cy="18" r="15" class="fg" id="tgRing" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-left*1000/dur)).toFixed(1)+'"></circle></svg><b id="tgLeft">'+left+'</b></span></div>'; }
 function tgMyTurnPing(st){ const L=loc(st); if(L.pinged===st.turn) return; L.pinged=st.turn; if(tgCur(st)===uid&&!st.boom){ buzz([70,50,70]); beep(660,.07); setTimeout(()=>beep(990,.09),90); } }
-function tgTick(st){ stopTick(); tickT=setInterval(()=>{ const s=room&&room.state; if(!s||s!==st&&s.turn!==st.turn) return; const e=$('#tgLeft'); if(!e) return; const v=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+TG_TURN-Net.now())/1000)); if(e.textContent!=String(v)){ e.textContent=v; if(v<=5&&v>0&&tgCur(st)===uid) beep(500,.04); } const rg=$('#tgRing'); if(rg){ const C=2*Math.PI*17, f=Math.max(0,((st.turnStart||st.startAt)+TG_TURN-Net.now())/TG_TURN); rg.setAttribute('stroke-dashoffset',(C*(1-f)).toFixed(1)); rg.classList.toggle('hot',v<=5); } },250); }
+function tgTick(st){ stopTick(); tickT=setInterval(()=>{ const s=room&&room.state; if(!s||s!==st&&s.turn!==st.turn) return; const e=$('#tgLeft'); if(!e) return; const v=Math.max(0,Math.ceil(((st.turnStart||st.startAt)+TG_TURN-Net.now())/1000)); if(e.textContent!=String(v)){ e.textContent=v; if(v<=5&&v>0&&tgCur(st)===uid) beep(500,.04); } const rg=$('#tgRing'); if(rg){ const C=2*Math.PI*15, f=Math.max(0,((st.turnStart||st.startAt)+TG_TURN-Net.now())/TG_TURN); rg.setAttribute('stroke-dashoffset',(C*(1-f)).toFixed(1)); rg.classList.toggle('hot',v<=5); } },250); }
 function tgPre(st){ const now=Net.now(); if(now>=st.startAt) return false;
   $('#stage').innerHTML='<div class="count" id="cd">'+Math.ceil((st.startAt-now)/1000)+'</div><div class="wait">'+T('순서','Order')+': '+arr(st.order).map(nameOf).map(esc).join(' → ')+'</div>'; delete $('#stage').dataset.k;
   stopTick(); tickT=setInterval(()=>{ const n=Net.now(); if(n>=st.startAt){ stopTick(); render(); return; } const e=$('#cd'); if(e){ const v=Math.ceil((st.startAt-n)/1000); if(e.textContent!=String(v)){ e.textContent=v; beep(520,.06); } } },100); return true; }
