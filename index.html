@@ -3865,10 +3865,10 @@ function startMarble(){
   // 벽
   const walls=[
     [8,0,8,640],[352,0,352,640],[8,8,352,8],
-    [40,30,150,122],[320,30,210,122],[8,30,40,30],[320,30,352,30],[40,8,40,30],[320,8,320,30],
+    [60,8,150,70],[300,8,210,70],
     [8,524,FX0,582],[352,524,FX1,582],[FX0,582,FX0,640],[FX1,582,FX1,640]
   ];
-  const gate=[150,122,210,122];
+  const gate=[150,70,210,70];
   // 판마다 조금씩 다른 배치
   const flipSide=Math.random()<.5;
   const crosses=[{x:rnd(96,124),y:rnd(206,226),L:84,a:rnd(0,3),w:(Math.random()<.5?-1:1)*rnd(1.3,1.8)},{x:rnd(236,264),y:rnd(240,262),L:84,a:rnd(0,3),w:(Math.random()<.5?-1:1)*rnd(1.3,1.8)}];
@@ -3882,7 +3882,7 @@ function startMarble(){
   // 밤하늘 별
   const stars=[...Array(70)].map(()=>[rnd(12,348),rnd(12,628),Math.random()<.12?rnd(2,3.5):rnd(.6,1.4),rnd(0,6)]);
   // 구슬: 대기 칸
-  const slots=[]; for(let r=0;r<4;r++){ const y=40+r*22, xl=40+110*((y-30)/92)+R+4, xr=320-110*((y-30)/92)-R-4; for(let x=xl+(r%2?15:0);x<=xr;x+=30) slots.push([x,y]); }
+  const slots=[]; for(let r=0;r<3;r++){ const y=24+r*20, xl=60+90*((y-8)/62)+R+3, xr=300-90*((y-8)/62)-R-3; for(let x=xl+(r%2?15:0);x<=xr;x+=29) slots.push([x,y]); } while(slots.length<12) slots.push([150+Math.random()*60,20+Math.random()*30]);
   slots.sort(()=>Math.random()-.5);
   const balls=[]; for(let i=0;i<n;i++){ const sp=slots[i]; balls.push({i,x:sp[0],y:sp[1],vx:rnd(-10,10),vy:0,done:false,still:0,tr:[],spin:0}); }
   rankEl.innerHTML='';
@@ -3905,7 +3905,7 @@ function startMarble(){
   function step(dt){
     const SUB=6, h=dt/SUB, G=520, VMAX=560;
     clock+=dt; crosses.forEach(c=>c.a+=c.w*dt);
-    if(mixT>0){ mixT-=dt; for(const b of balls){ if(b.y<124){ b.vx+=(Math.random()-.5)*5200*dt; b.vy-=Math.random()*2400*dt; } } if(Math.random()<.35) beep(500+Math.random()*900,.02,'square',.025); if(mixT<=0){ $('#mbStart').disabled=false; $('#mbMix').disabled=false; } }
+    if(mixT>0){ mixT-=dt; for(const b of balls){ if(b.y<74){ b.vx+=(Math.random()-.5)*5200*dt; b.vy-=Math.random()*2400*dt; } } if(Math.random()<.35) beep(500+Math.random()*900,.02,'square',.025); if(mixT<=0){ $('#mbStart').disabled=false; $('#mbMix').disabled=false; } }
     for(let k=0;k<SUB;k++){
       for(const b of balls){ if(b.done||b.warp) continue; if(started&&!(b.cool>0)){ const dx=BH.x-b.x, dy=BH.y-b.y, d=Math.hypot(dx,dy); if(d<70&&d>1){ const f=Math.min(1400,90000/(d*d)); b.vx+=dx/d*f*h; b.vy+=dy/d*f*h; } if(d<BH.r){ b.warp={t:0,up:Math.random()<.5}; b.vx=b.vy=0; const a=audio(); if(a){ tone(a,900,120,.6,'sine',.12); noiseBurst(a,.5,'lowpass',600,.8,.15); } buzz([30,30,60]); continue; } } b.vy+=G*h; b.vx*=.9995; b.vy*=.9995; const sp=Math.hypot(b.vx,b.vy); if(sp>VMAX){ b.vx*=VMAX/sp; b.vy*=VMAX/sp; } b.x+=b.vx*h; b.y+=b.vy*h; }
       for(const b of balls){ if(b.done||b.warp) continue;
@@ -3971,13 +3971,13 @@ function startMarble(){
     for(let x=FX0,c=0;x<FX1;x+=8,c++) for(let r=0;r<2;r++){ ctx.fillStyle=(c+r)%2?'#F7F5EE':'#1A1820'; ctx.fillRect(x,604+r*8,Math.min(8,FX1-x),8); }
     ctx.save(); ctx.shadowColor='#5CF2D0'; ctx.shadowBlur=10; ctx.fillStyle='#BFFFF0'; ctx.font='15px Jua, sans-serif'; ctx.textAlign='center'; ctx.fillText('FINISH',180,636); ctx.restore();
     // 대기칸
-    const tg=ctx.createLinearGradient(0,30,0,122); tg.addColorStop(0,'#231C3A'); tg.addColorStop(1,'#16122A'); ctx.fillStyle=tg; ctx.beginPath(); ctx.moveTo(40,30); ctx.lineTo(320,30); ctx.lineTo(210,122); ctx.lineTo(150,122); ctx.closePath(); ctx.fill();
+    const tg=ctx.createLinearGradient(0,8,0,70); tg.addColorStop(0,'#231C3A'); tg.addColorStop(1,'#16122A'); ctx.fillStyle=tg; ctx.beginPath(); ctx.moveTo(60,8); ctx.lineTo(300,8); ctx.lineTo(210,70); ctx.lineTo(150,70); ctx.closePath(); ctx.fill();
     // 벽 (네온)
     ctx.lineCap='round'; for(const w of walls) neon(w[0],w[1],w[2],w[3],'#9F8CFF',3.5);
     // 문
     const open=Math.min(1,gateT/.35); ctx.strokeStyle='#FF8AD8'; ctx.lineWidth=7;
-    ctx.save(); ctx.translate(150,122); ctx.rotate(open*Math.PI/2); neon(0,0,30,0,'#FF8AD8',6); ctx.restore();
-    ctx.save(); ctx.translate(210,122); ctx.rotate(-open*Math.PI/2); neon(0,0,-30,0,'#FF8AD8',6); ctx.restore();
+    ctx.save(); ctx.translate(150,70); ctx.rotate(open*Math.PI/2); neon(0,0,30,0,'#FF8AD8',6); ctx.restore();
+    ctx.save(); ctx.translate(210,70); ctx.rotate(-open*Math.PI/2); neon(0,0,-30,0,'#FF8AD8',6); ctx.restore();
     // 핀 (빛나는 구슬, 맞으면 번쩍)
     pegs.forEach(([x,y],k)=>{ const col=['#FF8AD8','#9F8CFF','#5CF2D0'][k%3], f=(pf[k]||0)/.25, r=5+f*2;
       const g=ctx.createRadialGradient(x,y,0,x,y,r*3.2); g.addColorStop(0,col); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.globalAlpha=.35+f*.5; ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*3.2,0,7); ctx.fill(); ctx.globalAlpha=1;
@@ -4009,12 +4009,12 @@ function startMarble(){
   function cover(){
     const sh=mixT>0?(Math.random()-.5)*4:0, op=Math.max(0,1-gateT/.6); if(op<=0) return;
     ctx.save(); ctx.globalAlpha=op; ctx.translate(sh,0);
-    ctx.beginPath(); ctx.moveTo(37,6); ctx.lineTo(323,6); ctx.lineTo(323,30); ctx.lineTo(212,120); ctx.lineTo(148,120); ctx.lineTo(37,30); ctx.closePath();
+    ctx.beginPath(); ctx.moveTo(56,5); ctx.lineTo(304,5); ctx.lineTo(212,69); ctx.lineTo(148,69); ctx.closePath();
     ctx.fillStyle='#2A2633'; ctx.fill(); ctx.save(); ctx.clip();
     ctx.strokeStyle='rgba(199,184,245,.10)'; ctx.lineWidth=10; for(let x=-60;x<380;x+=26){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+90,130); ctx.stroke(); }
     ctx.restore(); ctx.strokeStyle='#CFC6EE'; ctx.lineWidth=3; ctx.stroke();
-    ctx.fillStyle=pastel(130,40,230,60); ctx.font='30px Jua, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('? ? ?',180,52);
-    ctx.fillStyle='#CFC6EE'; ctx.font='bold 12px "Noto Sans KR", sans-serif'; ctx.fillText(n+'개 구슬 대기 중',180,84); ctx.textBaseline='alphabetic';
+    ctx.fillStyle=pastel(130,40,230,60); ctx.font='30px Jua, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='24px Jua, sans-serif'; ctx.fillText('? ? ?',180,30);
+    ctx.textBaseline='alphabetic';
     ctx.restore();
   }
   function loop(t){ const dt=Math.min(.033,(t-(last||t))/1000)||.016; last=t; if(started) gateT+=dt;
