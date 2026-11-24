@@ -3502,14 +3502,14 @@ function startMole(){
   function paint(){ const p=who(); tgTurn(sec,p,phase==='play'?'점수 '+score+' · '+Math.max(0,DUR-el).toFixed(1)+'초':(tie?'동점 결승':'차례')); }
   function begin(){ phase='play'; el=0; score=0; spawnT=0; flipped=false; banner={txt:'🐹 두더지만 잡아!',t:0,c:'#FFD447'}; holes.forEach(h=>h.m=null); paint(); const a=audio(); if(a){ tone(a,660,880,.12,'triangle',.1); } }
   function spawn(){ const free=holes.filter(h=>!h.m); if(!free.length) return; const h=free[Math.floor(Math.random()*free.length)], q=Math.random(), tg=target();
-    const others=['mole','bunny','chick'].filter(k=>k!==tg); const k=q<.48?tg:q<.80?others[Math.floor(Math.random()*others.length)]:q<.92?'bomb':'gold';
-    const up=Math.max(.6,1.05-el*.028)*(k==='gold'?.6:1); h.m={k,t:0,up,hit:0}; }
+    const others=['mole','bunny','chick'].filter(k=>k!==tg); const k=q<.40?tg:q<.78?others[Math.floor(Math.random()*others.length)]:q<.92?'bomb':'gold';
+    const up=Math.max(.42,.8-el*.026)*(k==='gold'?.6:1), peek=Math.random()<.15; h.m={k,t:0,up:peek?.22:up,hit:0,peek}; }
   cv.onpointerdown=e=>{ e.preventDefault(); if(phase!=='play') return; audio(); const [x,y]=toXY(e);
-    for(const h of holes){ const m=h.m; if(!m||m.hit) continue; const pr=prog(m); if(pr<.25) continue; if(Math.abs(x-h.x)<HW/2+4&&y<h.y+14&&y>h.y-86){
+    for(const h of holes){ const m=h.m; if(!m||m.hit) continue; const pr=prog(m); if(pr<.6) continue; if(Math.abs(x-h.x)<HW/2+4&&y<h.y+14&&y>h.y-86){
         const v=VAL(m.k); m.hit=1; m.ht=0; score+=v; pops.push({x:h.x,y:h.y-70,txt:(v>0?'+':'')+v,c:v>0?(v>=3?'#FFD447':'#7CE38B'):'#FF5C7A',t:0});
         const a=audio(); if(a){ if(v>0) tone(a,900+v*120,1400,.08,'square',.06); else { noiseBurst(a,.15,'lowpass',500,.8,.4); tone(a,220,110,.2,'sawtooth',.08); } }
         if(m.k==='bomb'){ shake=.35; buzz([80,40,80]); } else buzz(v>0?15:[30,30,30]); paint(); return; } } };
-  const prog=m=>{ const a=Math.min(1,m.t/.12), b=Math.min(1,Math.max(0,(m.up+.12-m.t)/.12)); return m.hit?Math.max(0,1-m.ht/.15):Math.min(a,b); };
+  const prog=m=>{ const a=Math.min(1,m.t/.1), b=Math.min(1,Math.max(0,(m.up+.1-m.t)/.1)); return m.hit?Math.max(0,1-m.ht/.15):Math.min(a,b)*(m.peek?.55:1); };
   function endTurn(){ phase='done1'; holes.forEach(h=>h.m=null); const p=who(); if(tie) tieSc[p]=score; else sc[p]=score; banner={txt:score+'점!',t:0,c:'#FFFFFF'}; paint();
     setTimeout(()=>{ if(ci+1<order.length){ ci++; phase='ready'; paint(); readyPop(who(),tie?'동점 결승! 준비되면 시작':'준비되면 시작!',begin); return; } judge(); },1400); }
   function judge(){ const base=tie||[...Array(n).keys()], val=i=>tie?tieSc[i]:sc[i], lo=Math.min(...base.map(val)), L=base.filter(i=>val(i)===lo);
@@ -3519,7 +3519,7 @@ function startMole(){
     setTimeout(()=>result({name:nameOf(L), color:PAL[L][0], sub:'점수가 가장 낮아요'+(tie?' (동점 결승)':''), n, table:tb}),700); }
   function step(dt){ t+=dt; if(shake>0) shake-=dt; pops.forEach(p=>p.t+=dt); pops=pops.filter(p=>p.t<.8); if(banner){ banner.t+=dt; if(banner.t>1.4) banner=null; }
     if(phase==='play'){ el+=dt; if(!flipped&&el>=FLIP){ flipped=true; banner={txt:'🐰 이제부터 토끼만!',t:0,c:'#FF8AC4'}; holes.forEach(h=>{ if(h.m&&!h.m.hit) h.m.t=Math.max(h.m.t,h.m.up); }); const a=audio(); if(a){ tone(a,500,1000,.25,'square',.08); } buzz([60,40,60]); }
-      spawnT-=dt; if(spawnT<=0){ spawn(); if(Math.random()<Math.min(.6,el*.04)) spawn(); spawnT=Math.max(.32,.7-el*.025); }
+      spawnT-=dt; if(spawnT<=0){ spawn(); if(Math.random()<Math.min(.8,.2+el*.05)) spawn(); if(el>9&&Math.random()<.35) spawn(); spawnT=Math.max(.22,.5-el*.02); }
       for(const h of holes){ const m=h.m; if(!m) continue; if(m.hit){ m.ht+=dt; if(m.ht>.25) h.m=null; } else { m.t+=dt; if(m.t>m.up+.14) h.m=null; } }
       if(Math.floor(el*10)!==Math.floor((el-dt)*10)) paint();
       if(el>=DUR) endTurn(); } }
