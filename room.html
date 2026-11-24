@@ -112,7 +112,11 @@ button{cursor:pointer}
 .tgb{position:relative}.tgn{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;max-width:100%}
 .tgb.on .tgn{padding-right:30px}
 .tgb .tgclock{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px}.tgb .tgclock svg{width:30px;height:30px}.tgb .tgclock b{font-size:12px}
-.tgextra{text-align:center;font:400 19px var(--display);color:var(--fg);flex:none;margin-top:2px}
+.tgextra{text-align:center;font:400 20px var(--display);color:var(--fg);flex:none;margin:16px 0 6px}
+.stage:has(> #tgBar){justify-content:flex-start}
+#tgBar{flex:none;padding-top:4px}
+#tgBar + .tgplay{margin-top:auto}
+.stage:has(> #tgBar) #tgMsg{margin-bottom:auto}
 .tginfo{display:flex;align-items:center;justify-content:space-between;padding:2px 4px;flex:none}
 .tginfo .tgx{font-size:15px;color:var(--fg)}
 .tginfo .tgclock{width:36px;height:36px}.tginfo .tgclock svg{width:36px;height:36px}.tginfo .tgclock b{font-size:14px}
@@ -227,7 +231,7 @@ button{cursor:pointer}
   <div class="lbar"><div class="row2 erow">
   <button class="btn" id="bCreate">방 만들기</button>
   <button class="btn ghost" id="bJoin">참여</button></div>
-  <div class="ver">v30</div></div>
+  <div class="ver">v31</div></div>
 </section>
 
 <!-- 대기실 -->
