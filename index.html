@@ -139,6 +139,7 @@ button{cursor:pointer}
 /* 라이어 게임 */
 .lr-cats{flex:none;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .lr-cats button{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--mute);font:700 13px "Noto Sans KR",sans-serif}
+#ltWrap{position:relative}.lt-title{position:absolute;left:10px;top:6px;z-index:2;font:400 26px var(--display);color:var(--fg);line-height:1.2;pointer-events:none}.lt-title b{font-weight:400;color:var(--accent)}
 #ltKinds{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:0 4px}#ltKinds::-webkit-scrollbar{display:none}#ltKinds button{flex:none;padding:0 10px;font-size:12.5px}
 .lr-cats button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .lr-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;perspective:900px}
@@ -759,7 +760,7 @@ body.res-open .screen.fixed > .btn, body.res-open .screen .ml-btns, body.res-ope
 <section class="screen fixed" id="lotto" hidden>
   <div class="top"><button class="icon-btn back" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="disp" style="font-size:24px">로또 추첨기</div><button class="icon-btn" id="ltMute" style="margin-left:auto" aria-label="소리 끄기" aria-pressed="false"></button></div>
   <div class="lr-cats" id="ltKinds"></div>
-  <div class="mb-wrap" id="ltWrap"><canvas id="ltCanvas" aria-label="로또 추첨기 통"></canvas></div>
+  <div class="mb-wrap" id="ltWrap"><div class="lt-title" id="ltTitle"></div><canvas id="ltCanvas" aria-label="로또 추첨기 통"></canvas></div>
   <div class="lt-rows" id="ltRows"><div class="mute" id="ltInfo" style="text-align:center;font-size:13px">추첨 시작을 누르면 공 6개와 보너스 1개가 나와요</div></div>
   <div class="row2"><button class="btn ghost" id="ltQuick">빠른 5게임</button><button class="btn" id="ltDraw">추첨 시작</button></div>
 </section>
@@ -1890,11 +1891,11 @@ function startUpdown(){
 /* ── 로또 추첨기 ── */
 // 나라별 번호 추첨 (2025년 기준 규칙)
 const LT_GAMES=[
-  {id:'kr', ko:'한국 로또', en:'Korea Lotto', desc:'1~45 중 6개 + 보너스', main:6, max:45, bonus:1},
-  {id:'pb', ko:'파워볼', en:'Powerball', desc:'1~69 중 5개 + 파워볼 1~26', main:5, max:69, extra:{n:1,max:26,col:'#E53935',label:'Powerball'}},
-  {id:'mm', ko:'메가밀리언', en:'Mega Millions', desc:'1~70 중 5개 + 메가볼 1~24', main:5, max:70, extra:{n:1,max:24,col:'#F2B705',label:'Mega Ball'}},
-  {id:'em', ko:'유로밀리언', en:'EuroMillions', desc:'1~50 중 5개 + 럭키스타 2개(1~12)', main:5, max:50, extra:{n:2,max:12,col:'#FFD447',label:'Lucky Star'}},
-  {id:'uk', ko:'영국 로또', en:'UK Lotto', desc:'1~59 중 6개 + 보너스', main:6, max:59, bonus:1}];
+  {id:'kr', tt:'로또 6/45', tte:'Lotto 6/45', ko:'한국 로또', en:'Korea Lotto', desc:'1~45 중 6개 + 보너스', main:6, max:45, bonus:1},
+  {id:'pb', tt:'파워볼 5/69 + 1/26', tte:'Powerball 5/69 + 1/26', ko:'파워볼', en:'Powerball', desc:'1~69 중 5개 + 파워볼 1~26', main:5, max:69, extra:{n:1,max:26,col:'#E53935',label:'Powerball'}},
+  {id:'mm', tt:'메가밀리언 5/70 + 1/24', tte:'Mega Millions 5/70 + 1/24', ko:'메가밀리언', en:'Mega Millions', desc:'1~70 중 5개 + 메가볼 1~24', main:5, max:70, extra:{n:1,max:24,col:'#F2B705',label:'Mega Ball'}},
+  {id:'em', tt:'유로밀리언 5/50 + 2/12', tte:'EuroMillions 5/50 + 2/12', ko:'유로밀리언', en:'EuroMillions', desc:'1~50 중 5개 + 럭키스타 2개(1~12)', main:5, max:50, extra:{n:2,max:12,col:'#FFD447',label:'Lucky Star'}},
+  {id:'uk', tt:'영국 로또 6/59', tte:'UK Lotto 6/59', ko:'영국 로또', en:'UK Lotto', desc:'1~59 중 6개 + 보너스', main:6, max:59, bonus:1}];
 let LTG=LT_GAMES[0];
 // 실제 추첨볼 색 (한국: 동행복권 번호대 색 / 미국: 흰 공 + 빨간 파워볼·금색 메가볼 / 영국: 번호대 색)
 function ltStyle(v,ex){ const W='#F6F5F0', D='#16181F';
@@ -1914,6 +1915,7 @@ function startLotto(){
   show('lotto');
   try{ const g=LT_GAMES.find(g=>g.id===S.ltGame); if(g) LTG=g; }catch(e){}
   const G=LTG, MAIN=G.main, TOT=G.main+(G.bonus||0)+(G.extra?G.extra.n:0);
+  { const t=$('#ltTitle'), x=EN?G.tte:G.tt, m=x.search(/ \d/); t.innerHTML=m<0?esc(x):esc(x.slice(0,m))+' <b>'+esc(x.slice(m+1))+'</b>'; }
   const kinds=$('#ltKinds'); kinds.innerHTML=LT_GAMES.map(g=>'<button aria-pressed="'+(g===G)+'">'+g.ko.replace(' 로또','')+'</button>').join(''); [...kinds.children].forEach((bt,i)=>bt.onclick=()=>{ if(state==='mix'||state==='draw') return; S.ltGame=LT_GAMES[i].id; save(); startLotto(); });
   const infoTxt=()=>G.desc+(G.extra?'':'');
   // 실제 추첨기처럼: 아래에서 바람이 불어 공이 통 안을 휘젓고, 맨 위 구멍으로 빨려 올라간 공이 관을 타고 내려와 레일에 놓임
